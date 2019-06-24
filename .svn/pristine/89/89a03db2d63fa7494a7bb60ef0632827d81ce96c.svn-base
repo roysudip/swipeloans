@@ -1,0 +1,34 @@
+
+var mongoose = require('mongoose');
+var validate = require('validate');
+var mongoosePaginate = require('mongoose-paginate');
+var Schema = mongoose.Schema;
+
+var loanSchema = new Schema({
+    bank_name: {type: String, required: true},
+    bank_logo: {type: String, required: false},
+    loan_title: {type: String, required: true},
+    loan_description: {type: String, required: false},
+    inerest_rate: {type: Number, required: false},
+    repayment: {type: Number, required: false},
+    lender_video_type:{type:String, enum:['youtube','video_file'],default:'youtube'},
+    lender_video:{type: String, required: true},
+    loan_video_type:{type:String, enum:['youtube','video_file'],default:'youtube'},
+    loan_video:{type: String, required: true},
+    setup_fees: {type: Number, required: false},
+    annual_fees: {type: Number, required: false},
+    monthly_fees: {type: Number, required: false},
+    lvr: {type: Schema.Types.ObjectId, ref: 'Lvr', required: true},
+    loan_type: {type: Schema.Types.ObjectId, ref: 'loanType', required: true},
+    loan_feature: {type: Schema.Types.ObjectId, ref: 'loanFeature', required: true},
+    lender: {type: Schema.Types.ObjectId, ref: 'lender', required: true},
+    comparsion_rate: {type: Number, required: false},
+    loan_capacity: {type: Number, required: false},
+    is_active: { type: String, enum: ['yes', 'no'], default: 'yes' }
+    
+},{
+    timestamps: true,        // will automatically add createdAt and updatedAt
+    typecast: true
+});
+//loan.plugin(mongoosePaginate);
+module.exports = mongoose.model('Loan', loanSchema);

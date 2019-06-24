@@ -1,0 +1,10 @@
+angular.module('common', [])
+        .factory('commonFactory', commonFactory);
+commonFactory.$inject = ['$location', '$http'];
+function commonFactory($location, $http){
+    return {
+        getCountryList: function(){
+            return $http.get('/api/country-codes');
+        }
+    };
+}

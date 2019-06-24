@@ -1,0 +1,16 @@
+
+var mongoose = require('mongoose');
+var validate = require('validate');
+var mongoosePaginate = require('mongoose-paginate');
+var Schema = mongoose.Schema;
+
+var Favorite = new Schema({
+    loan_id: {type: Schema.Types.ObjectId, ref: 'Loan', required: true},
+    user_id: {type: Schema.Types.ObjectId, ref: 'User', required: true}
+    
+},{
+    timestamps: true,        // will automatically add createdAt and updatedAt
+    typecast: true
+});
+Favorite.plugin(mongoosePaginate);
+module.exports = mongoose.model('Favorite', Favorite);

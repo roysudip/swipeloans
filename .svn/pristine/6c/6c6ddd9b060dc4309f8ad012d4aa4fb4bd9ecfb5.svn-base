@@ -1,0 +1,325 @@
+var Question = require('../../schema/questions');
+//var Survey = require('../../schema/surveys');
+var Answer = require('../../schema/answers');
+var config = require('../../config');
+var secretKey = config.secret;
+var jwt = require('jsonwebtoken');
+var async = require("async");
+var forEach = require('async-foreach').forEach;
+require('mongoose-paginate');
+var asyncLoop = require('node-async-loop');
+var waterfall = require('async-waterfall');
+
+// Generic "done" callback. 
+function allDone(notAborted, arr) {
+    //console.log("done", notAborted, arr);
+}
+
+var QuestionService = {
+    //add faq by admin
+    // createQuestionAdmin: function (question, adminDet, callback) {
+    //     var questionData = new Question(question);
+    //     questionData.save(function (err, res) {
+    //         if (err) {
+    //             callback({success: false, message: err});
+    //         }else{
+    //             callback({success: true, message: "Question details saved successfully"});                
+    //         }
+    //     });
+    // },
+    createQuestionAdmin: function (question, adminDet, callback) {
+        async.waterfall([
+            function(cb){
+                if(typeof(question.question) == undefined || question.question == null || question.question == ""){
+                    cb({ success: false, message: "Please provide question" });
+                } else {
+                    cb(null);
+                }
+            },
+            function(cb){
+                if(question.type == "option"){                    
+                    forEach(question.options, function(item, index){
+                        var ind = parseInt(index+1);
+                        if(typeof(item.option) == undefined || item.option == null || item.option == ""){
+                            cb({ success: false, message: "Please provide value of option "+ind });
+                        } else {
+                            var opt = item.option.trim();
+                            if(opt.length == 0){
+                                cb({ success: false, message: ind+"th option cannot be space only." });
+                            } else {
+                                //
+                            }
+                        }
+                        if((question.options.length-1) == index){
+                            cb(null)
+                        }
+                    });                        
+                } else {
+                    cb(null)
+                }                   
+
+            },
+            function(cb){
+                var questionData = new Question(question);
+                questionData.save(function (err, res) {
+                    if (err) {
+                        cb({success: false, message: err});
+                    }else{
+                        cb({success: true, message: "Question details saved successfully"});                
+                    }
+                });
+            }
+        ], function(res){
+            callback(res);
+        });
+    },
+    //update faq by admin
+    
+    update: function (questionid, questiondata, callback) {
+        async.waterfall([
+            function(cb){                   
+                    forEach(questiondata.options, function(item, index){
+                        var ind = parseInt(index+1);
+                        if(typeof(item.option) == undefined || item.option == null || item.option == ""){
+                            cb({ success: false, message: "Please provide value of option "+ind });
+                        } else {
+                            var opt = item.option.trim();
+                            if(opt.length == 0){
+                                cb({ success: false, message: ind+"th option cannot be space only." });
+                            } else {
+                                //
+                            }
+                        }
+                        if((questiondata.options.length-1) == index){
+                            cb(null)
+                        }
+                });                        
+            },
+            function(cb){
+                Question.findById(questionid, function (err, question) {
+                    if (err) {
+                        cb({ success: false, message: "Invalid question id", err: err });
+                    } else {
+                        var conditions = { _id: questionid},
+                        fields = {        
+                            question: questiondata.question,
+                            type: questiondata.type,
+                            options: questiondata.options,
+                            updatedAt: Date.now()
+                        },
+                        options = { upsert: false };
+                        Question.update(conditions, fields, options, function (er) {
+                            if (er) {
+                                cb({ success: false, message: "some error occurred", err: er });
+                            } else {
+                                cb({success: true, message: "Question details updated", questionid: questionid});
+                            }
+                        });
+                    }
+                });
+            }
+        ], function(res){
+            callback(res);
+        });
+    },
+    // //delete faq
+    delete: function (questionid, callback) {
+        Question.remove({_id: questionid }, function (err, res) {            
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Question deleted" });
+            }
+        });
+
+    },
+    //all clients
+    getAllQuestions: function (params, adminDet, callback) {        
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        
+        async.waterfall([
+            function (nextcb) {
+                // console.log(query)
+                Question.find(query)
+                      // .sort([[sort_field, order]])
+                      .exec(function (err, questions) {
+console.log(questions);
+
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, questions);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, questions: result });
+                }
+            });
+    },
+    // get all questions of a survey
+    getSurveyQuestions: function(surveyinfo, callback){
+        if(typeof(surveyinfo.sid) == undefined || surveyinfo.sid == null || surveyinfo.sid == ""){
+            callback({ success: false, message: "Please provide survey id"});
+        } else {
+            Question.find({ survey: surveyinfo.sid }, function(er, res){
+                if(res && res.length>0){
+                    callback({ success: true, data: res });                    
+                } else {
+                    callback({ success: false, message: "Not Available"});                    
+                }
+            });
+        }
+    },
+    setQuestionAnswer: function(ansdata, surveyData, callback){      
+        forEach(ansdata.questions, function(item, index){
+            //var questionDet = {question: 'Not Available'};
+                    async.waterfall([
+                        function(cb){
+                            var answ = new Answer({
+                                user_idfk: ansdata.user_idfk,
+                                ques_id: item.ques_id,
+                                question: item.question,
+                                options:item.options
+                            });
+                            answ.save(function(err, res){
+                                if(err){
+                                    callback({ success: false, message: err});  
+                                }
+                                else{
+                                        cb(res);
+                                    }
+                                //ansinsertarr.push(res);
+                            });
+                        }
+                    ]);
+        },function(){
+            callback({mesg:'data inserted successfully'});
+        });
+
+       
+
+
+
+
+        
+        // if(typeof(surveyinfo.sid) == undefined || surveyinfo.sid == null || surveyinfo.sid == ""){
+        //     callback({ success: false, message: "Please provide survey id" });
+        // } else {            
+        //     var subm = new Submission({
+        //         surveyid: surveyinfo.sid,
+        //         user: surveyData.email
+        //     });
+        //     subm.save(function(err, res){
+        //         if(err){
+        //             callback({ success: false, message: "Please try again" });  
+        //         } else {
+        //             forEach(surveyinfo.quest_ans, function(item, index){
+        //                 var questionDet = {question: 'Not Available'};
+        //                 async.waterfall([
+        //                     function(cb){
+        //                         Question.findOne({ _id: item.id})
+        //                         .select('question type max min options comment')
+        //                         .exec(function(err, res){
+        //                             if(res){
+        //                                 questionDet = res;
+        //                                 cb(null);
+        //                             } else {
+        //                                 cb(null);
+        //                             }
+        //                         })
+        //                     },
+        //                     function(cb){
+        //                         var comment = (item.comment?item.comment:(questionDet.comment? "":null));
+        //                         var condition = {_id: res._id},
+        //                         field = {$push: {quest_ans:{ question: questionDet, answer: item.answer, comment: comment}}, updatedAt: Date.now() },
+        //                         option = {upsert: false};                
+
+        //                         Submission.update(condition, field, option, function(err){
+        //                             console.log(err)
+        //                             cb(null);
+        //                         }); 
+        //                     }
+        //                 ], function(){
+        //                     if((surveyinfo.quest_ans.length-1) == index){
+        //                         callback({ success: true, message: "Successfully submitted" })
+        //                     }
+        //                 });
+
+        //                 var done = this.async();
+        //                 setTimeout(function() {
+        //                     done();
+        //                 }, 100);
+        //             }, allDone);
+        //         }
+        //     });
+        // }
+            
+    },
+    //client details by id
+    getDetailsById: function (questionId, callback) {        
+        Question.findOne({_id: questionId }, function (err, question) {
+            if (err) {
+                callback({success: false, err: err });
+            }
+            else {                    
+                callback({success: true, question: question });
+            }
+        });
+    },
+
+     getallQuestionFrontent: function (callback) {   
+
+        //console.log("questionData", questionData);
+       // console.log("Test :: : Test");
+//callback(questionData);
+
+
+
+
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        
+        async.waterfall([
+            function (nextcb) {
+                // console.log(query)
+                Question.find(query)
+                      // .sort([[sort_field, order]])
+                      .exec(function (err, questions) {
+                    console.log(questions);
+
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, questions);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, questions: result });
+                }
+            });
+    },
+
+
+
+
+};
+module.exports = QuestionService;

@@ -1,0 +1,16 @@
+
+var mongoose = require('mongoose');
+var validate = require('validate');
+var mongoosePaginate = require('mongoose-paginate');
+var Schema = mongoose.Schema;
+
+var lenderSchema = new Schema({
+    lender: { type: String, required: true },
+    bank_logo: {type: String, required: false},
+    is_active: { type: String, enum: ['yes', 'no'], default: 'yes' }
+
+}, {
+        timestamps: true,        // will automatically add createdAt and updatedAt
+        typecast: true
+    });
+module.exports = mongoose.model('lender', lenderSchema);

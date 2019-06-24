@@ -1,0 +1,33 @@
+faqModule.factory('faqFactory', faqFactory);
+faqFactory.$inject = ['$http'];
+function faqFactory($http){
+    return {
+        //all faq list
+        getAllFaqs: function(){
+            return $http.get('/webcontrol/faqs/getAllFaq');
+        },
+        // faq details by id
+        getFaqDetailsById: function(faqId){
+            return $http.get('/webcontrol/faqs/getDetails/' + faqId);
+        },
+        //change faq status
+        changeFaqStatus: function(faqid, faqStatus){
+            return $http.put('/webcontrol/faqs/changeStatus/' + faqid, {
+                is_active: ((faqStatus == 'yes') ? 'no' : 'yes')
+            });
+        },
+        // add faq
+        saveFaq: function(faqData){
+            return $http.post('/webcontrol/faqs', faqData);
+        },
+        //update faq
+        updateFaq: function(faqId, faqData){
+            //console.log(faqData); 
+            return $http.put('/webcontrol/faqs/' + faqId, faqData);
+        },
+        //delete faq
+        deleteFaq: function (faqId){
+            return $http.delete('/webcontrol/faqs/' + faqId);
+        }
+    };
+}

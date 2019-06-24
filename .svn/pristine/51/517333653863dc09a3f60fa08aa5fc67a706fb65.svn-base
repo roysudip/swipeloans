@@ -1,0 +1,124 @@
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="/images/inner-logo.png" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>
+                    <%=admin.first_name%>
+                        <%=admin.last_name%>
+                </p>
+                <a href="#">
+                    <i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li class="<%=(active == 'dashboard') ? 'active' : ''%>">
+                <a href="/webcontrol/dashboard">
+                    <i class="fa fa-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="<%=(active == 'users') ? 'active' : ''%>">
+                <a href="/webcontrol/user">
+                    <i class="fa fa-fw fa-group"></i>
+                    <span>Manage User</span>
+                </a>
+            </li>
+            <li class="<%=(active == 'cms') ? 'active' : ''%>">
+                <a href="/webcontrol/cms">
+                    <i class="fa fa-fw fa-file-text"></i>
+                    <span>Manage CMS</span>
+                </a>
+            </li>
+            <li class="<%=(active == 'faqs') ? 'active' : ''%>">
+                <a href="/webcontrol/faqs">
+                    <i class="fa fa-fw fa-question"></i>
+                    <span>Manage FAQ</span>
+                </a>
+            </li>
+            <li class="dropdown <%=(active == 'loan') ? 'active' : ''%>">
+                <a href="javascript:void(0)" class="dropbtn">
+                    <i class="fa fa-fw fa-bank"></i>
+                    <span>Manage Loan</span>
+                </a>
+                <ul class="dropdown-content">
+                    <li class="<%=(child_active == 'loan') ? 'child_active' : ''%>">
+                        <a href="/webcontrol/loan">
+                            <i class="fa fa-th-list"></i>
+                            <span>Loan</span>
+                        </a>
+                    </li>
+                    <li class="<%=(child_active == 'lvr') ? 'child_active' : ''%>">
+                        <a href="/webcontrol/loan/lvr">
+                            <i class="fa fa-th-list"></i>
+                            <span>Loan value ratio</span>
+                        </a>
+                    </li>
+                    <li class="<%=(child_active == 'type') ? 'child_active' : ''%>">
+                        <a href="/webcontrol/loan/type">
+                            <i class="fa fa-th-list"></i>
+                            <span>Loan type</span>
+                        </a>
+                    </li>
+                    <li class="<%=(child_active == 'feature') ? 'child_active' : ''%>">
+                        <a href="/webcontrol/loan/feature">
+                            <i class="fa fa-th-list"></i>
+                            <span>Loan feature</span>
+                        </a>
+                    </li>
+                    <li class="<%=(child_active == 'leander') ? 'child_active' : ''%>">
+                        <a href="/webcontrol/loan/lender">
+                            <i class="fa fa-th-list"></i>
+                            <span>Lenders</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown <%=(active == 'question') ? 'active' : ''%>">
+                <a href="javascript:void(0)" class="dropbtn">
+                    <i class="fa fa-fw fa-calculator"></i>
+                    <span>Manage Loan Calculator</span>
+                </a>
+                <ul class="dropdown-content">
+                    <li class="<%=(child_active == 'question') ? 'child_active' : ''%>">
+                        <a href="/webcontrol/question">
+                            <i class="fa fa-question"></i>
+                            <span>Question for Borrow</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="/webcontrol/report">
+                    <i class="fa fa-fw fa-user"></i>
+                    <span>Property Report</span>
+                </a>
+            </li>
+            <li class="<%=(active == 'adminprofile') ? 'active' : ''%>">
+                <a href="/webcontrol/admin-profile">
+                    <i class="fa fa-fw fa-user"></i>
+                    <span>Admin profile</span>
+                </a>
+            </li>
+            <li class="<%=(active == 'changepassword') ? 'active' : ''%>">
+                <a href="/webcontrol/change-password">
+                    <i class="fa fa-fw fa-edit"></i>
+                    <span>Change Password</span>
+                </a>
+            </li>
+            <li>
+                <a href="/webcontrol/logout">
+                    <i class="fa fa-fw fa-sign-out"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

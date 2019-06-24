@@ -1,0 +1,156 @@
+loanModule.controller('loanController', loanController);
+loanController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function loanController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.loans = {};
+    vm.loan_length = '';
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.alterMessage = false;
+    vm.loanData = {};
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //all loan list
+    vm.getAllLoans = function () {
+        loanFactory.getAllLoans().success(function (data) {
+            vm.loan_length = data.loans.length;
+            if (data.loans && data.loans.length > 0) {
+                vm.loans = data.loans;
+            } else {
+                vm.loans = {};
+            }
+        });
+    };
+    vm.getAllLoans();
+
+    // get all lenders
+    // vm.getAlllenders = function () {
+    //     loanFactory.getAlllenders().success(function (data) {
+    //         vm.loan_length = data.loans.length;
+    //         if (data.loans && data.loans.length > 0) {
+    //             vm.loans = data.loans;
+    //         } else {
+    //             vm.loans = {};
+    //         }
+    //     });
+    // };
+    // vm.getAlllenders();
+
+    vm.getAlllenders = function () {
+        loanFactory.getAlllenders().success(function (data) {
+            //console.log(data);
+            vm.lenders = [{value:'',label:'Select One'}];
+            if (data.success && data.lenders.length > 0) {
+                    for (l = 0; l < data.lenders.length; l++) {
+                        vm.lenders.push({ value: data.lenders[l]._id, label: data.lenders[l].lender });
+                    }
+            }
+        });
+    }
+    vm.getAlllenders();
+
+// loan serach 
+
+vm.loansearch = function(){
+    loanFactory.loanssearch(vm.loanData).success(function(data){
+        //console.log(data);
+        vm.loan_length = data.loans.length;
+        if (data.loans && data.loans.length > 0) {
+            vm.loans = data.loans;
+        } else {
+            vm.loans = {};
+        }
+    });
+}
+
+    //Change Status
+    vm.toggleLoanStat = function (event, index) {
+        vm.currentLoanId = event.currentTarget.attributes['data-loanid'].value;
+        vm.currentLoanStat = event.currentTarget.getAttribute('data-status');
+        vm.doToggleLoanStatus(index);
+    };
+    vm.doToggleLoanStatus = function (index) {
+        if (vm.currentLoanId != 0 && vm.currentLoanId != null) {
+            loanFactory.changeLoanStatus(vm.currentLoanId, vm.currentLoanStat).then(function (response) {
+                if (response.data.success) {
+                    vm.statusMessage.error = false;
+                    vm.statusMessage.success = true;
+                    vm.alterMessage = true;
+                    vm.loans[index].is_active = ((vm.currentLoanStat == 'yes') ? 'no' : 'yes');
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                } else {
+                    vm.alterMessage = true;
+                    vm.statusMessage.success = false;
+                    vm.statusMessage.error = true;
+                }
+                vm.statusMessage.content = response.data.message;
+            });
+        }
+    };
+
+    //Open View Model
+    vm.showDetailsModal = function (loan_id) {
+        loanFactory.getLaonDetailsById(loan_id).success(function (data) {
+            if (data.success) {
+                vm.loanData = data.loan;
+                vm.currentLaonId = data.loan._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#ViewLoan').modal('show');
+    };
+
+    //delete loan by id
+    vm.deleteLoan = function () {
+        loanFactory.deleteLoan(vm.currentLoanId).success(function (data) {
+            if (data.success) {
+                vm.statusMessage.error = false;
+                vm.statusMessage.success = true;
+                vm.alterMessage = true;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmLoanDelete').modal('hide');
+                vm.getAllLoans();
+
+            } else {
+                vm.alterMessage = true;
+                vm.statusMessage.error = true;
+                vm.statusMessage.success = false;
+                vm.statusMessage.onModal = false;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmLoanDelete').modal('hide');
+                vm.getAllLoans();
+            }
+            vm.statusMessage.content = data.message;
+        });
+    };
+    //Set lvr id
+    vm.setCurrentLoanId = function (loanid) {
+        vm.currentLoanId = loanid;
+    };
+
+    vm.setCurrentLenderId = function (lenderid) {
+        vm.currentLenderId = lenderid;
+    };
+}
+

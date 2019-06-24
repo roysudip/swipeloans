@@ -1,0 +1,53 @@
+"use strict";
+var express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var session = require('express-session');
+var adminReport = express.Router();
+var reportService = require('../service/ReportService');
+//======================
+//  Middleware to check the login
+//=========================
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+//question listing page
+adminReport.route('/').get(checkLogin, function (req, res) {        
+    // reportService.getAllReports(req.query, req.session.admin, function (response) {
+    //     res.json(response);
+    // });
+    res.render('admin/reports/index', { admin: req.session.admin, title: "Reports", "active": "reports",child_active:'' });
+});
+
+
+//list Users
+adminReport.get('/getAllReports', function (req, res) {
+    reportService.getAllReports( req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+
+adminReport.delete('/:reportId', checkLogin, function (req, res) {
+    var reportId = req.params.reportId;
+   // res.json(faqId);
+   reportService.delete(reportId, function (response) {
+        res.json(response);
+    });
+});
+
+//chnage faq status
+// adminSurvey.put('/changeStatus/:faqId', function (req, res) {
+//     var faqId = req.params.faqId;
+//     var faqData = req.body;
+//     surveyService.changeStatus(faqId, faqData.is_active, function (response) {
+//         res.json(response);
+//     });
+// });
+
+module.exports = adminReport;

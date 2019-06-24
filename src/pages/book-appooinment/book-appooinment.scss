@@ -1,0 +1,431 @@
+page-book-appooinment {
+    .bgClass{
+        background-color: #017bb8;
+    }
+    .back-button.show-back-button{
+      display: none;
+    }
+  .filterHeader{
+    background: #166085;
+    color: #fff;
+    font-family: 'Conv_Poppins-Regular';
+    padding: 8px 0;
+    margin: 0;
+    text-align: center;
+    font-size: 16px;
+}
+.appoinmentWrapper{
+    padding: 10px 15px;
+    width: 100%;
+    // float: left;
+}
+.product{
+    position: relative;
+    padding-left: 90px;
+    font-size: 14px;
+    color: #fff;
+    font-family: 'Conv_Poppins-Light';
+    margin-bottom: 15px;
+}
+.product span{
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    font-size: 16px;
+    color: #fff;
+     font-family: 'Conv_Poppins-Regular';
+}
+.choseSection{
+    border: 1px solid #d4d4d4;
+    width: 100%;
+    // float: left;
+}
+.choseSection h4{
+    color: #fff;
+    text-align: center;
+     font-family: 'Conv_Poppins-Regular';
+    font-size: 18px;
+    margin: 0;
+    padding: 15px 0;
+}
+.videoSection{
+    background: #166085;
+    border-top: 1px solid #d4d4d4;
+    border-bottom: 1px solid #d4d4d4;
+    padding: 8px 0 8px 14px;
+    margin-bottom: 10px;
+}
+.skypeWrapper{
+padding: 10px;
+width: 100%;
+// float: left;
+}
+.skypeWrapper div{
+width: 100%;
+// float: left;
+// margin-bottom: 10px;
+}
+.skypeWrapper input[type="text"],
+.skypeWrapper input[type="number"],
+.skypeWrapper input[type="tel"]{
+// float: right;
+// width: 45%;
+border: 1px solid #d4d4d4;
+border-radius: 5px;
+min-height: 34px;
+padding-left: 10px;
+font-family: 'Conv_Poppins-Light';
+padding-right: 5px;
+color: #fff;
+border: 1px solid #fff;
+}
+
+
+
+ .item ion-label{
+  font-size: 16px;
+  color: #fff;
+  font-family: 'Conv_Poppins-Light';
+}
+.item-radio-checked.item ion-label{
+    color: #fff;
+    font-weight: bold;
+}
+
+input[type=radio   ]:not(old) + label > span
+{
+margin-right: 8px;
+}
+.phoneSection{
+border: 1px solid #d4d4d4;
+width: 100%;
+// float: left;
+margin-top: 15px;
+padding-top: 10px;
+}
+.appointmentDate{
+  width: 100%;
+  float: left;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+.appointmentDate .item{
+  float: right;
+  width: 45%;
+  padding-left: 0;
+  font-size: 12px;
+  font-family: 'Conv_Poppins-Light';
+}
+.appointmentDate .item ion-label{
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 5px 8px 1px 0;
+  width: 20px;
+  height: auto;
+}
+.appointmentDate  .item-block{
+  min-height: 34px;
+}
+.datetime {
+padding: 4px 8px 5px 8px;
+}
+.item.item-block .item-inner{
+border: 1px solid #d4d4d4;
+border-radius: 5px;
+}
+.appointmentDate span{
+  width: 53%;
+  font-size: 14px;
+  display: inline-block;
+   font-family: 'Conv_Poppins-Regular';
+  padding-top: 6px;
+  color: #fff;
+}
+.bottomButtan {
+margin-bottom: 30px;
+width: 100%;
+float: left;
+margin-top: 35px;
+}
+.bottomButtan button{
+width: 50%;
+float: none;
+margin: auto;
+display: block;
+padding: 15px 0;
+background: #000;
+color: #ffffff;
+font-family: 'Conv_Poppins-Medium';
+font-size: 14px;
+text-transform: uppercase;
+border-radius: 10px;
+}
+
+
+
+//21.08.2018
+
+.videoSection .item,.skypeWrapper .item{
+  padding-left: 0;
+  .item-inner{
+      border: 0;
+  }
+}
+
+.skypeWrapper div{
+  display: flex;
+  display: -webkit-flex;
+}
+
+.skypeWrapper div .list{
+  display: flex;
+  display: -webkit-flex;
+}
+
+// .item.VdoConf-Skype-right{
+//   border: 1px solid #000;
+// }
+
+.lft_item{
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.VdoConf-Phone-left .item{
+    flex-direction: row-reverse;
+}
+
+.list{
+    margin-bottom: 0;
+}
+
+
+.item-md.item-input.item-input-has-focus .item-inner,  .item-md.item-input.input-has-focus .item-inn{
+    border-bottom-color: transparent;
+    box-shadow: none;
+}
+
+
+.iist-md .item-input.item-input-has-focus:last-child,.list-md .item-input.input-has-focus:last-child{
+    border-bottom-color: transparent;
+    box-shadow: none;
+}
+.list-ios > .item-block:first-child{ border-top: 0; } .radio-ios .radio-icon{ left: 0; top: 0; margin: 0; border-radius: 50%; position: relative; display: block; width: 16px; height: 16px; border-width: 2px; border-style: solid; border-color: #787878; } .radio-ios .radio-checked .radio-inner{ left: 2px; top: 2px; border-radius: 50%; position: absolute; width: 8px; height: 8px; border: 0; }
+.radio-md .radio-checked,
+.radio-ios .radio-checked{
+    border-color: rgb(255,255,255);
+}
+
+.radio-md .radio-inner,
+.radio-ios .radio-inner{
+background-color:  rgb(255,255,255);
+}
+
+
+
+item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner,
+    .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner{
+        border-bottom: 0;
+        box-shadow: none;
+    }
+
+    .list-md .item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus):last-child, .list-md .item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus):last-child{
+        border-bottom-color: transparent;
+        box-shadow: none;
+    }
+// input[type=radio   ]:not(old){
+//     width     : 2em;
+//     margin    : 0;
+//     padding   : 0;
+//     font-size : 1em;
+//     opacity   : 0;
+//     }
+//     input[type=radio   ]:not(old) + label{
+//     display      : inline-block;
+//     margin-left  : -2em;
+//     line-height  : 1.5em;
+//     }
+//     input[type=radio   ]:not(old) + label > span{
+//     display          : inline-block;
+//     width: 14px;
+//     height: 14px;
+//     margin           : 0.25em 0.5em 0.25em 0.25em;
+//     border           : 2px solid #9b9b9b;
+//     border-radius    : 50%;
+//     position: relative;
+//     top: 5px;
+//     }
+//     input[type=radio]:not(old):checked +  label > span > span{
+//     display          : block;
+//     width: 8px;
+//     height: 8px;
+//     margin           : 0.125em;
+//     // border           : 2px solid rgb(115,153,77);
+//     border-radius    : 50%;
+//     background       : rgb(153,204,102);
+//     }
+
+
+
+.radio .radio-icon{
+    border-color: #fff;
+}
+
+ .radio-md .radio-inner,
+ .radio-ios .radio-inner{
+background-color: #fff;
+}
+.datetime-text{
+    color: #fff;
+    padding-right: 10px;
+}
+
+.appointmentDate{
+  ion-select{
+    border-radius: 5px;
+    padding: 7px 8px 7px 16px;
+    max-width: 100%;
+    width: 100%;
+  }
+  .select-text{
+    color: #fff;
+    font-family: 'Conv_Poppins-Regular';
+    font-size: 14px;
+  }
+  .select .select-icon .select-icon-inner{
+    color: #fff;
+  }
+
+}
+
+
+
+@media(min-width:600px){
+  .datetime-text,.select-text{
+    font-size: 16px;
+  }
+    .filterHeader{
+        font-size: 20px;
+        padding: 15px 0;
+    }
+     .filterHeader {
+        font-size: 22px;
+        padding: 20px 0;
+    }
+    .product span,
+    .videoSection label,
+    .skypeWrapper label{
+        font-size: 18px;
+    }
+    .product{
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    .choseSection h4{
+        font-size: 20px;
+    }
+
+    .videoSection{
+        padding: 13px 0 18px 14px;
+    }
+     .skypeWrapper input[type="text"],
+     .skypeWrapper input[type="number"],
+      .appointmentDate .item-block{
+        min-height: 42px;
+        font-size: 16px;
+    }
+     .appointmentDate .item ion-label{
+        width: 30px;
+        top: 3px;
+    }
+     .appointmentDate .item{
+        font-size: 16px;
+    }
+}
+@media(min-width:768px){
+    .filterHeader {
+        font-size: 28px;
+        padding: 25px 0 28px;
+        margin-bottom: 40px;
+        margin-top: 0;
+    }
+    .bottomButtan {
+      margin-top: 80px;
+      button{
+        padding: 20px 0;
+        font-size: 26px;
+    }
+    }
+    .bottomButtan{
+        bottom: 50px;
+    }
+    .product span,.choseSection h4{
+        font-size: 30px;
+    }
+     .videoSection label,
+     .skypeWrapper label,.product{
+        font-size: 26px;
+    }
+
+    .product{
+       padding-left: 200px;
+       margin-bottom: 40px;
+    }
+     .appoinmentWrapper{
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+     .videoSection {
+        padding: 15px 0 25px 70px;
+    }
+     .skypeWrapper{
+            padding: 30px 30px 30px 70px;
+    }
+     input[type=radio]:not(old) + label > span{
+        margin-right: 40px;
+    }
+     .phoneSection{
+        margin-top: 27px;
+    }
+     .choseSection h4{
+        padding: 25px 0;
+    }
+     .skypeWrapper input[type="text"],
+     .skypeWrapper input[type="number"],
+     .appointmentDate .item-block{
+        min-height: 60px;
+        font-size: 20px;
+    }
+     .appointmentDate{
+        margin-top: 50px;
+        margin-bottom: 10px;
+    }
+    .appointmentDate span {
+        font-size: 30px;
+        width: 47%;
+    }
+     .appointmentDate .item{
+        width: 43%;
+    }
+     .appointmentDate .item ion-label {
+        width: 35px;
+        top: 11px;
+    }
+
+
+    .item ion-label{
+        font-size: 26px;
+    }
+    .radio-md .radio-icon,
+    .radio-ios .radio-icon{
+        width: 26px;
+        height: 26px;
+    }
+     .radio-md .radio-inner,
+     .radio-ios .radio-checked .radio-inner{
+        width: 18px;
+        height: 18px;
+    }
+}
+}

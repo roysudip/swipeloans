@@ -1,0 +1,346 @@
+page-filter {
+    .back-button.show-back-button{
+       display: none;
+    }
+    .clo_se{
+        background-image: url(../assets/images/closeIcon.png);
+        width: 15px;
+        height: 15px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: inline-block;
+        position: absolute;
+        right: 24px;
+        top: 21px;
+    }
+
+//check box start
+
+//check box and radio button
+input[type=checkbox]:not(old),
+input[type=radio   ]:not(old){
+  width     : 2em;
+  width     : 0;
+  margin    : 0;
+  padding   : 0;
+  font-size : 1em;
+  opacity   : 0;
+}
+input[type=checkbox]:not(old) + label,
+input[type=radio   ]:not(old) + label{
+  display      : inline-block;
+//   margin-left  : -2em;
+  margin-left  : 0;
+  line-height  : 1.5em;
+  color: #616060;
+  font-family: 'Avenir-Light';
+  font-size: 12px;
+//   padding: 15px 0 0 0;
+}
+input[type=checkbox]:not(old) + label > span{
+  display          : inline-block;
+  width: 14px;
+  height: 14px;
+  margin           : 0.25em 0.5em 0.25em 0.25em;
+  border           : 1px solid #9ddefe;;
+  border-radius    : 3px;
+  background       : transparent;
+  vertical-align   : bottom;
+}
+input[type=checkbox]:not(old):checked + label > span:before{
+  content     : '✓';
+  display     : block;
+  width       : 1em;
+  color       : #fff;
+  font-size   : 12px;
+  line-height : 1em;
+  text-align  : center;
+  text-shadow : 0 0 0.0714em rgb(255,255,255);
+  font-weight : bold;
+}
+//checkbox end
+
+//checkbox end
+//==================
+.bgClass{
+    background-color: #017bb8;
+}
+
+.loanOption{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position: relative;
+    p{
+        color: #ffffff;
+        font-size: 16px;
+        font-family: 'Conv_Poppins-Regular';
+        margin: 0;
+        span{
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            background-color: #fff;
+            border-radius: 50%;
+            color: #000;
+            font-size: 10px;
+            text-align: center;
+        }
+    }
+    li{
+        position: relative;
+        padding: 10px;
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-between;
+        align-items: center;
+
+    }
+
+}
+.rightArrow{
+    width: 19px;
+    height: 13px;
+    background-image: url(../assets/images/rgtArrow.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
+.loanOption li:before{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-image: url(../assets/images/borderImg.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    bottom: 0px;
+    left: 0;
+}
+
+
+
+.absoluteDiv{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #017bb8;
+    top: 0;
+    left:0;
+    z-index: 1001;
+
+.newHeader{
+    background-color: #017cb8;
+    padding: 15px 0;
+    text-align: center;
+    position: relative;
+    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    p{
+        margin: 0;
+        color: #fff;
+        font-size: 17px;
+    text-align: center;
+    font-family: 'Conv_Segoe-Print_39952';
+    }
+}
+// .closeBtn{
+//     position: absolute;
+//     width: 15px;
+//     height: 15px;
+//     background-image: url(../assets/images/closeIcon.png);
+//     background-size: cover;
+//     padding: 0;
+//     margin: 0;
+//     background-color: transparent;
+//     text-indent: -999999px;
+//     right: 24px;
+//     top: 24px;
+// }
+.closeBtn{
+    position: absolute;
+    width: 26px;
+    height: 19px;
+    background-image: url(../assets/images/arrowBk.png);
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    text-indent: -999999px;
+    left: 24px;
+    top: 20px;
+}
+.check_box{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    li{
+        position: relative;
+        padding: 10px;
+        align-items: center;
+        label{
+            color: #ffffff;
+            font-family: 'Conv_Poppins-Regular';
+            display: flex;
+            align-items: center;
+        }
+    }
+    li:before{
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background-image: url(../assets/images/borderImg.png);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        bottom: 0px;
+        left: 0;
+    }
+}
+.bodySection{
+    padding: 16px;
+    overflow: auto;
+    height: 100%;
+    padding-bottom: 80px;
+}
+
+}
+
+
+.loginBtn{
+    background-color: #ffffff;
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 14px 0;
+    color: #242424;
+    position: relative;
+    font-family: 'Conv_Poppins-Regular';
+    position: relative;
+    margin-top: 20px;
+}
+
+
+
+//radio btn start
+
+input[type=radio   ]:not(old) + label > span{
+    display          : inline-block;
+    width: 14px;
+    height: 14px;
+    margin           : 0.25em 0.5em 0.25em 0.25em;
+    border           : 2px solid #d4d4d4;
+    background       : transparent;
+    vertical-align   : bottom;
+    border-radius    :50%;
+  }
+  input[type=radio]:not(old):checked +  label > span > span{
+    display: block;
+    width: 7px;
+    height: 7px;
+    margin: 0.1em;
+    border-radius: 50%;
+    background: #fff;
+  }
+//radio btn end
+
+.clearFilter{
+    text-align: right;
+    padding-top: 15px;
+    button{
+        background-color: transparent;
+        color: #fff;
+        font-family: 'Conv_Poppins-Regular';
+        font-size: 14px;
+    }
+}
+
+.topDiv{
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+   }
+
+   .logo{
+    width: 120px;
+   margin: 0 auto;
+   position: relative;
+   background-image: url(../assets/images/logoBg.png);
+   background-size: cover;
+   padding: 5px;
+   height: 120px;
+    span{
+    display: block;
+    width: 100%;
+    height: 100%;
+    }
+   }
+
+.Clffltr{
+  position: absolute;
+  display: inline-block;
+  right: 16px;
+  top: 23px;
+  color: #fff;
+  font-size: 14px;
+}
+
+@media(min-width:768px){
+    .logo{
+        width: 150px;
+        height: 150px;
+      }
+    .loginBtn{
+        padding: 20px 0;
+        font-size: 26px;
+        margin-top: 50px;
+    }
+    .loanOption{
+        p{
+            font-size: 24px;
+        }
+    }
+    .rightArrow{
+        width: 33px;
+        height: 24px;
+    }
+     .loanOption{
+        li{
+            padding: 27px 32px 38px
+        }
+    }
+    //absolute div start
+    input[type=checkbox]:not(old) + label > span{
+        width: 19px;
+        height: 19px;
+        margin-right: 24px;
+    }
+    .absoluteDiv{
+        .check_box{
+            li{
+                padding: 27px 32px 38px;
+                label{
+                   font-size: 24px;
+                }
+            }
+        }
+    }
+    input[type=checkbox]:not(old):checked + label > span:before{
+        font-size: 16px;
+    }
+    input[type=radio]:not(old) + label > span{
+        width: 19px;
+        height: 19px;
+        margin-right: 24px;
+    }
+    input[type=radio]:not(old):checked + label > span > span{
+        width: 11px;
+        height: 11px;
+    }
+     //absolute div end
+}
+
+
+}

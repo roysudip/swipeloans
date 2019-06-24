@@ -1,0 +1,89 @@
+page-favourites {
+.contentDiv{
+    padding: 16px;
+}
+.thumpImg{
+
+    margin: 0 auto;
+    line-height: 0;
+    a {
+      display: inline-block;
+      // img{
+      //   width: auto;
+      //   height: 100px;
+      // }
+    }
+}
+.lftThumpWrapper{
+    border: 1px solid #c4c5c5;
+    position: relative;
+    margin-bottom: 15px;
+    background-color: rgba(1,124,184,0.5);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 160px;;
+}
+.like {
+    width: 30px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+}
+.interestRate{
+    display: inline-block;
+    background-image: url(../assets/images/rateBg.png);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px 10px 5px 50px;
+    background-size: 100%;
+    color: #a2febd;
+    font-family: 'Conv_Poppins-Light';
+    font-size: 12px;
+}
+
+.addToFav{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  text-align: right;
+  span{
+  display: block;
+  color: #fff;
+  font-size: 10px;
+  font-family: 'Conv_Poppins-Regular';
+  line-height: 10px;
+  }
+ }
+ .like {
+  width: 30px;
+
+  background-color: transparent;
+ }
+
+    @media(min-width:768px){
+
+    .lftThumpWrapper{
+        // min-height: 217px;
+        margin-bottom: 15px;
+        height: 360px;
+    }
+     .like{
+        width: 35px;
+        top: 20px;
+       right: 20px;
+    }
+    .interestRate{
+        font-size: 19px;
+        padding: 10px 26px 10px 100px;
+    }
+    }
+
+
+
+
+ }

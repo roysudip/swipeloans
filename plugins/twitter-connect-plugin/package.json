@@ -1,0 +1,62 @@
+{
+  "_from": "git+https://github.com/chroa/twitter-connect-plugin.git",
+  "_id": "twitter-connect-plugin@0.6.0",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/twitter-connect-plugin",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "https://github.com/chroa/twitter-connect-plugin",
+    "rawSpec": "https://github.com/chroa/twitter-connect-plugin",
+    "saveSpec": "git+https://github.com/chroa/twitter-connect-plugin.git",
+    "fetchSpec": "https://github.com/chroa/twitter-connect-plugin.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "git+https://github.com/chroa/twitter-connect-plugin.git#7c66db59cf1821efdce6d59fa163c5f70585b316",
+  "_spec": "https://github.com/chroa/twitter-connect-plugin",
+  "_where": "/opt/Ionic/ionic-2/Subhomoy/swipeloans",
+  "author": {
+    "name": "Nathan Kerr"
+  },
+  "bugs": {
+    "url": "https://github.com/ManifestWebDesign/twitter-connect-plugin/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "twitter-connect-plugin",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "Twitter Connect Plugin - Allows single-sign on logins using Twitter",
+  "engines": [
+    {
+      "name": "cordova-android",
+      "version": ">3.9.9"
+    }
+  ],
+  "homepage": "https://github.com/ManifestWebDesign/twitter-connect-plugin#readme",
+  "keywords": [
+    "cordova",
+    "twitter",
+    "login",
+    "connect",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "license": "Apache 2.0",
+  "name": "twitter-connect-plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ManifestWebDesign/twitter-connect-plugin.git"
+  },
+  "version": "0.6.0"
+}

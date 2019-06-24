@@ -1,0 +1,20 @@
+var mongoose = require('mongoose');
+var validate = require('validate');
+var mongoosePaginate = require('mongoose-paginate');
+var Schema = mongoose.Schema;
+
+var AnswersSchema = new Schema({
+    question: {type: String, default: null},
+    ques_id: {type: Schema.Types.ObjectId, ref: 'Question', required: true},
+    user_idfk: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+    options: [{
+        optid: {type: String, default: null},
+        ans: {type: String, default: null},
+        opt_name: {type: String, default: null}
+    }]
+},{
+    timestamps: true,        // will automatically add createdAt and updatedAt
+    typecast: true
+});
+AnswersSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('Answer', AnswersSchema);

@@ -1,0 +1,4 @@
+#Thu May 16 12:00:52 IST 2019
+base.0=/opt/Ionic/ionic-2/Subhomoy/swipeloans/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0
+renamed.0=classes.dex
+file.0=/opt/Ionic/ionic-2/Subhomoy/swipeloans/platforms/android/app/build/intermediates/transforms/dexMerger/debug/0/classes.dex

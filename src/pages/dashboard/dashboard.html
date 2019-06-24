@@ -1,0 +1,64 @@
+<ion-header>
+    <ion-navbar>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+
+          <ion-title>Search, Favourite & Apply </ion-title>
+    </ion-navbar>
+  </ion-header>
+<ion-content >
+  <div class="topDiv">
+    <div class="rangeSlider">
+      <div class="toggleInput">
+          <ion-label> Loan Amount</ion-label>
+          <ion-input  type="tel" [(ngModel)]='loan.min_value' name='min_value' placeholder="400,000" (keyup)='searchloanvalue($event)' class="dollar_cal" [brmasker]="{numberAndTousand: true, thousand: ','}"></ion-input>
+      </div>
+      <button class="search_Btn " (click)="openfilterpage()">
+         <span>Filter</span>
+ <span class="filterCounter" *ngIf="count_filter" >{{count_filter}}</span>
+      </button>
+    </div>
+  </div>
+
+  <!---<div class="btmDiv" *ngIf="FilterFullSelectedIDs && FilterFullSelectedIDs.length>0" >
+      <ng-container *ngFor="let FilterItem of FilterFullSelectedIDs; let i=index" >
+         <button *ngIf="i<6">{{FilterItem.value}}</button>
+       </ng-container>
+    <div><span (click)="openfilterpage()">More Filter</span></div>
+  </div>-->
+
+  <div class="dashboardBottomDiv">
+        <div class="contentDiv">
+      <div *ngIf="loan.loan_list?.length>0; else other_content">
+                    <div class="slider" *ngFor="let n of loan.loan_list; let n =index">
+                          <div class="lftThumpWrapper"  >
+                          <div  class="thumpImg">
+                            <a href="javascript:void(0)" (click)="redirecttodetailspage(n.loans_details._id,n.loans_details.bank_logo,n.loan_fav)">
+                              <img *ngIf='n.loans_details.bank_logo' src="{{BaseUrl}}/{{n.loans_details.bank_logo}}">
+                            </a>
+                          </div>
+
+                            <span class="interestRate" (click)="redirecttodetailspage(n.loans_details._id,n.loans_details.bank_logo,n.loan_fav )">{{n.loans_details.loan_title}} {{n.loans_details.inerest_rate}}%</span>
+                            <div class="addToFav enable" *ngIf="n.loan_fav == 'no'" (click)="savefavourite(n.loans_details._id)">
+                              <button class="like " ><img src="assets/images/like.png"></button>
+                              <span>Add To <br>Favorites</span>
+                          </div>
+                          <div  class="addToFav enable" *ngIf="n.loan_fav == 'yes'" (click)="savefavourite(n.loans_details._id)">
+                              <button class="like " ><img src="assets/images/fav.png"></button>
+                          </div>
+                            </div>
+
+                    </div>
+      </div>
+    </div>
+                <ng-template #other_content>
+
+                  </ng-template>
+
+        </div>
+
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+</ion-content>

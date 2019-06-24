@@ -1,0 +1,154 @@
+var Faq = require('../../schema/faqs');
+var config = require('../../config');
+var secretKey = config.secret;
+var jwt = require('jsonwebtoken');
+var async = require("async");
+var FaqService = {
+    //add faq by admin
+    createFaqAdmin: function (faq, adminDet, callback) {
+        var faqData = new Faq(faq);
+        faqData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "FAQ saved successfully." });
+            }
+        });
+    },
+    //update faq by admin
+    update: function (faqid, faqdata, adminDet, callback) {
+        Faq.findById(faqid, function (err, faq) {
+            if (err) {
+                callback({ success: false, message: "Invalid FAQ id.", err: err });
+            } else {
+                if (faq.question != faqdata.question)
+                    faq.question = faqdata.question;
+                if (faq.answer != faqdata.answer)
+                    faq.answer = faqdata.answer;
+                if (faq.is_active != faqdata.is_active)
+                    faq.is_active = faqdata.is_active;
+                if (faq.youtube != faqdata.youtube)
+                faq.youtube = faqdata.youtube;
+                // if (faq.type != faqdata.type)
+                //     faq.type = faqdata.type;
+                faq.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "FAQ has been updated.", faqid: faqid });
+                    }
+                });
+            }
+        });
+    },
+    //delete faq
+    delete: function (faqid, callback) {
+        Faq.findOne({ _id: faqid }, function (err, faq) {
+            if (faq) {
+                Faq.remove({ _id: faqid }, function (err) {
+                    if (err) {
+                        callback({ success: false, message: err });
+                    } else {
+                        callback({ success: true, message: "FAQ has been deleted." });
+                    }
+                });
+            } else {
+                callback({ success: false, message: "Invalid FAQ id." });
+            }
+        });
+    },
+    //all faq
+    getAllFaqs: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        if (params.page) {
+            page = parseInt(params.page);
+        }
+        if (params.limit) {
+            limit = parseInt(params.limit);
+        }
+        async.waterfall([
+            function (nextcb) {
+                Faq.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, faqs) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, faqs);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, faqs: result });
+                }
+            });
+    },
+    //faq details by id
+    getDetailsById: function (faqId, callback) {
+        Faq.findOne({ _id: faqId })
+            .populate('introducer_id')
+            .exec(function (err, faq) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, faq: faq });
+                }
+            });
+    },
+    //change faq status
+    changeStatus: function (faq_id, status, callback) {
+        var query = { _id: faq_id },
+            fields = { is_active: status },
+            options = { upsert: false };
+        Faq.update(query, fields, options, function (err, affected) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "FAQ " + ((status == 'yes') ? "activated" : "deactivated") });
+            }
+        });
+    },
+    getFaq: function (params, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            query = {};
+        if (params.page) {
+            page = parseInt(params.page);
+        }
+        if (params.limit) {
+            limit = parseInt(params.limit);
+        }
+        async.waterfall([
+            function (nextcb) {
+                query = { is_active: true };
+                Faq.paginate(query, { sort: { sort_field: -1 }, page: page, limit: limit }, function (err, faqs) {
+                    if (err) {
+                        nextcb(err);
+                    }
+                    else {
+                        nextcb(null, faqs);
+                    }
+                });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, faqs: result });
+                }
+            });
+    }
+};
+module.exports = FaqService;

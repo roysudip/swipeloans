@@ -1,0 +1,73 @@
+reportModule.controller('reportController', reportController);
+reportController.$inject = ['$timeout', 'reportFactory', 'commonFactory'];
+function reportController($timeout, reportFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.reports = {};
+    vm.report_length = '';
+    vm.errorMessage = {};
+    vm.countries = [];
+    var emailPattern = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    var name_content = /^[A-Za-z0-9' ]*$/;
+    var content = /^[A-Za-z0-9',&()/ ]*$/;
+    var mob_length = /^.{6,}$/;
+    var obj = {};
+
+    //get all user list
+    vm.getallReports = function () {
+        reportFactory.getAllReports()
+            .success(function (data) {
+                console.log(data);
+                vm.report_length = data.reports.length;
+                if (data.reports && data.reports.length > 0) {
+                    vm.reports = data.reports;
+                } else {
+                    vm.reports = {};
+                }
+            });
+    };
+    vm.getallReports();
+
+    vm.setPropertyReportId= function(reportid){
+        vm.currentReportId = reportid;
+    }
+
+    vm.deletePropertyReport= function(){
+        reportFactory.deleteReport(vm.currentReportId).success(function(data){
+            //console.log(data);
+            if (data.success) {
+                vm.statusMessage.error = false;
+                vm.statusMessage.success = true;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmDelete').modal('hide');
+                vm.getallReports();
+
+            } else {
+                vm.statusMessage.success = false;
+                vm.statusMessage.error = true;
+                vm.statusMessage.onModal = true;
+            }
+            vm.statusMessage.content = data.message;
+
+        });
+    }
+
+    vm.statusMessage = {
+        success: false,
+        error: false,
+        content: "",
+        onModal: false
+    };
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+
+}
+

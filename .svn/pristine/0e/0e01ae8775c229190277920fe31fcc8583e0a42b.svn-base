@@ -1,0 +1,220 @@
+faqModule.controller('faqController', faqController);
+faqController.$inject = ['$timeout', 'faqFactory', 'commonFactory'];
+function faqController($timeout, faqFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.faqs = {};
+    vm.faq_length = '';
+    vm.errorMessage = {};
+
+    //all faq list
+    vm.getAllFaqs = function () {
+        faqFactory.getAllFaqs()
+            .success(function (data) {
+                vm.faq_length = data.faqs.length;
+                if (data.faqs && data.faqs.length > 0) {
+                    vm.faqs = data.faqs;
+                } else {
+                    vm.faqs = {};
+                }
+            });
+    };
+    vm.getAllFaqs();
+
+    vm.currentFaqId = 0;
+    vm.currentFaqStat = null;
+    vm.statusMessage = {
+        success: false,
+        error: false,
+        content: "",
+        onModal: false
+    };
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+    vm.toggleFaqStat = function (event, index) {
+        vm.currentFaqId = event.currentTarget.attributes['data-faqid'].value;
+        vm.currentFaqStat = event.currentTarget.getAttribute('data-status');
+        vm.doToggleFaqStatus(index);
+    };
+    vm.doToggleFaqStatus = function (index) {
+        if (vm.currentFaqId != 0 && vm.currentFaqStat != null) {
+            console.log(vm.currentFaqStat);
+            faqFactory.changeFaqStatus(vm.currentFaqId, vm.currentFaqStat)
+                .then(function (response) {
+                    if (response.data.success) {
+                        vm.statusMessage.success = true;
+                        for (var i = 0; i < vm.faqs.length; i++) {
+                            if (i == index) {
+                                vm.faqs[i].is_active = ((vm.currentFaqStat == 'yes') ? 'no' : 'yes');
+                                continue;
+                            }
+                        }
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                    } else {
+                        vm.statusMessage.error = true;
+                    }
+                    vm.statusMessage.content = response.data.message;
+                });
+        }
+    };
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+    vm.resetFaqData = function () {
+        vm.faqData = {
+            question: "",
+            answer: "",
+            is_active: "yes"
+        };
+    };
+    vm.resetFaqData();
+
+    //open add modal
+    vm.addNewFaqModal = function () {
+        vm.isUpdate = false;
+        vm.resetFaqData();
+        $('#saveFaq').modal('show');
+    };
+
+    //open update modal
+    vm.showUpdateModal = function (faq_id) {
+        faqFactory.getFaqDetailsById(faq_id).success(function (data) {
+            console.log(data);
+            if (data.success == true) {
+                vm.faqData = {
+                    question: data.faq.question,
+                    answer: data.faq.answer,
+                    youtube: data.faq.youtube,
+                    is_active: data.faq.is_active,
+                    type: data.faq.type,
+                    createdAt: data.faq.createdAt
+                };
+                vm.currentFaqId = data.faq._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#saveFaq').modal('show');
+    };
+
+    //open view modal
+    vm.showDetailsModal = function (faq_id) {
+        faqFactory.getFaqDetailsById(faq_id).success(function (data) {
+            console.log(data);
+            if (data.success == true) {
+                vm.faqData = {
+                    question: data.faq.question,
+                    answer: data.faq.answer,
+                    youtube: data.faq.youtube,
+                    is_active: data.faq.is_active,
+                    createdAt: data.faq.createdAt
+                };
+                vm.currentFaqId = data.faq._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#vewFaq').modal('show');
+    };
+
+    //add/update faq
+    vm.saveFaq = function () {
+        vm.clearStatusMessage();
+        if (vm.isUpdate && vm.currentFaqId != 0) {
+            if (vm.faqData.question == '' || vm.faqData.question == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.question = 'please enter question.';
+            } else if (vm.faqData.answer == '' || vm.faqData.answer == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.answer = 'please enter answer.';
+            } else {
+                vm.errorMessage = {};
+                //console.log(vm.faqData); return false;
+                faqFactory.updateFaq(vm.currentFaqId, vm.faqData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            $('#saveFaq').modal('hide');
+                            vm.getAllFaqs();
+                        } else {
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.onModal = true;
+                        }
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        } else {
+            if (vm.faqData.question == '' || vm.faqData.question == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.question = 'please enter question.';
+            } else if (vm.faqData.answer == '' || vm.faqData.answer == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.answer = 'please enter answer.';
+            } else {
+                vm.errorMessage = {};
+                faqFactory.saveFaq(vm.faqData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            vm.resetFaqData();
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            $('#saveFaq').modal('hide');
+                            vm.getAllFaqs();
+                        } else {
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.onModal = true;
+                        }
+
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+
+        }
+    };
+    vm.setCurrentFaqId = function (faqid) {
+        vm.currentFaqId = faqid;
+    };
+
+    //delete faq
+    vm.deleteFaq = function () {
+        console.log(vm.currentFaqId);
+        faqFactory.deleteFaq(vm.currentFaqId)
+            .success(function (data) {
+                console.log(data);
+                if (data.success) {
+                    vm.statusMessage.error = false;
+                    vm.statusMessage.success = true;
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                    $('#confirmDelete').modal('hide');
+                    vm.getAllFaqs();
+
+                } else {
+                    vm.statusMessage.success = false;
+                    vm.statusMessage.error = true;
+                    vm.statusMessage.onModal = true;
+                }
+                vm.statusMessage.content = data.message;
+            });
+    };
+}
+

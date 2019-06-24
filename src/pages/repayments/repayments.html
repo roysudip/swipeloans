@@ -1,0 +1,97 @@
+
+<ion-header>
+  <ion-navbar>
+      <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Loan Repayment Calculator</ion-title>
+      <span navPop class="clo_se"></span>
+  </ion-navbar>
+</ion-header>
+<ion-content class="bgClass">
+  <div class="section-1">
+      <ion-grid class="customPrice">
+          <ion-row class="custom-price-row">
+            <ion-col col class="custom-price-left">
+              <ion-label>Loan Amount</ion-label>
+              <div class="toggleInput">
+               <ion-input type="tel" class="dollar_cal" [(ngModel)]='repay.amount' name='amount' placeholder="400,000" [brmasker]="{numberAndTousand: true, thousand: ','}"></ion-input>
+              </div>
+
+            </ion-col>
+
+          </ion-row>
+
+        </ion-grid>
+  </div>
+  <div class="section-1 section-2">
+
+      <ion-grid class="customPrice">
+          <ion-row class="custom-price-row">
+            <ion-col col class="custom-price-left">
+              <ion-label>Loan Term</ion-label>
+              <div class="toggleInput">
+               <ion-input type="number" class="years_cal" [(ngModel)]='repay.year' (keyup)='CheckLoanYear($event)' name='year' placeholder="30" ></ion-input>
+              </div>
+
+            </ion-col>
+            </ion-row>
+            </ion-grid>
+  </div>
+
+  <div class="section-1 section-2">
+
+    <ion-grid class="customPrice">
+        <ion-row class="custom-price-row">
+          <ion-col col class="custom-price-left">
+            <ion-label>Interest Rate</ion-label>
+            <div class="toggleInput">
+              <ion-input type="number" class="interest_cal"  min="0" max="15" [(ngModel)]="repay.interestrate" (keyup)='CheckInterestRate($event)' placeholder="3.99" ></ion-input>
+            </div>
+
+          </ion-col>
+          </ion-row>
+          </ion-grid>
+</div>
+
+
+<div class="bottomSection">
+
+      <div class="weeklyPayment">
+          <span class="paymentText">Interest Only</span>
+          <span class="radioBtn">
+              <input id="radio1" type="radio" name="radio1" value="yes" checked="checked" [(ngModel)]="repay.intonly" >
+              <label for="radio1"><span><span></span></span>Yes
+                </label>
+                <input id="radio2" type="radio" name="radio1" value="no" [(ngModel)]="repay.intonly">
+                <label for="radio2"><span><span></span></span>No
+                </label>
+          </span>
+        </div>
+        <div class="bottomButtan">
+            <button (click)="loanpaymentcalc()">calculate</button>
+        </div>
+
+        <div class="weeklyPayment">
+          <span class="paymentText">Monthly</span>
+          <span  class="dollar_cal2">
+            <input type="text"   [(ngModel)]="repay.monthlypayval" readonly>
+
+          </span>
+        </div>
+
+        <div class="weeklyPayment">
+          <span class="paymentText">Fortnightly</span>
+          <span  class="dollar_cal2">
+            <input type="text"   [(ngModel)]="repay.fortnightlypayval" readonly>
+            </span>
+        </div>
+
+        <div class="weeklyPayment">
+          <span class="paymentText">Weekly</span>
+          <span  class="dollar_cal2">
+            <input type="text"  [(ngModel)]="repay.weeklypayval" readonly>
+            </span>
+        </div>
+</div>
+</ion-content>

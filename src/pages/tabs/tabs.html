@@ -1,0 +1,16 @@
+<ion-tabs slectedIndex='1'>
+  <ion-tab [root]="tab1Root" tabTitle="Search" tabIcon="search"></ion-tab>
+  <ion-tab [root]="tab2Root" tabTitle="Favourite" tabIcon="information-circle"></ion-tab>
+  <ion-tab  tabIcon="settings" (click)='FacebookMsg()' (ionSelect)='FacebookMsg()'></ion-tab>
+  <ion-tab  [root]="tab4Root" tabTitle="Msg" tabIcon="mic" tabBadge="{{unreadMsg}}"> </ion-tab>
+  <ion-tab [root]="tab5Root" tabTitle="More" tabIcon="contacts"></ion-tab>
+
+</ion-tabs>
+
+<!-- <ion-tabs>
+  <ion-tab [root]="tab1Root" class="searchIcon"></ion-tab>
+  <ion-tab [root]="tab2Root" class="favIcon"></ion-tab>
+  <ion-tab [root]="tab3Root" class="chatIcon"></ion-tab>
+  <ion-tab [root]="tab3Root" class="msgIcon"></ion-tab>
+  <ion-tab [root]="tab3Root" class="toggleIcon"></ion-tab>
+</ion-tabs> -->

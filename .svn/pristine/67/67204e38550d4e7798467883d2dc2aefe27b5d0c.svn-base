@@ -1,0 +1,115 @@
+var express = require('express');
+var path = require('path');
+var cors = require('cors');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var helmet = require('helmet');
+var session = require('express-session');
+var compression = require('compression');
+const fileUpload = require('express-fileupload');
+var app = express();
+app.use(fileUpload());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,enctype");
+  next();
+});
+
+/****
+ * Helmet can help protect your app from some well-known web 
+ * vulnerabilities by setting HTTP headers appropriately
+ */
+app.use(helmet());
+/****
+ * Gzip compressing can greatly decrease the size of the response
+ * body and hence increase the speed of a web app
+ */
+app.use(compression());
+app.use(cors());
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(fileUpload());
+app.use(express.static(path.join(__dirname, 'public')));
+// bower components
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
+var timeOut = 60 * 10000;
+app.use(cookieParser('21432432432fsdf32432'));
+app.use(session({
+    secret: '21432432432fsdf32432',
+    cookie: {maxAge: timeOut},
+    proxy: true,
+    resave: true,
+    saveUninitialized: true
+}));
+
+var index = require('./routes/index');
+app.use('/', index);
+
+var admin = require('./routes/admin/adminRoutes');
+app.use('/webcontrol', admin);
+
+var adminCmsRoutes = require('./routes/admin/adminCmsRoutes');
+app.use('/webcontrol/cms', adminCmsRoutes);
+
+var adminFaqRoutes = require('./routes/admin/adminFaqRoutes');
+app.use('/webcontrol/faqs', adminFaqRoutes);
+
+var adminUserRoutes = require('./routes/admin/adminUserRoutes');
+app.use('/webcontrol/user', adminUserRoutes);
+
+var adminLoanRoutes = require('./routes/admin/adminLoanRoutes');
+app.use('/webcontrol/loan', adminLoanRoutes);
+
+var adminQuestionRoutes = require('./routes/admin/adminQuestionRoutes');
+app.use('/webcontrol/question', adminQuestionRoutes);
+
+var adminReportRoutes = require('./routes/admin/adminReportRoutes');
+app.use('/webcontrol/report', adminReportRoutes);
+
+//Webservice Router
+var apiUserRoutes = require('./routes/api/apiUserRoutes');
+app.use('/api/user', apiUserRoutes);
+
+var apiCmsRoutes = require('./routes/api/apiCmsRoutes');
+app.use('/api/cms', apiCmsRoutes);
+
+var apiLoanRoutes = require('./routes/api/apiLoanRoutes');
+app.use('/api/loan', apiLoanRoutes);
+
+var apiReportRoutes = require('./routes/api/apiReportRoutes');
+app.use('/api/report', apiReportRoutes);
+
+// Router for question
+var apiQuestionRoutes = require('./routes/api/apiQuestionRoutes');
+app.use('/api/question', apiQuestionRoutes);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err); 
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;

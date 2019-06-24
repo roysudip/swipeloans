@@ -1,0 +1,146 @@
+<!--
+  Generated template for the MoreinformationPage page.
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>More Information</ion-title>
+    <span navPop class="clo_se"></span>
+  </ion-navbar>
+</ion-header>
+<ion-content padding  >
+    <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher> -->
+    <div class="loan-details-wrap" id="ShareDiv" >
+       <div class="slider" >
+        <div class="lftThumpWrapper"  >
+          <div  class="thumpImg" [ngStyle]="{background: 'url(' + BankLogo + ')'}" >
+              <!-- <img src="assets/images/ingBank.png" alt="">
+              <img *ngIf="BankLogo" src="{{base_url}}/{{BankLogo}}">-->
+
+          </div>
+          <span class="interestRate" >{{loan.loan_title}} {{loan.inerest_rate}}%</span>
+
+          <!-- <button class="like enable"  *ngIf="!loan_Fav" (click)='savefavourite(loan._id)'><img src="assets/images/like.png"></button>
+          <button class="like enable"  *ngIf="loan_Fav" (click)='savefavourite(loan._id)'><img src="assets/images/fav.png"></button> -->
+
+          <div class="addToFav enable" *ngIf="!loan_Fav"  (click)="savefavourite(loan._id)">
+              <button class="like " ><img src="assets/images/like.png"></button>
+              <span>Add To <br>Favorites</span>
+          </div>
+          <div  class="addToFav enable"  *ngIf="loan_Fav" (click)="savefavourite(loan._id)">
+              <button class="like " ><img src="assets/images/fav.png"></button>
+          </div>
+        </div>
+    </div>
+
+    <div class="featureDiv">
+      <div class="share" (click)='ShareMe()'>
+        <span></span>
+        <p>Share</p>
+      </div>
+          <h6>Features</h6>
+         <ul >
+            <li class="justifyCss-1"  *ngFor="let lf of SelectedFeatures">
+              <p>{{lf.fName | titlecase}}</p>
+
+              <span *ngIf="lf.fSelected == 'Yes'" class="rightImg" [ngStyle]="{'background-image': 'url(assets/images/checkBoxRight.png)'}"> </span>
+              <span *ngIf="lf.fSelected == 'No'" class="rightImg" [ngStyle]="{'background-image': 'url(assets/images/checkBoxCross.png)'}"> </span>
+            </li>
+         </ul>
+    </div>
+
+
+    <div class="btnWrapper">
+        <button class="btn_style" (click)='MoreInfoLoan(loan._id)'>Request a free info pack on this loan</button>
+    </div>
+
+    <div class="featureDiv">
+        <h6>Set up Fees</h6>
+       <ul>
+          <li>
+            <div class="flexCss">
+                <p>Establishment fee : <span> ${{loan.establishment_fees}}</span></p>
+                <span class="mayApply"></span>
+            </div>
+          </li>
+          <li>
+              <p>Settlement fee : <span> ${{loan.setup_fees}}</span></p>
+            </li>
+       </ul>
+  </div>
+
+  <div class="featureDiv">
+      <h6>Ongoing Fees</h6>
+     <ul>
+        <li>
+          <div class="flexCss">
+              <p>Annual package fee : <span> ${{loan.annual_fees}}</span></p>
+              <span class="mayApply"></span>
+          </div>
+        </li>
+        <li>
+            <p>Monthly fee  : <span> ${{loan.monthly_fees}}</span></p>
+          </li>
+     </ul>
+</div>
+<div class="bottom-div">
+    <p class="lvrRate" *ngIf="loan.lvr && loan.lvr.ratio" >Maximum LVR: <span>{{loan.lvr.ratio}}</span></p>
+  <p class="comparisonRate">Comparison Rate : <span>{{loan.comparsion_rate}}%</span></p>
+    <div>
+  <div class="repaymentSection">
+    <h5>Repayment: <span class="perFortNight" *ngIf="repay.calresultval">${{repay.calresultval}} per month  </span> </h5>
+
+    <div class="rp-wrap">
+        <!-- <ion-item>
+            <ion-label >Loan Amount : </ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+          <ion-item>
+              <ion-label >Term : </ion-label>
+              <ion-input></ion-input>
+            </ion-item> -->
+            <div class="input_div">
+            <div class="rgtInput">
+                <ion-label >Loan Amount : </ion-label>
+                <ion-input type="tel" [(ngModel)]='repay.amount' name='amount' placeholder="400,000" class="dollar_cal" [brmasker]="{numberAndTousand: true, thousand: ','}"
+                ></ion-input>
+            </div>
+            <div class="rgtInput">
+                <ion-label >Term : </ion-label>
+                <ion-input type="number" [(ngModel)]='repay.year' name='year' placeholder="30" class="years_cal" (keyup)='CheckLoanYear($event)'
+                ></ion-input>
+            </div>
+
+            <div class="rgtInput">
+              <ion-label >Interest Only: </ion-label>
+              <ion-select [(ngModel)]="repay.intonly">
+
+                <ion-option value="0" selected>No</ion-option>
+                <ion-option value="1">Yes</ion-option>
+              </ion-select>
+          </div>
+            </div>
+            <div style="text-align: center">
+            <button class="btn_style2 calculate_btn" (click)="loanpaymentcalc()">Calculate</button>
+
+            </div>
+    </div>
+
+
+    <button class="btn_style2" (click)="RedirectApplyLoanPage(loan._id)">Apply now</button>
+
+  </div>
+</div>
+
+  <button class="btn_style"  (click)="RedirectBookAppoinmentPage(loan._id)">Book appointment with a Broker</button>
+
+</div>
+</div>
+
+  </ion-content>

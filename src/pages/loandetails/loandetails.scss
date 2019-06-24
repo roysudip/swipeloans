@@ -1,0 +1,466 @@
+page-loandetails {
+  .loan-details-wrap{
+    background: #fff;
+  }
+    .back-button.show-back-button{
+        display: none;
+      }
+    .viderWrapper h3{
+        background-color: #f6f6f6;
+        padding: 8px 0;
+        margin: 0;
+        text-align: center;
+        font-size: 18px;
+        font-family: 'Avenir-Light';
+        color: #333131;
+    }
+    .videoDiv{
+        padding: 15px;
+    }
+    .videoBottom{
+        padding: 0 15px 15px;
+    }
+    .videoBottom h4{
+        margin: 0 ;
+        font-size: 16px;
+        color: #020202;
+        font-family: 'Avenir-Medium';
+        margin-bottom: 15px;
+        margin-top: 5px;
+    }
+    video,iframe{
+        border: 1px solid #d4d4d4;
+        width: 100%;
+    }
+    video{
+        height: 100%;
+    }
+    iframe{
+        height: 150px;
+    }
+    table{
+        width: 100%;
+    }
+    td{
+        padding: 4px 0;
+        color: #616060;
+        font-family: 'Avenir-Light';
+        font-size: 14px;
+    }
+    .lftTd{
+        width: 45%;
+        font-family: 'Avenir-Medium';
+        color: #020202;
+    }
+    .bottomTr td{
+        padding-top: 20px;
+    }
+    .bottomSection{
+        padding-top: 25px;
+        padding-bottom: 20px;
+    }
+    .bottomSection span{
+        display: inline-block;
+        width: 44%;
+        font-family: 'Avenir-Medium';
+        color: #020202;
+        font-size: 14px;
+    }
+
+
+
+
+
+
+
+//new css
+.lftThumpWrapper{
+    // border: 1px solid #000;
+    position: relative;
+    margin-bottom: 15px;
+    background-color: rgba(1,124,184,0.5);
+    border-radius: 5px;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.thumpImg{
+   // width: 140px;
+   margin: 0 auto;
+   line-height: 0;
+   background-size: 100% !important;
+   background-repeat: no-repeat !important;
+   width: 100%;
+   height: 150px;
+   background-position: center !important;
+    // img{
+    //   width: auto;
+    //   height: 100px;
+    // }
+}
+.interestRate{
+    display: inline-block;
+    background-image: url(../assets/images/rateBg.png);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px 10px 5px 50px;
+    background-size: 100%;
+    color: #a2febd;
+    font-family: 'Conv_Poppins-Light';
+    font-size: 12px;
+    border-bottom-right-radius: 5px;
+}
+
+
+
+.featureDiv{
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    position: relative;
+            .share{
+              span{
+                width: 30px;height: 30px;
+                background-size: 30px;
+                background-repeat: no-repeat;
+                display: inline-block;
+              background-image: url(../assets/images/shareIcon.png);
+              }
+              p{
+                margin: 0;
+                color: #022f63;
+                font-size: 12px;
+              }
+
+              position: absolute;
+              right: 15px;top: 20px;
+
+            }
+    h6{
+        font-family: 'Conv_Poppins-Medium';
+        font-size: 14px;
+        color: #242424;
+    }
+  ul{
+      padding: 0;
+      margin: 0;
+      list-style: none;
+  }
+  li{
+      display: flex;
+      display: -webkit-flex;
+      margin-bottom: 5px;
+      align-items: center;
+      p{
+          margin: 0;
+          font-size: 12px;
+          font-family: 'Conv_Poppins-Regular';
+          color: #464646;
+      span{
+          display: inline-block;
+          color: #1f9f44;
+          font-family: 'Conv_Poppins-Regular';
+      }
+      }
+      span.rightImg{
+          display: inline-block;
+          width: 15px;
+          height: 15px;
+          background-size: cover;
+          background-repeat: no-repeat;
+          margin-left: 10px;
+      }
+      span.mayApply{
+        display: inline-block;
+        color: #babbbc;
+        font-size: 12px;
+        font-family: 'Conv_Poppins-Regular';
+        margin-left: 8px;
+    }
+  }
+}
+.justifyCss{
+    justify-content: space-between;
+}
+.flexCss{
+    display: flex;
+    display: -webkit-flex;
+}
+.btnWrapper{
+    padding: 0 15px 15px 15px;
+}
+
+.btn_style{
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 10px;
+    padding: 14px 0;
+    color: #242424;
+    position: relative;
+    font-family: 'Avenir-Light';
+    position: relative;
+    border: 1px solid #e3e4e4;
+    border-bottom: 5px solid #7d7d7d;
+    color: #022f63;
+    font-family: 'Conv_Poppins-Medium';
+}
+
+.comparisonRate{
+    color: #242424;
+    font-family: 'Conv_Poppins-Regular';
+    font-size: 12px;
+    margin-top: 0px;
+    padding-top:0px;
+    span{
+        display: inline-block;
+        color: #1e9f43;
+    }
+}
+.lvrRate{
+  color: #242424;
+  font-family: 'Conv_Poppins-Regular';
+  font-size: 12px;
+  margin-bottom: 5px;
+padding-bottom:0px;
+  span{
+      display: inline-block;
+      color: #1e9f43;
+  }
+}
+.input_div{
+    display: flex;
+    justify-content: space-between;
+    .item{
+        padding-left: 0;
+    }
+    ion-label{
+        margin: 0;
+        color: #242424;
+        font-family: 'Conv_Poppins-Medium';
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+    .text-input,ion-select{
+        border: 1px solid #c4c5c5;
+        border-radius: 50px;
+        height: 35px;
+        font-size: 12px;
+        margin: 0;
+        padding-left: 10px;
+        font-size: 12px;
+        width: 100%;
+        max-width: 100%;
+    }
+    .rgtInput{
+       width: 32%;
+       position: relative;
+      //  margin-right: 10px;
+    }
+}
+.repaymentSection{
+    h5{
+        color: #242424;
+        font-family: 'Conv_Poppins-Medium';
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    .perFortNight{
+        color: #022f63;
+        font-family: 'Conv_Poppins-SemiBold';
+        font-size: 12px;
+        text-align: center;
+        margin-bottom: 0;
+    }
+}
+.btn_style2{
+    background-color: #000000;
+    width: 100%;
+    border-radius: 10px;
+    padding: 14px 0;
+    color: #242424;
+    position: relative;
+    font-family: 'Avenir-Light';
+    position: relative;
+    border: 1px solid #e3e4e4;
+    border-bottom: 5px solid #7d7d7d;
+    color: #8ad7fe;
+    font-family: 'Conv_Poppins-Medium';
+    margin-bottom: 15px;
+    margin-top: 20px;
+}
+
+
+.calculate_btn{
+    width: auto;
+    font-size: 10px;
+    margin-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding: 0 10px;
+    align-self: flex-end;
+    height: 35px;
+}
+.addToFav{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  text-align: right;
+  span{
+  display: block;
+  color: #fff;
+  font-size: 10px;
+  font-family: 'Conv_Poppins-Regular';
+  line-height: 10px;
+  }
+ }
+ .like {
+  width: 30px;
+
+  background-color: transparent;
+ }
+
+ .dollar_cal, .years_cal{
+  position: relative;
+
+  }
+  .years_cal:before{
+    content: "Years";
+    position: absolute;
+    width: 50px;
+    color:#000;
+    left: 30px;
+    top: 10px;
+    font-size: 12px;
+    }
+  .dollar_cal input.text-input {
+    padding-left: 20px;
+}
+  .dollar_cal:before{
+  content: "$";
+  position: absolute;
+  width: 50px;
+  color:#000;
+  left: 10px;
+  top: 10px;
+  font-size: 12px;
+  }
+
+  .select{
+    padding-top: 9px;
+    padding-bottom: 5px;
+  }
+
+  .bottom-div{
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+    @media(min-width:768px){
+        .lftThumpWrapper{
+            // min-height: 217px;
+
+            margin-bottom: 15px;
+        }
+         .like{
+            width: 35px;
+            top: 20px;
+           right: 20px;
+        }
+        .interestRate{
+            font-size: 19px;
+            padding: 10px 26px 10px 100px;
+        }
+        .featureDiv{
+            h6{
+                font-size: 24px;
+            }
+
+            li{
+                p{
+                    font-size: 20px;
+                }
+                span.mayApply{
+                    font-size: 20px;
+                }
+                span.rightImg{
+                    width: 19px;
+                    height: 19px;
+                }
+            }
+        }
+        .btn_style,.btn_style2{
+            font-size: 24px;
+            padding-top: 21px;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+        .comparisonRate{
+            font-size: 20px;
+            margin-bottom: 39px;
+
+        }
+        .repaymentSection{
+            h5{
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+            .perFortNight{
+                font-size: 20px;
+            }
+        }
+        .input_div {
+            ion-label{
+                font-size: 20px;
+            }
+            .text-input,ion-select{
+                font-size: 22px;
+                height: 58px;
+                padding-left: 20px;
+                margin-bottom: 15px;
+            }
+        }
+        .featureDiv{
+            padding: 30px;
+            margin-bottom: 30px;
+            li{
+                margin-bottom: 2px;
+            }
+        }
+        .btnWrapper{
+            padding: 0 35px 30px 35px;
+        }
+
+        .calculate_btn{
+            height: 58px;
+            margin: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .select .select-icon .select-icon-inner{
+          top: 14px;
+          left: 1px;
+        }
+       .years_cal:before{
+          left: 55px;
+          top: 17px;
+          font-size: 20px;
+        }
+        .dollar_cal:before{
+          left: 13px;
+          top: 17px;
+          font-size: 20px;
+        }
+      .dollar_cal input.text-input {
+          padding-left: 30px;
+      }
+     .input_div ion-select{
+       padding-top: 15px;
+     }
+    }
+}

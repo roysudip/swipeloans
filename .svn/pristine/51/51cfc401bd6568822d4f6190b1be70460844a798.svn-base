@@ -1,0 +1,177 @@
+loanModule.controller('lvrController', lvrController);
+lvrController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function lvrController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.lvrs = {};
+    vm.lvr_length = '';
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.loanData = {};
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //all lvr list
+    vm.getAlllvrs = function () {
+        loanFactory.getAlllvrs().success(function (data) {
+            vm.lvr_length = data.lvrs.length;
+            if (data.lvrs && data.lvrs.length > 0) {
+                vm.lvrs = data.lvrs;
+            } else {
+                vm.lvrs = {};
+            }
+        });
+    };
+    vm.getAlllvrs();
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+
+    //Open Modal for loan value ratio
+    vm.loanValueRatioModal = function () {
+        $('#saveloanValueRatio').modal('show');
+    }
+    //open update modal
+    vm.showUpdateModal = function (lvr_id) {
+        loanFactory.getlvrDetailsById(lvr_id).success(function (data) {
+            if (data.success == true) {
+                vm.loanData = {
+                    ratio: data.lvr.ratio
+                };
+                vm.currentLvrId = data.lvr._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#saveloanValueRatio').modal('show');
+    };
+    //Reset loan value ratio
+    vm.resetData = function () {
+        vm.loanData = {
+            ratio: "",
+            is_active: "yes"
+        };
+    };
+    //Add/Edit loan value ratio
+    vm.savelvr = function () {
+        if (vm.isUpdate && vm.currentLvrId != 0) {
+            if (vm.loanData.ratio == '' || vm.loanData.ratio == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.value = 'please enter loan value ratio.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.updateLvr(vm.currentLvrId, vm.loanData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            vm.resetData();
+                            $('#saveloanValueRatio').modal('hide');
+                            vm.getAlllvrs();
+                        } else {
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.onModal = true;
+                        }
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        } else {
+            if (vm.loanData.ratio == '' || vm.loanData.ratio == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.value = 'please enter loan value ratio.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.saveLvr(vm.loanData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            vm.resetData();
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            vm.getAlllvrs();
+                            $('#saveloanValueRatio').modal('hide');
+                        } else {
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.onModal = true;
+                        }
+
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        }
+    }
+
+    //Change Status
+    vm.toggleLvrStat = function (event, index) {
+        vm.currentLvrId = event.currentTarget.attributes['data-lvrid'].value;
+        vm.currentLvrStat = event.currentTarget.getAttribute('data-status');
+        vm.doToggleLvrStatus(index);
+    };
+    vm.doToggleLvrStatus = function (index) {
+        if (vm.currentLvrId != 0 && vm.currentLvrId != null) {
+            loanFactory.changeLvrStatus(vm.currentLvrId, vm.currentLvrStat).then(function (response) {
+                if (response.data.success) {
+                    vm.statusMessage.error = false;
+                    vm.statusMessage.success = true;
+                    vm.lvrs[index].is_active = ((vm.currentLvrStat == 'yes') ? 'no' : 'yes');
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                } else {
+                    vm.statusMessage.error = true;
+                    vm.statusMessage.success = false;
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                }
+                vm.statusMessage.content = response.data.message;
+            });
+        }
+    };
+    //delete lvr by id
+    vm.deleteLvr = function () {
+        loanFactory.deleteLvr(vm.currentLvrId).success(function (data) {
+            if (data.success) {
+                vm.statusMessage.error = false;
+                vm.statusMessage.success = true;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmLvrDelete').modal('hide');
+                vm.getAlllvrs();
+
+            } else {
+                vm.statusMessage.success = false;
+                vm.statusMessage.error = true;
+                vm.statusMessage.onModal = false;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmLvrDelete').modal('hide');
+                vm.getAlllvrs();
+            }
+            vm.statusMessage.content = data.message;
+        });
+    };
+    //Set lvr id
+    vm.setCurrentLvrId = function (lvrid) {
+        vm.currentLvrId = lvrid;
+    };
+}
+

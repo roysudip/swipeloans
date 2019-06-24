@@ -1,0 +1,1504 @@
+var Lvr = require('../../schema/lvrs');
+var LoanType = require('../../schema/loanType');
+var LoanFeature = require('../../schema/loanFeature');
+var Lender = require('../../schema/lender');
+var Loan = require('../../schema/loan');
+var Favorite = require('../../schema/favorite');
+var config = require('../../config');
+var secretKey = config.secret;
+var jwt = require('jsonwebtoken');
+var async = require("async");
+var intersection = require('array-intersection');
+var asyncLoop = require('node-async-loop');
+
+/**
+ * Sort on 
+ */
+function sortOn (arr, prop) {
+    arr.sort (
+        function (a, b) {
+            if (a[prop] < b[prop]){
+                return -1;
+            } else if (a[prop] > b[prop]){
+                return 1;
+            } else {
+                return 0;   
+            }
+        }
+    );
+}
+
+
+var LoanService = {
+    //all loan service for admin
+
+    //Add loan by Admin
+    addLoanByAdmin: function (postdata, filedata, adminDet, callback) {
+
+        postdata.lender_video_type = postdata.lender_video_type.substring(7);
+        postdata.loan_video_type = postdata.loan_video_type.substring(7);
+        postdata.lvr = postdata.lvr.substring(7);
+        postdata.loan_type = postdata.loan_type.substring(7);
+        postdata.loan_feature = postdata.loan_feature.substring(7);
+        postdata.lender = postdata.lender.substring(7);
+
+        var newprofileimgUrl = '';
+        var lendervideourl = '';
+        var loanvideourl = '';
+        if (filedata) {
+            // if (filedata.bank_logo) {
+            //     profileimage = filedata.bank_logo;
+            //     if (profileimage != '') {
+            //         var ext = profileimage.name.slice(profileimage.name.lastIndexOf('.'));
+            //         var fileName = Date.now() + ext;
+
+            //         var newprofileimgUrl = config.__site_url + 'uploads/banklogo/' + fileName;
+            //         profileimage.mv('./public/uploads/banklogo/' + fileName, function (err) {
+            //             console.log('err', err);
+            //             if (err) {
+            //                 fileName = null;
+            //                 newprofileimgUrl = "";
+            //             }
+            //         });
+            //     }
+            // } else {
+            //     var newprofileimgUrl = config.__site_url + 'uploads/no_img.png';
+            // }
+            if (postdata.lender_video_type == 'video_file' && filedata.lender_video_file) {
+                var lendervideo;
+                lendervideo = filedata.lender_video_file;
+                var ext = lendervideo.name.slice(lendervideo.name.lastIndexOf('.'));
+                var fileName = Date.now() + ext;
+
+                var lendervideourl = config.__site_url + 'uploads/lendervideo/' + fileName;
+                lendervideo.mv('./public/uploads/lendervideo/' + fileName, function (err) {
+                    if (err) {
+                        fileName = null;
+                        lendervideourl = "";
+                    }
+                });
+
+            }
+            if (postdata.loan_video_type == 'video_file' && filedata.loan_video_file) {
+                var loanvideo;
+                loanvideo = filedata.loan_video_file;
+                var ext = loanvideo.name.slice(loanvideo.name.lastIndexOf('.'));
+                var fileName = Date.now() + ext;
+
+                var loanvideourl = config.__site_url + 'uploads/loanvideo/' + fileName;
+                loanvideo.mv('./public/uploads/loanvideo/' + fileName, function (err) {
+                    console.log('err', err);
+                    if (err) {
+                        fileName = null;
+                        loanvideourl = "";
+                    }
+                });
+            }
+        }
+        // if (newprofileimgUrl != '') {
+        //     postdata.bank_logo = newprofileimgUrl;
+        // }
+        if (lendervideourl != '') {
+            postdata.lender_video = lendervideourl;
+        }
+        if (loanvideourl != '') {
+            postdata.loan_video = loanvideourl;
+        }
+        var loanData = new Loan(postdata);
+        loanData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: 'Some error occurred', err: err });
+            } else {
+                callback({ success: true, message: "Loan  has been saved successfully." });
+            }
+        });
+
+    },
+
+// add lender
+addLenderByAdmin: function (postdata, filedata, adminDet, callback) {
+
+    // postdata.lender_video_type = postdata.lender_video_type.substring(7);
+    // postdata.loan_video_type = postdata.loan_video_type.substring(7);
+    // postdata.lvr = postdata.lvr.substring(7);
+    // postdata.loan_type = postdata.loan_type.substring(7);
+    // postdata.loan_feature = postdata.loan_feature.substring(7);
+    // postdata.lender = postdata.lender.substring(7);
+
+    var newprofileimgUrl = '';
+    var lendervideourl = '';
+    var loanvideourl = '';
+    if (filedata) {
+        if (filedata.bank_logo) {
+            profileimage = filedata.bank_logo;
+            if (profileimage != '') {
+                var ext = profileimage.name.slice(profileimage.name.lastIndexOf('.'));
+                var fileName = Date.now() + ext;
+
+                var newprofileimgUrl = config.__site_url + 'uploads/banklogo/' + fileName;
+                profileimage.mv('./public/uploads/banklogo/' + fileName, function (err) {
+                    console.log('err', err);
+                    if (err) {
+                        fileName = null;
+                        newprofileimgUrl = "";
+                    }
+                });
+            }
+        } else {
+            var newprofileimgUrl = config.__site_url + 'uploads/no_img.png';
+        }
+        
+        
+    }
+    if (newprofileimgUrl != '') {
+        postdata.bank_logo = newprofileimgUrl;
+    }
+    
+    var lenderData = new Lender(postdata);
+    lenderData.save(function (err) {
+        if (err) {
+            //callback({ success: false, message: 'Some error occurred', err: err });
+            console.log(err);
+        } else {
+            console.log('submit');
+            //callback({ success: true, message: "Lender  has been saved successfully." });
+        }
+    });
+
+},
+
+    //Edit loan by Admin
+    editLoanByAdmin: function (postdata, filedata, adminDet, callback) {
+
+        postdata.lender_video_type = postdata.lender_video_type.substring(7);
+        postdata.loan_video_type = postdata.loan_video_type.substring(7);
+        postdata.lvr = postdata.lvr.substring(7);
+        postdata.loan_type = postdata.loan_type.substring(7);
+        postdata.loan_feature = postdata.loan_feature.substring(7);
+        postdata.lender = postdata.lender.substring(7);
+
+        Loan.findById(postdata.currentloanId, function (err, loan) {
+            if (err) {
+                callback({ success: false, message: 'Invalid loan id', err: err });
+            } else {
+                var newprofileimgUrl = '';
+                var lendervideourl = '';
+                var loanvideourl = '';
+                if (filedata) {
+                    // if (filedata.bank_logo) {
+                    //     profileimage = filedata.bank_logo;
+                    //     if (profileimage != '') {
+                    //         var ext = profileimage.name.slice(profileimage.name.lastIndexOf('.'));
+                    //         var fileName = Date.now() + ext;
+
+                    //         var newprofileimgUrl = config.__site_url + 'uploads/banklogo/' + fileName;
+                    //         profileimage.mv('./public/uploads/banklogo/' + fileName, function (err) {
+                    //             console.log('err', err);
+                    //             if (err) {
+                    //                 fileName = null;
+                    //                 newprofileimgUrl = "";
+                    //             }
+                    //         });
+                    //     }
+                    // } else {
+                    //     var newprofileimgUrl = loan.bank_logo;
+                    // }
+                    if (postdata.lender_video_type == 'video_file' && filedata.lender_video_file) {
+                        var lendervideo;
+                        lendervideo = filedata.lender_video_file;
+                        var ext = lendervideo.name.slice(lendervideo.name.lastIndexOf('.'));
+                        var fileName = Date.now() + ext;
+
+                        var lendervideourl = config.__site_url + 'uploads/lendervideo/' + fileName;
+                        lendervideo.mv('./public/uploads/lendervideo/' + fileName, function (err) {
+                            if (err) {
+                                fileName = null;
+                                lendervideourl = "";
+                            }
+                        });
+
+                    } else if (postdata.lender_video_type == 'video_file') {
+                        var lendervideourl = loan.lender_video;
+                    }
+                    if (postdata.loan_video_type == 'video_file' && filedata.loan_video_file) {
+                        var loanvideo;
+                        loanvideo = filedata.loan_video_file;
+                        var ext = loanvideo.name.slice(loanvideo.name.lastIndexOf('.'));
+                        var fileName = Date.now() + ext;
+
+                        var loanvideourl = config.__site_url + 'uploads/loanvideo/' + fileName;
+                        loanvideo.mv('./public/uploads/loanvideo/' + fileName, function (err) {
+                            console.log('err', err);
+                            if (err) {
+                                fileName = null;
+                                loanvideourl = "";
+                            }
+                        });
+                    } else if (postdata.loan_video_type == 'video_file') {
+                        var loanvideourl = loan.loan_video;
+                    }
+                }
+                // if (newprofileimgUrl != '') {
+                //     postdata.bank_logo = newprofileimgUrl;
+                // }
+                if (lendervideourl != '') {
+                    postdata.lender_video = lendervideourl;
+                }
+                if (loanvideourl != '') {
+                    postdata.loan_video = loanvideourl;
+                }
+                //set value
+                //loan.bank_name = postdata.bank_name;
+                //loan.bank_logo = postdata.bank_logo;
+                loan.loan_title = postdata.loan_title;
+                loan.loan_description = postdata.loan_description;
+                loan.inerest_rate = postdata.inerest_rate;
+                loan.repayment = postdata.repayment;
+                loan.lender_video_type = postdata.lender_video_type;
+                loan.lender_video = postdata.lender_video;
+                loan.loan_video_type = postdata.loan_video_type;
+                loan.loan_video = postdata.loan_video;
+                loan.setup_fees = postdata.setup_fees;
+                loan.annual_fees = postdata.annual_fees;
+                loan.advertisement_fees = postdata.advertisement_fees;
+                loan.monthly_fees = postdata.monthly_fees;
+                loan.lvr = postdata.lvr;
+                loan.loan_type = postdata.loan_type;
+                loan.loan_feature = postdata.loan_feature;
+                loan.lender = postdata.lender;
+                loan.comparsion_rate = postdata.comparsion_rate;
+                loan.loan_capacity = postdata.loan_capacity;
+                loan.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "Loan has been updated.", loanid: loan._id });
+                    }
+                });
+            }
+        });
+
+    },
+
+    // edit lender
+    editLenderByAdmin: function (postdata, filedata, adminDet, callback) {
+
+        // postdata.lender_video_type = postdata.lender_video_type.substring(7);
+        // postdata.loan_video_type = postdata.loan_video_type.substring(7);
+        // postdata.lvr = postdata.lvr.substring(7);
+        // postdata.loan_type = postdata.loan_type.substring(7);
+        // postdata.loan_feature = postdata.loan_feature.substring(7);
+        // postdata.lender = postdata.lender.substring(7);
+
+        console.log(postdata);
+
+        Lender.findById(postdata.currentLenderId, function (err, lender) {
+            if (err) {
+                callback({ success: false, message: 'Invalid loan id', err: err });
+            } else {
+                var newprofileimgUrl = '';
+                var lendervideourl = '';
+                var loanvideourl = '';
+                if (filedata) {
+                    if (filedata.bank_logo) {
+                        profileimage = filedata.bank_logo;
+                        if (profileimage != '') {
+                            var ext = profileimage.name.slice(profileimage.name.lastIndexOf('.'));
+                            var fileName = Date.now() + ext;
+
+                            var newprofileimgUrl = config.__site_url + 'uploads/banklogo/' + fileName;
+                            profileimage.mv('./public/uploads/banklogo/' + fileName, function (err) {
+                                console.log('err', err);
+                                if (err) {
+                                    fileName = null;
+                                    newprofileimgUrl = "";
+                                }
+                            });
+                        }
+                    } else {
+                        var newprofileimgUrl = loan.bank_logo;
+                    }
+                    
+                }
+                if (newprofileimgUrl != '') {
+                    postdata.bank_logo = newprofileimgUrl;
+                }
+                
+                //set value
+                lender.lender = postdata.lender;
+                lender.bank_logo = postdata.bank_logo;
+                lender.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "Lender has been updated.", lenderid: lender._id });
+                    }
+                });
+            }
+        });
+
+    },
+
+    //All loan list for admin
+    getAllLoans: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        // if (params.page) {
+        //     page = parseInt(params.page);
+        // }
+        // if (params.limit) {
+        //     limit = parseInt(params.limit);
+        // }
+        async.waterfall([
+            function (nextcb) {
+                Loan.find(query)
+                    .populate('lender', 'lender')
+                    .sort([[sort_field, order]])
+                    .exec(function (err, loans) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, loans);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    console.log('result', result);
+                    callback({ success: true, loans: result });
+                }
+            });
+    },
+
+
+    // get loan serach data
+    searchLoanData: function(searchdata, adminDet, callback){
+
+     console.log(searchdata); 
+        //searchData.loan_feature != null && searchData.loan_feature != '' && searchData.loan_feature != undefined
+         if((searchdata.loan_title != undefined) && (searchdata.lender != undefined)){
+            var qur = { 'is_active': 'yes', 'loan_title':{ $regex: '.*' + searchdata.loan_title + '.*' }, 'lender':searchdata.lender};
+         console.log('both not null');
+        }
+         else if((searchdata.loan_title == undefined) && (searchdata.lender != undefined)){
+            var qur = { 'is_active': 'yes', 'lender':searchdata.lender};
+            console.log('title null and lender not null');
+         }
+         else if((searchdata.loan_title != undefined) && (searchdata.lender == undefined)){
+            var qur = { 'is_active': 'yes', 'loan_title': { $regex: '.*' + searchdata.loan_title + '.*' }};
+            console.log('title not null and lender null');
+         }
+         else if((searchdata.loan_title == undefined) && (searchdata.lender == undefined)){
+            var qur = { 'is_active': 'yes'};
+            console.log('title null and lender null');
+         }
+         
+
+        console.log(qur); 
+
+         Loan.find(qur)
+        .populate('lvr', '_id ratio')
+        .populate('loan_type', '_id type')
+        .populate('loan_feature', '_id feature')
+        .populate('lender', '_id lender')
+        .sort([['loan_title', '1']])
+        .exec(function (err, loans) {
+            if (err) {
+                callback({ success: false, message: "Some error occurred", err: err });
+            } else {
+               // console.log(loans);
+               callback({ success: true, message: "Loan list", loans: loans });
+            }
+        });
+},
+
+// get all loans by search
+
+getAllLoanBySearch: function (params, adminDet, callback) {
+    var page = 1,
+        limit = 20,
+        sort_field = 'createdAt',
+        order = '-1', //descending
+        query = {};
+
+        console.log(params);
+   
+    // async.waterfall([
+    //     function (nextcb) {
+    //         Loan.find(query)
+    //             .populate('lender', 'lender')
+    //             .sort([[sort_field, order]])
+    //             .exec(function (err, loans) {
+    //                 if (err) {
+    //                     nextcb(err);
+    //                 }
+    //                 else {
+    //                     nextcb(null, loans);
+    //                 }
+    //             });
+    //     }
+    // ],
+    //     function (err, result) {
+    //         if (err) {
+    //             callback({ success: false, err: err });
+    //         } else {
+    //             console.log('result', result);
+    //             callback({ success: true, loans: result });
+    //         }
+    //     });
+},
+
+    //change lvr for admin
+    changeStatusLoan: function (loan_id, status, callback) {
+        var query = { _id: loan_id },
+            fields = { is_active: status },
+            options = { upsert: false };
+        Loan.update(query, fields, options, function (err, affected) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Loan " + ((status == 'yes') ? "activated" : "deactivated") });
+            }
+        });
+    },
+    //loan details by id for admin
+    getDetailsloanById: function (loanId, callback) {
+        Loan.findOne({ _id: loanId })
+            .populate('lvr', '_id ratio')
+            .populate('loan_type', '_id type')
+            .populate('loan_feature', '_id feature')
+            .populate('lender', '_id lender')
+            .exec(function (err, loan) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, loan: loan });
+                }
+            });
+    },
+    //delete loan details by id for admin
+    deleteloan: function (loanId, callback) {
+        Loan.findOne({ _id: loanId }, function (err, loan) {
+            if (loan) {
+                Loan.remove({ _id: loanId }, function (err) {
+                    if (err) {
+                        callback({ success: false, message: err });
+                    } else {
+                        callback({ success: true, message: "Loan has been deleted." });
+                    }
+                });
+            } else {
+                callback({ success: false, message: "Invalid loan id." });
+            }
+        });
+    },
+    //All lvr list for admin
+    getAlllvrs: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        // if (params.page) {
+        //     page = parseInt(params.page);
+        // }
+        // if (params.limit) {
+        //     limit = parseInt(params.limit);
+        // }
+        async.waterfall([
+            function (nextcb) {
+                Lvr.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, lvrs) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, lvrs);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    console.log('result', result);
+                    callback({ success: true, lvrs: result });
+                }
+            });
+    },
+    //add lvr for admin
+    createLvrAdmin: function (lvr, adminDet, callback) {
+        var loanData = new Lvr(lvr);
+        loanData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Loan value ratio has been saved successfully." });
+            }
+        });
+    },
+    //change lvr for admin
+    changeStatusLvr: function (lvr_id, status, callback) {
+        var query = { _id: lvr_id },
+            fields = { is_active: status },
+            options = { upsert: false };
+        Lvr.update(query, fields, options, function (err, affected) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Lvr " + ((status == 'yes') ? "activated" : "deactivated") });
+            }
+        });
+    },
+    //lvr details by id for admin
+    getDetailslvrById: function (lvrId, callback) {
+        Lvr.findOne({ _id: lvrId })
+            .exec(function (err, lvr) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, lvr: lvr });
+                }
+            });
+    },
+    //update lvr details by id for admin
+    updateLvr: function (lvrId, lvrdata, adminDet, callback) {
+        Lvr.findById(lvrId, function (err, lvr) {
+            if (err) {
+                callback({ success: false, message: "Invalid lvr id.", err: err });
+            } else {
+                lvr.ratio = lvrdata.ratio;
+                lvr.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "Loan value ratio has been updated.", lvrId: lvrId });
+                    }
+                });
+            }
+        });
+    },
+    //delete lvr details by id for admin
+    deleteLvr: function (lvrId, callback) {
+        Lvr.findOne({ _id: lvrId }, function (err, lvr) {
+            if (lvr) {
+                Loan.count({ lvr: lvrId }, function (err, loan_count) {
+                    if (err) {
+                        callback({ success: false, err: err });
+                    } else {
+                        if (loan_count > 0) {
+                            callback({ success: false, message: 'Please atfirst you delete related loan of this lvr' });
+                        } else {
+                            Lvr.remove({ _id: lvrId }, function (err) {
+                                if (err) {
+                                    callback({ success: false, message: err });
+                                } else {
+                                    callback({ success: true, message: "Loan value ratio has been deleted." });
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                callback({ success: false, message: "Invalid lvr id." });
+            }
+        });
+    },
+    //all type for admin
+    getAlltypes: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        // if (params.page) {
+        //     page = parseInt(params.page);
+        // }
+        // if (params.limit) {
+        //     limit = parseInt(params.limit);
+        // }
+        async.waterfall([
+            function (nextcb) {
+                LoanType.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, types) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, types);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, types: result });
+                }
+            });
+    },
+    //add loan type for admin
+    createLoanTypeAdmin: function (type, adminDet, callback) {
+        var loanData = new LoanType(type);
+        loanData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Loan type has been saved successfully." });
+            }
+        });
+    },
+    //change lvr for admin
+    changeStatusType: function (type_id, status, callback) {
+        var query = { _id: type_id },
+            fields = { is_active: status },
+            options = { upsert: false };
+        LoanType.update(query, fields, options, function (err, affected) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Loan type " + ((status == 'yes') ? "activated" : "deactivated") });
+            }
+        });
+    },
+    //loan type details by id for admin
+    getDetailsLoanTypeById: function (typeId, callback) {
+        LoanType.findOne({ _id: typeId })
+            .exec(function (err, type) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, type: type });
+                }
+            });
+    },
+    //update loan type details by id for admin
+    updateType: function (typeId, typedata, adminDet, callback) {
+        console.log(typedata);
+        LoanType.findById(typeId, function (err, type) {
+            if (err) {
+                callback({ success: false, message: "Invalid lvr id.", err: err });
+            } else {
+                type.type = typedata.type;
+                type.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "Loan type has been updated.", typeId: typeId });
+                    }
+                });
+            }
+        });
+    },
+    //delete loan type details by id for admin
+    deleteType: function (typeId, callback) {
+        LoanType.findOne({ _id: typeId }, function (err, type) {
+            if (type) {
+                Loan.count({ loan_type: typeId }, function (err, loan_count) {
+                    if (err) {
+                        callback({ success: false, err: err });
+                    } else {
+                        if (loan_count > 0) {
+                            callback({ success: false, message: 'Please atfirst you delete related loan of this loan type' });
+                        } else {
+                            LoanType.remove({ _id: typeId }, function (err) {
+                                if (err) {
+                                    callback({ success: false, message: err });
+                                } else {
+                                    callback({ success: true, message: "Loan type has been deleted." });
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                callback({ success: false, message: "Invalid loan type id." });
+            }
+        });
+    },
+    //all lvr for admin
+    getAllfeatures: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        // if (params.page) {
+        //     page = parseInt(params.page);
+        // }
+        // if (params.limit) {
+        //     limit = parseInt(params.limit);
+        // }
+        async.waterfall([
+            function (nextcb) {
+                LoanFeature.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, features) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, features);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, features: result });
+                }
+            });
+    },
+    //add loan feature for admin
+    createLoanFeatureAdmin: function (feature, adminDet, callback) {
+        var loanData = new LoanFeature(feature);
+        loanData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Loan feature has been saved successfully." });
+            }
+        });
+    },
+    //change loan feature for admin
+    changeStatusFeature: function (featureid, status, callback) {
+        var query = { _id: featureid },
+            fields = { is_active: status },
+            options = { upsert: false };
+        LoanFeature.update(query, fields, options, function (err, affected) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Loan feature " + ((status == 'yes') ? "activated" : "deactivated") });
+            }
+        });
+    },
+    //loan feature details by id for admin
+    getDetailsLoanFeatureById: function (featureid, callback) {
+        LoanFeature.findOne({ _id: featureid })
+            .exec(function (err, feature) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, feature: feature });
+                }
+            });
+    },
+    //update loan feature by id for admin
+    updateFeature: function (featureid, featuredata, adminDet, callback) {
+        LoanFeature.findById(featureid, function (err, feature) {
+            if (err) {
+                callback({ success: false, message: "Invalid loan feature id.", err: err });
+            } else {
+                feature.feature = featuredata.feature;
+                feature.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "Loan feature has been updated.", featureid: featureid });
+                    }
+                });
+            }
+        });
+    },
+    //delete loan feature details by id for admin
+    deleteFeature: function (featureid, callback) {
+        LoanFeature.findOne({ _id: featureid }, function (err, feature) {
+            if (feature) {
+                Loan.count({ loan_feature: featureid }, function (err, loan_count) {
+                    if (err) {
+                        callback({ success: false, err: err });
+                    } else {
+                        if (loan_count > 0) {
+                            callback({ success: false, message: 'Please atfirst you delete related loan of this loan feature' });
+                        } else {
+                            LoanFeature.remove({ _id: featureid }, function (err) {
+                                if (err) {
+                                    callback({ success: false, message: err });
+                                } else {
+                                    callback({ success: true, message: "Loan feature has been deleted." });
+                                }
+                            });
+                        }
+                    }
+                });
+
+            } else {
+                callback({ success: false, message: "Invalid loan feature id." });
+            }
+        });
+    },
+    //all lenders for admin
+    getAlllenders: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        // if (params.page) {
+        //     page = parseInt(params.page);
+        // }
+        // if (params.limit) {
+        //     limit = parseInt(params.limit);
+        // }
+        async.waterfall([
+            function (nextcb) {
+                Lender.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, lenders) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, lenders);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                console.log('result', result);
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, lenders: result });
+                }
+            });
+    },
+    //add lender for admin
+    createLenderAdmin: function (lender, adminDet, callback) {
+
+        console.log(lender); return false;
+     //console.log(filedata); return false;
+
+        // if (filedata.bank_logo) {
+        //                 profileimage = filedata.bank_logo;
+        //                 if (profileimage != '') {
+        //                     var ext = profileimage.name.slice(profileimage.name.lastIndexOf('.'));
+        //                     var fileName = Date.now() + ext;
+
+        //                     var newprofileimgUrl = config.__site_url + 'uploads/banklogo/' + fileName;
+        //                     profileimage.mv('./public/uploads/banklogo/' + fileName, function (err) {
+        //                         console.log('err', err);
+        //                         if (err) {
+        //                             fileName = null;
+        //                             newprofileimgUrl = "";
+        //                         }
+        //                     });
+        //                 }
+        //             } else {
+        //                 var newprofileimgUrl = loan.bank_logo;
+        //             }
+
+        //             console.log(newprofileimgUrl);
+
+        var loanData = new Lender(lender);
+
+
+
+        loanData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Lender has been saved successfully." });
+            }
+        });
+    },
+    //change lender status for admin
+    changeStatusLender: function (lenderid, status, callback) {
+        var query = { _id: lenderid },
+            fields = { is_active: status },
+            options = { upsert: false };
+        Lender.update(query, fields, options, function (err, affected) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                callback({ success: true, message: "Lender " + ((status == 'yes') ? "activated" : "deactivated") });
+            }
+        });
+    },
+    //lender details by id for admin
+    getDetailsLenderById: function (lenderid, callback) {
+        Lender.findOne({ _id: lenderid })
+            .exec(function (err, lender) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, lender: lender });
+                }
+            });
+    },
+    //update lender by id for admin
+    updateLender: function (lenderid, lenderdata, adminDet, callback) {
+        Lender.findById(lenderid, function (err, lender) {
+            if (err) {
+                callback({ success: false, message: "Invalid loan feature id.", err: err });
+            } else {
+                lender.lender = lenderdata.lender;
+                lender.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "Lender has been updated.", lenderid: lenderid });
+                    }
+                });
+            }
+        });
+    },
+    //delete lender details by id for admin
+    deletelender: function (lenderid, callback) {
+        Lender.findOne({ _id: lenderid }, function (err, lender) {
+            if (lender) {
+                Loan.count({ lender: lenderid }, function (err, loan_count) {
+                    if (err) {
+                        callback({ success: false, err: err });
+                    } else {
+                        if (loan_count > 0) {
+                            callback({ success: false, message: 'Please atfirst you delete related loan of this lender' });
+                        } else {
+                            Lender.remove({ _id: lenderid }, function (err) {
+                                if (err) {
+                                    callback({ success: false, message: err });
+                                } else {
+                                    callback({ success: true, message: "Lender has been deleted." });
+                                }
+                            });
+                        }
+                    }
+                });
+
+            } else {
+                callback({ success: false, message: "Invalid lender id." });
+            }
+        });
+    },
+    //All loan option list
+    getAllloanOption: function (adminDet, callback) {
+        var list = [];
+        async.waterfall([
+            function (nextcb) {
+                Lvr.find({ is_active: 'yes' })
+                    .select('_id ratio')
+                    .sort([['ratio', '1']])
+                    .exec(function (err, lvrs) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            list.push({ lvrs: lvrs });
+                            nextcb(null, list);
+                        }
+                    });
+            },
+            function (list, nextcb) {
+                LoanType.find({ is_active: 'yes' })
+                    .select('_id type')
+                    .sort([['type', '1']])
+                    .exec(function (err, types) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            list.push({ types: types });
+                            nextcb(null, list);
+                        }
+                    });
+            },
+            function (list, nextcb) {
+                LoanFeature.find({ is_active: 'yes' })
+                    .select('_id feature')
+                    .sort([['feature', '1']])
+                    .exec(function (err, features) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            list.push({ features: features });
+                            nextcb(null, list);
+                        }
+                    });
+            },
+            function (list, nextcb) {
+                Lender.find({ is_active: 'yes' })
+                    .select('_id lender')
+                    .sort([['lender', '1']])
+                    .exec(function (err, lenders) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            list.push({ lenders: lenders });
+                            nextcb(null, list);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, list: result });
+                }
+            });
+    },
+
+     //All loan option list
+
+    getAlllenders: function (adminDet, callback) {
+        Lender.find({ is_active: 'yes' })
+              .select('_id lender')
+              .sort([['lender', '1']])
+              .exec(function (err, lenders) {
+                if (err) {
+                   callback({ success: false, message: "Some error occurred", err: err });
+                   //console.log(err);
+                } else {
+                    //console.log(lenders);
+                    callback({ success: true, message: "Loan list", lenders: lenders });
+                }
+            });
+    },
+
+    //For Webservices
+
+    //All loan list
+    listing: function (callback) {
+        Loan.find({ 'is_active': 'yes' })
+            .populate('lvr', '_id ratio')
+            .populate('loan_type', '_id type')
+            .populate('loan_feature', '_id feature')
+            .populate('lender', '_id lender')
+            .sort([['loan_title', '1']])
+            .exec(function (err, loans) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "Loan list", loans: loans });
+                }
+            });
+    },
+
+    //Add Favorite loan
+    addFavorite: function (data, callback) {
+        Favorite.count({
+            'user_id': data.user_id,
+            'loan_id': data.loan_id
+        }, function (err, count) {
+            if (err) {
+                callback({ success: false, message: "Some error occurred", err: err });
+            } else {
+                if (count == 0) {
+                    var favData = new Favorite(data);
+                    favData.save(function (err) {
+                        if (err) {
+                            callback({ success: false, message: "Some error occurred.", err: err });
+                        } else {
+                            callback({ success: true, message: "Loan has been added in favorite list." });
+                        }
+                    });
+                } else {
+                    callback({ success: true, message: "Already loan has been added in favorite list" });
+                }
+            }
+        });
+    },
+
+    //All favorite loan list
+    listFavorite: function (data, callback) {
+        Favorite.find({ 'user_id': data.user_id })
+            .populate('loan_id', '_id loan_title bank_name inerest_rate repayment bank_logo')
+            .exec(function (err, fav_ist) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "favorite Loan list", fav_ist: fav_ist });
+                }
+            });
+    },
+
+    //delete favorite loan
+    removeFavorite: function (favid, callback) {
+        Favorite.findOne({ _id: favid }, function (err, fav) {
+            if (fav) {
+                Favorite.remove({ _id: favid }, function (err) {
+                    if (err) {
+                        callback({ success: false, message: err });
+                    } else {
+                        callback({ success: true, message: "Favorite loan has been deleted." });
+                    }
+                });
+            } else {
+                callback({ success: false, message: "Invalid favorite id." });
+            }
+        });
+    },
+
+    // Active Loan type list
+    listLonType: function (callback) {
+        LoanType.find({ 'is_active': 'yes' })
+            .exec(function (err, type_list) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "Loan type list", type_list: type_list });
+                }
+            });
+    },
+
+    //List loan search by loan type and min capacity value
+
+    listloanSearch: function (data, callback) {
+        if (data.loan_type_id == '' || data.loan_type_id == undefined) {
+            callback({ success: false, message: "Please select loan type" });
+        } else if (data.min_value == '' || data.min_value == undefined) {
+            callback({ success: false, message: "Please select minimum value of loan capacity" });
+        } else if (data.user_id == '' || data.user_id == undefined) {
+            callback({ success: false, message: "Please enter user id" });
+        } else {
+            async.waterfall([
+                function (nextcb) {
+                    var min_val = parseFloat(data.min_value);
+                    var qur = { 'is_active': 'yes', 'loan_type': data.loan_type_id, 'loan_capacity': { $gt: min_val } };
+                    //callback(qur);
+                    // callback({ success: true, message: "Loan list", loans: qur });
+                    Loan.find(qur)
+                        .populate('lvr', '_id ratio')
+                        .populate('loan_type', '_id type')
+                        .populate('loan_feature', '_id feature')
+                        .populate('lender', '_id lender')
+                        .sort([['loan_title', '1']])
+                        .exec(function (err, loans) {
+                            if (err) {
+                                nextcb(err);
+                            }
+                            else {
+                                nextcb(null, loans);
+                            }
+                        });
+                }, function (loans, nextcb) {
+                    if (loans.length > 0) {
+                        var fav_count = 0;
+                        var fav_loan = [];
+                        var f=0;
+                        for (var i = 0; i < loans.length; i++) {
+                            var loan = loans[i];
+                            var loan_id = loan._id;
+                            
+                            Favorite.count({
+                                'loan_id': loan_id,
+                                'user_id': data.user_id
+                            }, function (err, fav_count) {
+                                
+                                if (err) {
+                                    fav_loan[f] = 'no';
+                                } else {
+                                    if(fav_count>0){
+                                        fav_loan[f] = 'yes';
+                                    }else{
+                                        fav_loan[f] = 'no';
+                                    }
+                                    
+                                }
+                                f=f+1;
+                                if (loans.length == f) {
+                                   nextcb(null, loans, fav_loan);
+                                }
+
+                            });
+
+
+                        }
+
+                    }
+                },
+                function (loans, fav_loan, nextcb) {
+                    var loan_list=[];
+                    if(loans.length){
+                        for(var x=0;x<loans.length;x++){
+                            loan_list.push({loans_details:loans[x],loan_fav:fav_loan[x]});
+                            // loan_list[x] ={
+                            //     loans_details:loans[x],
+                            //     loan_fav:fav_loan[x]
+                            // }
+                        }
+                    }
+                    nextcb(null, loan_list);
+                }
+
+            ],
+                function (err, result) {
+                    if (err) {
+                        callback({ success: false, err: err });
+                    } else {
+                        callback({ success: true, loans: result });
+                    }
+                });
+
+        }
+    },
+
+    //loan details
+    loanDetailsById: function (loanId, callback) {
+        Loan.findOne({ _id: loanId })
+            .populate('lvr', '_id ratio')
+            .populate('loan_type', '_id type')
+            .populate('loan_feature', '_id feature')
+            .populate('lender', '_id lender')
+            .exec(function (err, loan) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                }
+                else {
+                    callback({ success: true, message: "Loan Details", loan: loan });
+                }
+            });
+    },
+
+    //max capacity value for loan
+    maxCapacityValue: function (callback) {
+        Loan.findOne()
+            .sort([['loan_capacity', '-1']])
+            .exec(function (err, loan) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                }
+                else {
+                    callback({ success: true, message: "Loan Details", max_value: loan.loan_capacity });
+                }
+            });
+    },
+
+    //Checking fav loan
+    checkFavLoan: function (data, callback) {
+        Favorite.count({
+            'loan_id': data.loan_id,
+            'user_id': data.user_id
+        }, function (err, fav_count) {
+            if (err) {
+                callback({ success: false, message: err });
+            } else {
+                if (fav_count > 0) {
+                    callback({ success: true, message: "This is fav loan of this user" });
+                } else {
+                    callback({ success: false, message: "No. this is not fav loan of this user" });
+                }
+
+            }
+        });
+    },
+
+    // get all lvr list for api
+    getalllvrlist: function (data,callback) {
+        Lvr.find({ 'is_active': 'yes' })
+            .exec(function (err, lvrs) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "LVR list", lvrs: lvrs });
+                }
+            });
+    },
+
+    // API for get all loan type 
+    getalllloantype: function (data,callback) {
+        LoanType.find({ 'is_active': 'yes' })
+            .exec(function (err, loantype) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "Loan type list", loantype: loantype });
+                }
+            });
+    },
+
+    // API for get all loan features
+    getalllloanfeatures: function (data,callback) {
+        LoanFeature.find({ 'is_active': 'yes' })
+            .exec(function (err, loanfeatures) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "Loan features list", loanfeatures: loanfeatures });
+                }
+            });
+    },
+
+    // get all loan lenders
+    getalllloanlenders: function(data, callback){
+        Lender.find({'is_active':'yes'})
+        .exec(function(err, loanlenders){
+              if(err){
+                callback({ success: false, message: "Some error occurred", err: err });
+              }
+              else{
+                callback({ success: true, message: "Loan lenders list", loanlenders: loanlenders });
+              }
+        });
+    },
+
+    
+
+    /**
+     * Get all loan search
+     */
+    getalllloansearch: function(searchData, callback){
+
+        //init
+        var extraConditions = [];
+        var allResult = [];
+
+        if(searchData.amount != null && searchData.amount != '' && searchData.amount != undefined){
+            var amount = searchData.amount;
+        }else{
+            var amount = 0;
+        }
+
+        var extraConditions = [{is_active:'yes'}, {loan_type:searchData.loanType}, {loan_capacity: {'$gte': amount}}];
+
+        if(searchData.lvr != null && searchData.lvr != '' && searchData.lvr != undefined) {
+            extraConditions.push({lvr:{$in: searchData.lvr}});    
+        }
+
+        if(searchData.loan_type != null && searchData.loan_type != '' && searchData.loan_type != undefined) {         
+            extraConditions.push({loan_type:{$in: searchData.loan_type}});                 
+        }
+
+        if(searchData.loan_feature != null && searchData.loan_feature != '' && searchData.loan_feature != undefined) {
+            extraConditions.push({loan_feature:{$in: searchData.loan_feature}});           
+        }
+
+        if(searchData.lender != null && searchData.lender != '' && searchData.lender != undefined) {
+            extraConditions.push({lender:{$in: searchData.lender}});       
+        }        
+
+        console.log(extraConditions);
+
+        if(searchData.sort_by != null && searchData.sort_by != '' && searchData.sort_by != undefined){
+            if(searchData.sort_by == 'comparsion_rate'|| searchData.sort_by == 'lender' || searchData.sort_by == 'setup_fees' || searchData.sort_by == 'advertisement_fees' || searchData.sort_by == 'createdAt'){
+                var sort_field = searchData.sort_by;
+            }            
+        }
+
+        var order = '-1';   //AESC 
+        
+        Loan.find({$and: extraConditions})
+        .populate({
+            'path': 'lvr',
+            'select': 'ratio is_active createdAt'
+        })
+        .populate({
+            'path': 'loan_type',
+            'select': 'type is_active createdAt'
+        })
+        .populate({
+            'path': 'loan_feature',
+            'select': 'feature is_active createdAt'
+        })
+        .populate({
+            'path': 'lender',
+            'select': 'lender is_active createdAt'
+        })
+        .sort([[sort_field, order]])
+        .exec(function(err,loans){    
+            if (err){
+                callback({ success: false, message: "Unable to process your request. Please try again!", err: err })
+            }else{
+                if(loans.length > 0){
+                                                            
+                    asyncLoop(loans, function (item, next){ 
+
+                        //find by id
+                        Favorite.find({loan_id: item._id},function(error,favData){                           
+
+                            if(!error){  
+                                
+                                if(favData.length > 0){
+                                    var loan_fav = "yes";
+                                }else{
+                                    var loan_fav = "no";
+                                }                     
+                        
+                                //loan object
+                                var loanObj = {
+                                    lender_video_type: item.lender_video_type,
+                                    loan_video_type: item.loan_video_type,
+                                    is_active: item.is_active,
+                                    _id: item._id,
+                                    bank_name: item.bank_name,
+                                    loan_title: item.loan_title,
+                                    loan_description: item.loan_description,
+                                    inerest_rate: item.inerest_rate,
+                                    repayment: item.repayment,
+                                    lender_video: item.lender_video,
+                                    loan_video: item.loan_video,
+                                    setup_fees: item.setup_fees,
+                                    annual_fees: item.annual_fees,
+                                    monthly_fees: item.monthly_fees,
+                                    lvr_id: item.lvr._id,
+                                    lvr_ratio: item.lvr.ratio,
+                                    lvr_is_active: item.lvr.is_active,
+                                    lvr_createdAt: item.lvr.createdAt,
+                                    loan_type_id: item.loan_type._id,
+                                    loan_type_type: item.loan_type.type,
+                                    loan_type_is_active: item.loan_type.is_active,
+                                    loan_type_createdAt: item.loan_type.createdAt,
+                                    loan_feature_id: item.loan_feature._id,
+                                    loan_feature_feature: item.loan_feature.feature,
+                                    loan_feature_is_active: item.loan_feature.is_active,
+                                    loan_feature_createdAt: item.loan_feature.createdAt,
+                                    loan_feature_id: item.lender._id,
+                                    loan_feature_lender: item.lender.lender,
+                                    loan_feature_is_active: item.lender.is_active,
+                                    loan_feature_createdAt: item.lender.createdAt,
+                                    comparsion_rate: item.comparsion_rate,
+                                    loan_capacity: item.loan_capacity,
+                                    bank_logo: item.bank_logo,
+                                    createdAt: item.createdAt,
+                                    updatedAt: item.updatedAt,
+                                    __v: item.__v
+                                };
+
+                                var result = {
+                                    "loan_fav": loan_fav,
+                                    "loans_details": loanObj                            
+                                };
+                        
+                                allResult.push(result);
+                            }    
+                            next();
+                        });    
+                    }, function (){                        
+                            
+                        if(searchData.sort_by == 'lender'){
+                            sortOn(allResult, "loans_details.loan_feature_lender");
+                            //console.log('cars', allResult); 
+                            callback({success: true, message:"Success", data:allResult}); 
+                        }else{
+                            callback({success: true, message:"Success", data:allResult}); 
+                        }
+                    });        
+                }else{
+                    callback({success: false, message:"No loan found!", data:""});
+                }
+            }    
+        });
+    }    
+};
+module.exports = LoanService;

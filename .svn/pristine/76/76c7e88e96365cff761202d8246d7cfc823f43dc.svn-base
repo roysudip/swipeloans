@@ -1,0 +1,46 @@
+
+module.exports = {
+    port: process.env.PORT || 6006,
+    //__site_url: 'http://162.243.110.92:6006/',
+    __site_url: 'http://localhost:6006/',
+    dbAccess: 'local',
+    database:{
+        'server':{
+            username: "mongoAdminBIT",
+            password: "BiT^7129~jsQ​-P",
+            authDb: "admin",
+            port: 27017,
+            host: "localhost",
+            dbName: "swipeloan"
+        },
+        'local': {
+            port: 27017,
+            host: "localhost",
+            dbName: "swipeloan"
+        }        
+    },	
+    secret : 'hyrgqwjdfbw4534efqrwer2q38945892',
+    dev_mode : true,
+    twilio: {
+        ACCOUNT_SID : 'AC80afbac6e3f4c31c72088dacc1c529d3', //biswarup.brainium@gmail.com
+        AUTH_TOKEN : 'e8f1d7ffd69c9dec8000d4998644615a',
+        FROM_NO: '+17204142070'
+    },
+    paypal: {
+        
+    },
+    push:{
+        requestUrl: 'https://fcm.googleapis.com/fcm/send',
+        apiKey:'AIzaSyAG438EEIuWeQ4eg-ZZ2paIzBszo7Gs1r0',
+        profileName:'android'
+    },
+    email: {
+        host: 'smtp.gmail.com',
+        //user: 'hybridtestmail17@gmail.com',
+        //pass: 'Hybrid123#'
+        user: 'jobsnowtest@gmail.com',
+        pass: 'jobsnow2016',
+        //user: 'info.menangtest@gmail.com',
+        //pass: 'Menang2@16',
+    }
+};    

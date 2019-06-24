@@ -1,0 +1,64 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Chat Listing</ion-title>
+    <span  class="clo_se" (click)='navPush()'></span>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="bgClass">
+    <div class="msgBox">
+        <ul>
+            <li class="sendMessage" (click)="MessagePage()">
+              <div class="liInner">
+                    <div class="imgDiv">
+                      <img src="assets/images/profilepic.png" alt="">
+                    </div>
+                    <div class="textDiv">
+                      <h6>Peter Redford</h6>
+                      <p class="unReadMsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                         
+                      </p>
+                      <span>11th Jan 2018  3:56 P.M.</span>
+                    </div>
+              </div>
+          </li>
+          <li class="getMessage">
+              <div class="liInner">
+                    <div class="imgDiv">
+                      <img src="assets/images/profilepic.png" alt=""> 
+                    </div>
+                    <div class="textDiv">
+                      <h6>Devin Schefield</h6>
+                      <p >Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                         
+                      </p>
+                      <span>19th Jan 2018  3:56 P.M.</span>
+                    </div>
+              </div>
+          </li>
+      
+  <!--
+          <li class="getMessage">
+              <div class="liInner">
+                    <div class="imgDiv">
+                      <img src="assets/imgs/img.png" alt="">
+                    </div>
+                    <div class="textDiv">
+                      <h6>Devin Schefield</h6>
+                      <p >Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                         
+                      </p>
+                      <span>19th Jan 2018  3:56 P.M.</span>
+                    </div>
+              </div>
+          </li>
+  -->
+       
+        </ul>
+  
+  </div>
+</ion-content>

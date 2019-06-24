@@ -1,0 +1,1230 @@
+/*
+*   Chat Manipulation Services for App.
+*/
+
+var async = require('async');
+var config = require('../config');
+var forEach = require('async-foreach').forEach;
+var secretKey = config.secret;
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt-nodejs');
+var UserModel = require('../models/UserModel');
+var PostModel = require('../models/post');
+var OfferModel = require('../models/offer');
+var ChatblockModel = require('../models/ChatblockModel');
+var ChatModel = require('../models/ChatModel');
+var GroupchatModel = require('../models/GroupchatModel');
+var randomstring = require("randomstring");
+var dateFormat = require('dateformat');
+var geolib = require('geolib');
+var request = require('request');
+var ChatpostUserModel = require('../models/ChatpostUserModel');
+var RatingModel = require('../models/rating');
+var arraySort = require('array-sort');
+const translate = require('google-translate-api');
+
+var ChatController = {
+    
+    newtextChat: function (ChatData, userData, callback) {
+        
+        console.log("ChatData : ", ChatData);
+        console.log("userData : ", userData);
+        
+        UserModel.findOne({
+            _id: ChatData.remoteUserId
+        })
+        .select('_id name chatUserId authToken')
+        .exec(function (err, user) {
+            if (err) {
+                callback({
+                    success: false,
+                    statusCode: config.status.SERVER_ERROR,
+                    message: "SERVER.INTERNAL_ERROR",
+                    err: err
+                });
+            } else {
+                
+                console.log(user, 'user')
+                var query = {
+                    $or: [{
+                        userId: userData.id,
+                        blockUser: ChatData.remoteUserId
+                    },
+                    {
+                        userId: user._id,
+                        blockUser: userData.chatUserId
+                    }
+                ]
+            };
+            
+            console.log("query",query);
+            
+            ChatblockModel.findOne(query)
+            .select('_id userId blockUser')
+            .exec(function (err, response) {
+                //console.log(response);
+                if (err) {
+                    callback({
+                        success: false,
+                        statusCode: config.status.SERVER_ERROR,
+                        message: "SERVER.INTERNAL_ERROR",
+                        err: err
+                    });
+                } else {
+                    if (!response) {
+                        
+                        /*------------ send Chat --------------*/
+                        if (ChatData.type == "text") {
+                            var Chat = new ChatModel({
+                                userId: userData.chatUserId,
+                                remoteUserId: ChatData.remoteUserId,
+                                roomId: ChatData.roomId,
+                                chatText: ChatData.chatText,
+                                chatDate: ChatData.chatDate,
+                                sender_seen: ChatData.sender_seen,
+                                receiver_seen: ChatData.receiver_seen,
+                                randomid: ChatData.randomid,
+                                postid:ChatData.postid
+                            });
+                            
+                            //console.log("My ChatData : ", Chat);
+                            
+                        } else {
+                            
+                            var Chat = new ChatModel({
+                                userId: userData.chatUserId,
+                                remoteUserId: ChatData.remoteUserId,
+                                roomId: ChatData.roomId,
+                                attachment: ChatData.chatFile,
+                                chatFileName: ChatData.chatFileName,
+                                size: ChatData.chatFileSize,
+                                chatDate: ChatData.date,
+                                sender_seen: ChatData.sender_seen,
+                                receiver_seen: ChatData.receiver_seen,
+                                randomid: ChatData.randomid,
+                                postid:ChatData.postid
+                                
+                                
+                            });
+                            
+                        }
+                        
+                        console.log('Chatsubhash', Chat)
+                        
+                        Chat.save(function (err, res) {
+                            if (err){
+                                callback({
+                                    success: false,
+                                    statusCode: config.status.SERVER_ERROR,
+                                    message: "SERVER.INTERNAL_ERROR",
+                                    err: err
+                                });
+                            }else{
+                                
+                                var conditions = {
+                                    send_userid: ChatData.remoteUserId, 
+                                    receive_userid: userData.id,                
+                                    postid: ChatData.postid
+                                    
+                                };
+                                
+                                
+                                
+                                fields = {
+                                    deleted_by: null
+                                },
+                                options = {
+                                    multi: true
+                                };
+                                
+                                console.log("conditions",conditions);
+                                console.log("fields",fields);
+                                
+                                
+                                ChatpostUserModel.update(conditions, fields, options, function (err, affected) {
+                                    if (err) {
+                                        console.log('Errr', err)
+                                        callback({ success: false, message: err,});
+                                        
+                                    } else {
+                                        console.log('affected1', affected)
+                                        callback({ success: true,message: affected });
+                                    }
+                                    
+                                });
+                                
+                            }
+                            /* callback({
+                                success: true,
+                                statusCode: config.status.OK,
+                                message: "SERVER.SUCCESS"
+                            });*/
+                            
+                        });
+                        
+                    } else {
+                        var jsondata = {
+                            success: false,
+                            message: "USER BLOCKED"
+                        };
+                        callback(jsondata);
+                    }
+                    
+                }
+            });
+            
+        }
+        
+    });
+    
+},
+
+newGroupChat: function (ChatData, userData, callback) {
+    
+    //console.log("ChatData : ", ChatData);
+    //console.log("userData : ", userData);
+    
+    UserModel.findOne({
+        _id: userData.id
+    })
+    .select('_id')
+    .exec(function (err, user) {
+        if (err)
+        callback({
+            success: false,
+            statusCode: config.status.SERVER_ERROR,
+            message: "SERVER.INTERNAL_ERROR",
+            err: err
+        });
+        else {
+            
+            if (!user) {
+                callback({
+                    success: false,
+                    statusCode: config.status.SERVER_ERROR,
+                    message: "SERVER.INTERNAL_ERROR",
+                    err: err
+                });
+            } else {
+                
+                async.waterfall([
+                    function (nextcb) {
+                        
+                        var customErr = {
+                            success: null,
+                            status: null,
+                            message: null
+                        };
+                        if (ChatData.type == "text") {
+                            var Chat = new GroupchatModel({
+                                _group: ChatData.groupId,
+                                _user: user._id,
+                                userId: userData.chatUserId,
+                                spchatText: ChatData.spchatText,
+                                chatText: ChatData.chatText,
+                                chatDate: ChatData.chatDate
+                            });
+                        } else {
+                            var Chat = new GroupchatModel({
+                                _group: ChatData.groupId,
+                                _user: user._id,
+                                userId: userData.chatUserId,
+                                attachment: ChatData.chatFile,
+                                chatFileName: ChatData.chatFileName,
+                                size: ChatData.chatFileSize,
+                                chatDate: ChatData.date
+                            });
+                        }
+                        
+                        Chat.save(function (err, res) {
+                            if (err)
+                            customErr = {
+                                success: false,
+                                statusCode: config.status.SERVER_ERROR,
+                                message: "SERVER.INTERNAL_ERROR",
+                                err: err
+                            };
+                            else
+                            customErr = {
+                                success: true,
+                                statusCode: config.status.OK,
+                                message: "SERVER.SUCCESS"
+                            };
+                            nextcb(null, customErr, Chat);
+                        });
+                    }
+                    
+                ], function (err, response) {
+                    callback(response);
+                });
+                
+            }
+        }
+    });
+    
+},
+
+chatHistory: function (ChatData, userData, callback) {
+    //console.log("ChatData : ", ChatData);
+   // console.log("userData : ", userData);
+    
+    var alldata =[];
+     var tset=[];
+      var tset1=[];
+      var spText=[];
+
+    var page = ChatData.page,
+    limit = 15,
+    
+    query = {
+        $or: [{
+            userId: userData.chatUserId,
+            remoteUserId: ChatData.remoteUserId,
+            postid: ChatData.postid
+        },
+        {
+            userId: ChatData.remoteUserId,
+            remoteUserId: userData.chatUserId,
+            postid: ChatData.postid
+        }
+    ],
+    deleted_by: { $ne: userData.chatUserId }
+};
+
+//console.log("query : ", query);
+if (ChatData.page) {
+    page = parseInt(ChatData.page);
+}
+if (ChatData.limit) {
+    limit = parseInt(ChatData.limit);
+}
+async.waterfall([
+    function (nextcb) {
+
+       
+        ChatModel.paginate(query, {
+            sort: {
+                '_id': -1
+            },
+            page: page,
+            limit: limit
+        }, function (err, Chats) {
+            if (err) {
+                nextcb(err);
+            } else {
+                nextcb(null, Chats);
+            }
+        });
+    }
+    /*,
+    function (Chats, nextcb) {
+        ChatModel.find(query, function (err, chatrecord) {
+            if (err)
+            nextcb(err);
+            else {
+                nextcb(null, Chats, chatrecord);
+            }
+        });
+    }
+    */
+],
+function (err, result) {
+    if (err) {
+        callback({
+            success: false,
+            err: err
+        });
+    } else {
+       
+       // console.log('rating userId', userData.chatUserId);
+       // console.log('rating postid', ChatData.postid);
+        
+        RatingModel.findOne({})        
+        .where('userid',userData.chatUserId) 
+        .where('postid',ChatData.postid) 
+        .select('_id postrating')
+        .exec(function (err, rating) {
+            if (err) {
+                // console.log('Errr', err)
+                callback({ success: false, message: err});
+                
+            } else {
+                if(rating){
+                    
+                    var rating2 =  { _id: rating._id, postrating: rating.postrating, ratingflag: "yes"}
+                    
+                }else{
+                    
+                    var rating2 =  { postrating: 0, ratingflag: "no"}
+                    
+                }
+                // console.log('rating', rating);
+
+
+/*
+var counter = 0;
+async.each(result.docs, function (chatitem, cb) {
+    translate(chatitem.chatText, {from: 'en', to: 'es'}).then(res => {
+        counter++;
+        var docsx={}
+        docsx['sp_chatText'] =res.text;
+              console.log("new res.text ",res.text);
+        spText.push(docsx); 
+
+        if(counter == result.docs.length) {
+             console.log("new spText  counter",counter);
+            console.log("new spText ",spText);
+
+            
+        }  
+
+    })
+});
+
+   
+
+        //console.log(result.docs.length);
+        var counter = 0;
+          var counter1 = 0;
+
+    for(var i = 0; i < result.docs.length;i++){   
+
+        var docs1={}
+        docs1['_id'] =result.docs[i]._id
+        docs1['updatedAt'] =result.docs[i].updatedAt
+        docs1['createdAt'] =result.docs[i].createdAt
+        docs1['userId'] =result.docs[i].userId
+        docs1['remoteUserId'] =result.docs[i].remoteUserId
+        docs1['chatDate'] =result.docs[i].chatDate
+        docs1['postid'] =result.docs[i].postid
+        docs1['__v'] =result.docs[i].__v
+        docs1['chat_offer'] =result.docs[i].chat_offer
+        docs1['deleted_by'] =result.docs[i].deleted_by
+        docs1['randomid'] =result.docs[i].randomid
+        docs1['receiver_seen'] =result.docs[i].receiver_seen
+        docs1['sender_seen'] =result.docs[i].sender_seen
+        docs1['size'] =result.docs[i].size
+        docs1['chatFileName'] =result.docs[i].chatFileName
+        docs1['attachment'] =result.docs[i].attachment
+        docs1['chatText'] =result.docs[i].chatText
+        docs1['roomId'] =result.docs[i].roomId
+        docs1['ffff'] ="fffffffff" 
+          tset1.push(docs1);           
+
+  }*/
+
+
+
+
+
+
+//setTimeout(function () {
+
+
+     var all_obj ={result:result,rating:rating2};
+  // var all_obj ={result:result, rating:rating2};
+callback({success: true,Chats: all_obj});
+
+//}, 100);
+
+
+
+
+
+                   
+            
+               
+            
+                
+            }
+        });
+        
+        
+        
+    }
+});
+
+},
+
+/**/
+seenmessage: function (ChatData, userData, cb) {
+    console.log('updateseen Chatuser --> ', ChatData);
+    console.log('updateseen userData --> ', userData);
+    console.log('updateseen userData chatUserId --> ', userData.chatUserId);
+    
+    async.waterfall([
+        
+        function (callback) {
+            var errMsg = "";
+            data = [];
+            
+            var userlist = ChatData
+            var ingredient_ids = []
+            
+            async.each(userlist, function (useritem, cb) {
+                var rescall = {}
+                
+                ChatModel.count({
+                    userId: useritem.userid,
+                    remoteUserId: userData.chatUserId,
+                    receiver_seen: 'no',
+                    deleted_by:null
+                }).exec(function (err, res) {
+                    console.log(res)
+                    rescall['unseen'] = res
+                    rescall['userid'] = useritem.userid
+                    ingredient_ids.push(rescall);
+                    cb(null, ingredient_ids);
+                    
+                })
+                
+            }, function () {
+                data = ingredient_ids
+                callback(null, errMsg, data);
+            });
+            
+        },
+        function (errMsg, itemdata, callback) {
+            var data = [];
+            if (errMsg != "") {
+                callback(null, errMsg, data);
+            } else {
+                
+                var ingredient = []
+                
+                async.each(itemdata, function (useritem, cb) {
+                    console.log('useritem', useritem)
+                    var resc = {}
+                    
+                    var query = {
+                        $or: [{
+                            userId: userData.chatUserId,
+                            remoteUserId: useritem.userid,
+                            postid: useritem.postid
+                        },
+                        {
+                            userId: useritem.userid,
+                            remoteUserId: userData.chatUserId,
+                            postid: useritem.postid
+                        }
+                    ],
+                    deleted_by:null
+                };
+                
+                ChatModel.findOne(query)
+                .sort('-createdAt')
+                .exec(function (err, records) {
+                    console.log(records)
+                    useritem['lastmsg'] = records
+                    ingredient.push(resc);
+                    cb(null, ingredient);
+                });
+                
+            }, function () {
+                
+                data = itemdata
+                callback(null, errMsg, data);
+            });
+            
+        }
+        
+    },
+    
+], function (err, errMsg, result) {
+    // console.log('Main Callback --> ' + result);
+    if (err) {
+        cb({
+            success: false,
+            message: "Some internal error has occurred",
+            err: err
+        });
+    } else if (errMsg != "") {
+        cb({
+            success: false,
+            message: errMsg
+        });
+    } else {
+        cb({
+            success: true,
+            message: "",
+            data: result
+        });
+    }
+});
+
+},
+
+updateseen: function (Chatuser, userData, callback) {
+    
+    console.log('Chatuser', Chatuser)
+    console.log('userData', userData)
+    
+    var conditions = {
+        $or: [{
+            userId: userData.chatUserId,
+            remoteUserId: Chatuser.userid,
+            postid: Chatuser.postid
+        },
+        {
+            userId: Chatuser.userid,
+            remoteUserId: userData.chatUserId,
+            postid: Chatuser.postid
+        }
+    ],
+    receiver_seen: 'no'
+};
+
+fields = {
+    receiver_seen: 'yes'
+},
+options = {
+    multi: true
+};
+console.log('conditions', conditions)
+
+ChatModel.update(conditions, fields, options, function (err, affected) {
+    if (err) {
+        console.log('Errr', err)
+        callback({
+            success: true,
+            message: err,
+        });
+        
+    } else {
+        console.log('affected', affected)
+        callback({
+            success: true,
+            message: affected
+        });
+    }
+});
+
+},
+
+sendofflinepushmessage: function (request_data, userData, callback) {
+    
+    var sendNotification = function () {
+        
+        UserModel.findOne({
+            chatUserId: request_data.id
+        }).exec(function (err, result) {
+            
+            var headers = {
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": "key=AAAAQvvx-eg:APA91bGC37Buhli-si7MMU1zCDq9tGMW7NDNj9Z5QGbIhT4CUVAeMhvdNJXxQzZkn-vTkXlh0sb6G_tKvkP6A1ToBcpsY0bPn4F2jN76WyKRo7KAKmj730rKMGKK2Z8J6ylHNQ97uFk4"
+            };
+            request({
+                url: 'https://fcm.googleapis.com/fcm/send',
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    "notification": {
+                        "title": request_data.username,
+                        "text": request_data.message,
+                        "click_action": "OPEN_ACTIVITY_1"
+                    },
+                    "data": {
+                        "keyname": "any value "
+                    },
+                    "to": result.deviceTokenAndroid
+                })
+            }, function (error, response, body) {
+                if (error) {
+                    console.error(error, response, body);
+                    callback({
+                        success: false,
+                        response: error
+                    });
+                    
+                } else if (response.statusCode >= 400) {
+                    callback({
+                        success: false,
+                        response: response
+                    });
+                    
+                } else {
+                    
+                    callback({
+                        success: true,
+                        response: response
+                    });
+                    
+                }
+            });
+        });
+        
+    }
+    sendNotification();
+    
+},
+
+chatNotificationTest: function(request_data, user_data, callback){
+    var finalNotifiKK = [];
+    var finalNotifiElam = [];
+    
+    
+    async.waterfall ([
+        checkChatList,
+        chatNotificationRes,
+        setval
+        
+    ],function(err,response){
+        if(err){
+            callback({success:false,message:err})
+        }else{
+            callback({success:true,data:response})
+            
+        }
+    });
+    
+    function checkChatList(callback){
+        
+        var postArr =[];   
+        // ChatModel.find({ remoteUserId: user_data.id, receiver_seen: "no" })
+        ChatModel.find({ remoteUserId: user_data.id })
+        .exec(function (err, countChat) { 
+            if(err){
+                callback({success:false,message:err})
+            }else{
+                forEach(countChat, function(item, index){                     
+                    var t1=item.userId;
+                    var t2=item.postid;
+                    var t3=t1+'~'+t2;
+                    //console.log("item",item);
+                    postArr.push(t3);                           
+                });    
+                var uniqueItems = Array.from(new Set(postArr))
+                callback(null,uniqueItems)
+            }
+        });                     
+    }
+    
+    function chatNotificationRes(checkChatList,callback){
+        
+        console.log("checkChatList",checkChatList);
+        if (checkChatList === undefined || checkChatList.length == 0) {                               
+            callback(null,finalNotifiKK)                                    
+        }
+        
+        var itemsProcessed = 0;                 
+        checkChatList.forEach(function(element) {
+            var res = element.split("~");            
+            var  userId =res[0];
+            var  postid =res[1];
+            var  remoteUserId = user_data.id;
+            ChatModel.findOne({})
+            .select('_id createdAt receiver_seen userId postid remoteUserId chat_offer')
+            .where('userId',userId) 
+            .where('remoteUserId',remoteUserId) 
+            .where('postid',postid)
+            /*  .where('deleted_by',null)*/
+            //.sort('-date')
+            .sort({createdAt: 'desc'})
+            .populate({'path': 'userId','select': 'name fname lname email' })
+            .populate({'path': 'postid','select': 'title' })
+            //.limit(1)
+            .exec(function (err, finalNotification) { 
+                if(err){
+                    callback(err)
+                }else{
+                     
+                    
+                    
+                    
+                    finalNotifiKK.push(finalNotification); 
+                    
+                }
+                itemsProcessed++;
+                if(itemsProcessed === checkChatList.length) {
+                    callback(null,finalNotifiKK)
+                } 
+                
+            });
+            
+        });
+        
+    }
+    
+    
+    function setval(finalNotifiKK,callback){
+        console.log(finalNotifiKK)
+
+      //  callback(finalNotifiKK)
+ var res=[]
+        async.each(finalNotifiKK,function(item,cb){
+     var newval={}
+     
+
+            OfferModel.find()
+            .where('to', item.userId.id) 
+            .where('from',item.remoteUserId) 
+            //.where('postid',item.postid._id) //xyz
+            .where('postid',item.postid) 
+            .populate({'path': 'to','select': 'name fname lname email' })          
+            .populate({'path': 'postid','select': 'title' })
+            .exec(function (err, offerNotification) { 
+                
+                var obj={
+                  //  offer:offerNotification,
+                    chatNotification:item
+                }
+                
+                newval['item']=obj
+                
+                console.log(newval)
+                
+                res.push(newval)
+                cb(null,res)
+
+                
+                
+            });
+             
+
+            
+            
+            
+            
+         },function(){
+           console.log('res',res)
+
+             var arrSortT = arraySort(res, 'item.chatNotification.createdAt');
+            //console.log('setfinal',arrSortT)
+            var arrSortT1 = arrSortT.reverse();
+             callback(null,arrSortT1)
+        })                
+        
+        
+        
+        
+    }
+    
+    
+},
+
+
+
+
+chatNotification: function(request_data, user_data, callback){
+    // console.log("request_data", request_data);  
+    //console.log("user_data", user_data);     
+    
+    //var postArr =[];   
+    //var finalNotifi =[];        
+    
+    ChatModel.find({ remoteUserId: user_data.id, receiver_seen: "no" })
+    .populate({path:'userId'})
+    .populate({path:'postid'})
+    .exec(function (err, countChat) { 
+        
+        if(err){
+            callback(err)
+        }else{
+            
+            console.log("countChat", countChat);   
+            callback(countChat)    
+            
+            /*forEach(countChat, function(item, index){                     
+                var t1=item.userId;
+                var t2=item.postid;
+                var t3=t1+'~'+t2;
+                console.log("item",item);
+                postArr.push(t3);                           
+            });     
+            
+            var uniqueItems = Array.from(new Set(postArr))
+            uniqueItems.forEach(function(element) {
+                var res = element.split("~");
+                console.log("userId",res[0]);
+                console.log("postid",res[1]);
+                console.log("remoteUserId",user_data.id);                  
+                
+                var  userId =res[0];
+                var  postid =res[1];
+                var  remoteUserId =user_data.id;
+                
+                ChatModel.find({})
+                .where('userId',userId) 
+                .where('remoteUserId',remoteUserId) 
+                .where('postid',postid)
+                
+                .populate({path:'postid'})
+                .exec(function (err, finalNotification) { 
+                    console.log("finalNotifi",finalNotification); 
+                    
+                    // finalNotifi.push(finalNotification);   
+                    //console.log("finalNotifi KKK",finalNotifi); 
+                    
+                    finalNotifi.push(finalNotification);   
+                    
+                });
+                
+                console.log("finalNotifi kkk",finalNotifi); 
+                // callback(finalNotifi)  
+                
+            });*/
+            
+            
+            
+            
+            
+            //  console.log("uniqueItems",uniqueItems);         
+            
+            
+            
+            
+        }
+        
+        
+        
+    }); 
+    
+    
+},
+
+userchatRating: function (request_data, callback) {
+    
+    // console.log("request_data.userid", request_data);
+    // console.log("request_data.userid", request_data.userid);      
+    
+    var conditions = {
+        $or: [{
+            _id: request_data.postid
+        },
+        {
+            _id: request_data.postid
+        }
+    ],           
+};
+
+
+
+RatingModel.count({})        
+.where('userid',request_data.userid) 
+.where('postid',request_data.postid) 
+.exec(function (err, rating) {
+    if (err) {
+        // console.log('Errr', err)
+        callback({ success: false, message: err});
+        
+    } else {
+        // console('rating', rating);
+        if(rating>0){
+            // console.log("update");
+            callback({success: true, message:'Rating already submit'});
+            
+            
+        }else{
+            
+            // console.log("iNSERT");
+            
+            var Rating = new RatingModel({
+                userid: request_data.userid,                                                                        
+                postid: request_data.postid,
+                postrating: request_data.userrating  
+            });
+            
+            Rating.save(function (err, res) {
+                if (err){
+                    callback({ success: false, message: err});
+                }else{
+                    
+                    PostModel.findOne({
+                        _id: request_data.postid
+                    })
+                    .select('_id userrating')
+                    .exec(function (err, postrate) {
+                        if (err) {
+                            callback({ success: false, message: err});
+                        }else{
+                            if(postrate.userrating>0){
+                                var rste = (parseFloat(postrate.userrating) + parseFloat(request_data.userrating))/2;
+                                fields = {userrating: rste}, 
+                                options = { multi: true };
+                                PostModel.update(conditions, fields, options, function (err, affected) {
+                                    if (err) {
+                                        callback({ success: false, message: err});
+                                    } else {
+                                        callback({success: true, message:'Successfully submitted your rating'});
+                                    }
+                                });
+                                
+                            }else{
+                                
+                                fieldsq = { userrating: request_data.userrating },
+                                options = {multi: true};
+                                PostModel.update(conditions, fieldsq, options, function (err, affected) {
+                                    if (err) {
+                                        //console.log('Errr', err)
+                                        callback({ success: false, message: err});
+                                        
+                                    } else {
+                                        // console.log('affected2', affected);
+                                        callback({success: true, message:'Successfully submitted your rating', data: affected});
+                                    }
+                                });
+                                
+                            }
+                            
+                        }
+                    });
+                    
+                    
+                }                                
+                
+            });                    
+            
+        }
+        
+        
+        
+        
+    }
+});
+
+},
+deletechatOneside: function (request_data, callback) {
+    
+    console.log("request_data",request_data);
+    
+    var conditions1 = {
+        $or: [{
+            send_userid: request_data.userid,  
+            receive_userid: request_data.remoteUserId,                
+            postid: request_data.postid
+        },
+        {
+            send_userid: request_data.userid,  
+            receive_userid: request_data.remoteUserId,                
+            postid: request_data.postid
+        }
+    ],           
+};
+
+fields = {
+    deleted_by: request_data.userid
+},
+options = {
+    multi: true
+};
+
+
+ChatpostUserModel.update(conditions1, fields, options, function (err, test) {
+    if (err) {
+        console.log('Errr', err)
+        callback({ success: false, message: err});
+        
+    } else {
+        console.log('affected2', test);
+        console.log('affected2', request_data.userid);
+        console.log('affected2', request_data.postid);
+        console.log('request_data', test);
+        //callback({success: true, message:'Successful updated', data: affected });
+        var usrIDD= request_data.userid
+        
+        var conditionsT = {
+            $or: [{
+                remoteUserId: request_data.userid,  
+                userId: request_data.remoteUserId,              
+                postid: request_data.postid
+            },
+            {
+                remoteUserId: request_data.userid, 
+                remoteUserId: request_data.remoteUserId,                
+                postid: request_data.postid
+            }
+        ],           
+    };
+    
+    
+    
+    fieldsT = {
+        deleted_by: request_data.userid
+    },
+    optionsT = {
+        multi: true
+    };
+    
+    
+    ChatModel.update(conditionsT, fieldsT, optionsT, function (err, affected) {
+        if (err) {
+            console.log('Errr', err)
+            callback({
+                success: false,
+                message: err,
+            });
+            
+        } else {
+            console.log('affected1', affected)
+            callback({
+                success: true,
+                message: affected
+            });
+        }
+    });
+}
+});
+
+
+
+
+
+
+},
+
+
+deletechat: function (request_data, userData, callback) {
+    
+    var value = request_data;
+    
+    ChatModel.count({
+        randomid: {
+            $in: value
+        },
+        deleted_by: null
+    }).exec(function (err, res) {
+        
+        if (res <1) {
+            
+            ChatModel.deleteMany({
+                randomid: {
+                    $in: value
+                }
+            }).exec(function (err, response) {
+                
+                if (err) {
+                    
+                    callback(err);
+                    callback({
+                        success: false,
+                        message: err
+                    });
+                    
+                } else {
+                    
+                    callback({
+                        success: true,
+                        message: 'Successful deleted',
+                        response: response
+                    });
+                    
+                }
+                
+            });
+        } else {
+            
+            ChatModel.update({
+                randomid: {
+                    $in: value
+                } // conditions
+            }, {
+                deleted_by: userData.chatUserId
+            }, {
+                multi: true // options
+            },
+            function (err, count) {
+                if (err) {
+                    console.log(err);
+                    callback(err);
+                    
+                } else {
+                    callback(count);
+                    console.log(count);
+                }
+            });
+        }
+        
+    })
+    
+},
+
+clearchat:function(request_data,userData,callback){
+    var deletevalue=[];
+    var updatevalue=[];
+    var conditions = {
+        $or: [{
+            userId: userData.chatUserId,
+            remoteUserId: request_data.remoteUserId
+        },
+        {
+            userId: request_data.remoteUserId,
+            remoteUserId: userData.chatUserId
+        }
+    ],
+};
+ChatModel.find(conditions)
+.select('deleted_by').exec(function(err,res){
+    if(res){
+        for(var i=0;i<res.length;i++){
+            
+            if(res[i].deleted_by!=null){
+                console.log(res[i]._id);
+                deletevalue.push(res[i]._id);
+            }else{
+                console.log(res[i]._id);
+                updatevalue.push(res[i]._id);
+            }
+            
+        }
+        if (deletevalue.length >0) {
+            
+            ChatModel.deleteMany({
+                _id: {
+                    $in: deletevalue
+                }
+            }).exec(function (err, response) {
+                
+                if (err) {
+                    
+                    callback(err);
+                    callback({
+                        success: false,
+                        message: err
+                    });
+                    
+                } else {
+                    
+                    callback({
+                        success: true,
+                        message: 'Successful deleted',
+                        response: response
+                    });
+                    
+                }
+                
+            });
+        } 
+        
+        if (updatevalue.length >0) 
+        {
+            
+            ChatModel.update({
+                _id: {
+                    $in: updatevalue
+                } // conditions
+            }, {
+                deleted_by: userData.chatUserId
+            }, {
+                multi: true // options
+            },
+            function (err, count) {
+                if (err) {
+                    console.log(err);
+                    callback(err);
+                    
+                } else {
+                    callback(count);
+                    console.log(count);
+                }
+            });
+        }
+        
+    }
+    
+})
+
+}
+
+}
+
+module.exports = ChatController;

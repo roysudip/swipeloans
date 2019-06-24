@@ -1,0 +1,212 @@
+<!--
+  Generated template for the FilterPage page.
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header *ngIf="headerClass">
+  <ion-navbar>
+      <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Search Filter</ion-title>
+      <span class="clo_se"  navPop></span>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="bgClass">
+    <ul class="loanOption">
+        <!-- <li (click)="loan_Type()"> -->
+          <li (click)='GotoFilterItem("LoanType")'>
+            <p>Loan type <span *ngIf="SelectedLoanTypeSize>0" >{{SelectedLoanTypeSize}}</span></p>
+            <span class="rightArrow"></span>
+        </li>
+        <!-- <li (click)='loan_Feature()'> -->
+            <li (click)='GotoFilterItem("LoanFeature")'>
+            <p>Loan Features <span *ngIf="SelectedLoanFeatureSize>0" >{{SelectedLoanFeatureSize}}</span></p>
+            <span class="rightArrow"></span>
+
+        </li>
+        <!-- <li (click)='ban_Ks()'> -->
+            <li (click)='GotoFilterItem("LoanLender")'>
+            <p>Banks & Lenders <span *ngIf="SelectedLoanLenderSize>0" >{{SelectedLoanLenderSize}}</span></p>
+            <span class="rightArrow"></span>
+        </li>
+
+
+        <!-- <li (click)='FixedrateTermsCallback()'> -->
+            <li (click)='GotoFilterItem("LoanFixedRate")'>
+            <p>Fixed Rate Terms <span *ngIf="SelectedFixedRateSize>0" >{{SelectedFixedRateSize}}</span></p>
+            <span class="rightArrow"></span>
+        </li>
+<!--
+        <li (click)='VariableRateCallback()'> -->
+            <li (click)='GotoFilterItem("LoanVariableRate")'>
+            <p>Variable Rate Options <span *ngIf="SelectedVariableRateSize>0" >{{SelectedVariableRateSize}}</span></p>
+            <span class="rightArrow"></span>
+        </li>
+
+        <!-- <li (click)='LVRCallback()'> -->
+            <li (click)='GotoFilterItem("LoanLVR")'>
+          <p>LVR <span *ngIf="SelectedLVRSize>0" >{{SelectedLVRSize}}</span></p>
+          <span class="rightArrow"></span>
+      </li>
+
+        <!-- <li (click)='fee_s()'> -->
+            <li (click)='GotoFilterItem("LoanSortBy")'>
+            <p>Sort By <span *ngIf="SelectedSortBySize>0" >{{SelectedSortBySize}}</span></p>
+            <span class="rightArrow"></span>
+        </li>
+    </ul>
+
+    <div class="clearFilter">
+        <button (click)='ClearAllFilter()'>Clear all Filters</button>
+
+        </div>
+
+          <button class="loginBtn" (click)="getfilterresult()">View Result</button>
+    <div class="topDiv"> <div class="logo"> <span> <img src="assets/images/logo.png" alt=""> </span> </div> </div>
+
+</ion-content>
+
+
+<div class="absoluteDiv" *ngIf="loanType">
+        <div class="newHeader">
+            <p>Loan Type</p>
+            <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+            <span class="Clffltr" (click)='ClearType()'>Clear</span>
+        </div>
+        <div class="bodySection">
+                <ul class="check_box" *ngIf="LoanTypeList && LoanTypeList.length>0">
+                    <li *ngFor="let LoanType of LoanTypeList">
+                        <input [(ngModel)]="LoanType.checked" id="{{LoanType._id}}" type="checkbox" name="loan_type" value="{{LoanType._id}}"  (click)='GetLoanTypeVal($event,LoanType)'>
+                        <label for="{{LoanType._id}}"><span></span>{{LoanType.type}}</label>
+                    </li>
+                </ul>
+        <button class="loginBtn" (click)="GetLoanTypeResult()">View Result</button>
+
+        </div>
+</div>
+
+<div class="absoluteDiv" *ngIf="loanFeature">
+        <div class="newHeader">
+            <p>Loan Features</p>
+            <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+            <span class="Clffltr" (click)='ClearFeature()'>Clear</span>
+        </div>
+        <div class="bodySection">
+                <ul class="check_box" *ngIf="LoanFeatureList && LoanFeatureList.length>0">
+                        <li *ngFor="let lf of LoanFeatureList">
+                                <input id="{{lf._id}}" [(ngModel)]="lf.checked" type="checkbox" name="loan_feature" value="{{lf._id}}" (click)="GetLoanFeatureVal($event,lf)">
+                                <label for="{{lf._id}}"><span></span>{{lf.feature}}</label>
+                        </li>
+                </ul>
+        <button class="loginBtn" (click)="GetLoanFetureResult()">View Result</button>
+
+        </div>
+</div>
+
+<div class="absoluteDiv" *ngIf="banks">
+        <div class="newHeader">
+            <p>Banks & Lenders</p>
+            <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+            <span class="Clffltr" (click)='ClearLender()'>Clear</span>
+        </div>
+        <div class="bodySection">
+                <ul class="check_box" *ngIf="LoanLenderList && LoanLenderList.length>0">
+                        <li *ngFor="let lln of LoanLenderList">
+                            <input id="{{lln._id}}" type="checkbox" name="loan_lender" [(ngModel)]="lln.checked" value="{{lln._id}}" (click)="GetLoanlenderVal($event, lln)">
+                            <label for="{{lln._id}}"><span></span>{{lln.lender}}</label>
+                        </li>
+                    </ul>
+        <button class="loginBtn" (click)="GetLoanLenderResult()">View Result</button>
+
+        </div>
+</div>
+
+<div class="absoluteDiv" *ngIf="fees">
+        <div class="newHeader">
+            <p>Sort By</p>
+            <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+
+        </div>
+        <div class="bodySection">
+
+                <ul class="check_box">
+                        <li>
+                            <input id="radio13" type="radio" name="radio4" value="comparsion_rate" checked="checked" [(ngModel)]="SortBy">
+                            <label for="radio13"><span><span></span></span>Lowest Comparison Rate</label>
+                        </li>
+                        <li>
+                            <input id="radio15" type="radio" name="radio4" value="lender" [(ngModel)]="SortBy">
+                            <label for="radio15"><span><span></span></span>Lender (Alphabetically)</label>
+                        </li>
+                        <li>
+                            <input id="radio16" type="radio" name="radio4" value="setup_fees" [(ngModel)]="SortBy">
+                            <label for="radio16"><span><span></span></span>Lowest Fees</label>
+                        </li>
+                    </ul>
+        <button class="loginBtn" (click)="GetSortByResult()">View Result</button>
+
+        </div>
+</div>
+
+<div class="absoluteDiv" *ngIf="FRate">
+    <div class="newHeader">
+        <p>Fixed Rate Terms</p>
+        <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+        <span class="Clffltr" (click)='ClearFixedRate()'>Clear</span>
+    </div>
+    <div class="bodySection">
+            <ul class="check_box" *ngIf="LoanFixedRateList && LoanFixedRateList.length>0">
+                    <li *ngFor="let FixedRate of LoanFixedRateList">
+                        <input id="{{FixedRate._id}}" type="checkbox" name="FixedRate" [(ngModel)]="FixedRate.checked" value="{{FixedRate._id}}" (click)="GetLoanFixedRateVal($event, FixedRate)">
+                        <label for="{{FixedRate._id}}"><span></span>{{FixedRate.termsofyr}}</label>
+                    </li>
+                </ul>
+    <button class="loginBtn" (click)="GetLoanFixedRateResult()">View Result</button>
+
+    </div>
+</div>
+
+
+<div class="absoluteDiv" *ngIf="VRate">
+    <div class="newHeader">
+        <p>Variable Rate Options</p>
+        <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+        <span class="Clffltr" (click)='ClearVariableRate()'>Clear</span>
+    </div>
+    <div class="bodySection">
+            <ul class="check_box" *ngIf="LoanVariableRateList && LoanVariableRateList.length>0">
+                    <li *ngFor="let VariableRate of LoanVariableRateList">
+                        <input id="{{VariableRate._id}}" type="checkbox" name="VariableRate" [(ngModel)]="VariableRate.checked" value="{{VariableRate._id}}" (click)="GetLoanVariableRateVal($event, VariableRate)">
+                        <label for="{{VariableRate._id}}"><span></span>{{VariableRate.variablerate}}</label>
+                    </li>
+                </ul>
+    <button class="loginBtn" (click)="GetLoanVariableRateResult()">View Result</button>
+
+    </div>
+</div>
+
+<div class="absoluteDiv" *ngIf="LVRRate">
+  <div class="newHeader">
+      <p>Variable Rate Options</p>
+      <button class="closeBtn"  (click)='closeDiv()'>Close</button>
+      <span class="Clffltr" (click)='ClearLVR()'>Clear</span>
+  </div>
+  <div class="bodySection" *ngIf="LoanLVRList && LoanLVRList.length>0" >
+          <ul class="check_box">
+                  <li *ngFor="let LVR of LoanLVRList">
+                      <input id="{{LVR._id}}" type="checkbox" name="LVR" [(ngModel)]="LVR.checked" value="{{LVR._id}}" (click)="GetLoanLVRVal($event, LVR)">
+                      <label for="{{LVR._id}}"><span></span>{{LVR.ratio}}</label>
+                  </li>
+              </ul>
+  <button class="loginBtn" (click)="GetLoanLVRResult()">View Result</button>
+
+  </div>
+</div>
+
+
+
+
+
+

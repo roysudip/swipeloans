@@ -1,0 +1,40 @@
+<!--
+  Generated template for the PropertyReportPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>RP Data Property Report</ion-title>
+    <span navPop class="clo_se"></span>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding class="bgClass">
+        <div class="heading">
+              <p>RP Data property reports are a very useful when you are researching property. The reports show property specific data, suburb data and comparative sales data, along with a value estimate.</p><p> Enter the address below you would like a report for. We will generate you a report for free.</p><p> Get as many as you need!</p>
+        </div>
+
+        <!--<div class="reportDiv">
+            <h4>Get as many as you need</h4>
+        </div>-->
+      <!-- <form [ngFormModel]="prop.myForm"> -->
+          <div class="reportDiv2">
+              <input type="text" placeholder="Address" [(ngModel)]="prop.report_address" placeholder="Please enter your address here.">
+              <!--<input type="number" placeholder="Phone Number" max="15" min="6" [(ngModel)]="prop.report_ph">-->
+              <input type="hidden" [(ngModel)]="prop.user_name">
+              <input type="hidden" [(ngModel)]="prop.user_email">
+              <!-- <textarea placeholder="Description" [(ngModel)]="prop.report_description"></textarea> -->
+          </div>
+          <div class="bottomButtan">
+              <button (click)="sendproprtyreport()">confirm</button>
+
+          </div>
+      <!-- </form> -->
+      <div class="newLogo"> <p>Data provided by</p> <span> <img src="assets/images/corelogic-logo-vector.png" alt=""> </span> </div>
+</ion-content>

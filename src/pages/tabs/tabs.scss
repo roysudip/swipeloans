@@ -1,0 +1,154 @@
+tabs-page{
+    ion-icon::before{
+        width: 25px;
+        height: 25px;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    .ion-md-search:before,
+    .ion-ios-search:before,
+    .ion-ios-search-outline:before{
+        content: "";
+        background-image: url(../assets/images/searchIcon.png);
+    }
+    .ion-md-information-circle:before,
+    .ion-ios-information-circle:before,
+    .ion-ios-information-circle-outline:before{
+        content: "";
+        background-image: url(../assets/images/favouriteIcon.png);
+        width: 28px;
+        height: 25px;
+    }
+    .ion-md-settings:before,
+    .ion-ios-settings-outline:before,
+    .ion-ios-settings:before{
+        content: "";
+        background-image: url(../assets/images/chatIcon.png);
+    }
+    .ion-md-mic:before,
+    .ion-ios-mic-outline:before,
+    .ion-ios-mic:before{
+        content: "";
+        background-image: url(../assets/images/magIcon.png);
+        width: 30px;
+        height: 21px;
+    }
+    .ion-md-contacts:before,
+    .ion-ios-contacts-outline:before,
+    .ion-ios-contacts:before{
+        content: "";
+        background-image: url(../assets/images/moreIcon.png);
+    }
+
+    .tabs-md[tabsLayout=icon-top] .has-icon .tab-button-text,
+     .has-title .tab-button-text{
+        display: none;
+    }
+    .tabs-md .tabbar,
+    .tabs-ios .tabbar{
+        background-color: #022f63;
+    }
+    .tabs-ios .tab-button-icon{
+        height: auto;
+    }
+
+    // .filterCounter2{
+    //     background-color: #fb6061;
+    //     width: 20px;
+    //     height: 13px;
+    //     display: inline-block;
+    //     border-radius: 50px;
+    //     margin-left: 5px;
+    //     text-align: center;
+    //     vertical-align: middle;
+    //     padding-top: 2px;
+    //     font-size: 10px;
+    //     top: -4px;
+    //     right: -10px;
+    //     position: absolute;
+    //     color: #fff;
+    // }
+    .tab-badge {
+        right: 4%;
+        top: 7px;
+        right: calc(50% - 50px);
+        padding: 1px 6px;
+        position: absolute;
+        height: auto;
+        font-size: 12px;
+        line-height: 16px;
+        background-color: #fb6061;
+    }
+    .tabs .tab-button-icon,.tab-button{
+        overflow: visible;
+        position: relative;
+    }
+
+    @media(min-width:768px){
+        // ion-icon::before{
+        //     width: 60px;
+        //     height: 60px;
+        //     background-size: cover;
+        //     background-repeat: no-repeat;
+        // }
+        // .filterCounter2{
+        //     width: 35px;
+        //     height: 22px;
+        //     font-size: 18px;
+        // }
+        .ion-md-mic:before,
+        .ion-ios-mic-outline:before,
+    .ion-ios-mic:before{
+            width: 70px;
+            height: 50px;
+        }
+        .ion-md-information-circle:before,
+        .ion-ios-information-circle:before,
+    .ion-ios-information-circle-outline:before{
+            width: 57px;
+            height: 55px;
+        }
+
+        .ion-md-search:before,
+        .ion-ios-search:before,
+    .ion-ios-search-outline:before{
+            width: 60px;
+            height: 63px;
+        }
+        .ion-md-information-circle:before,
+        .ion-ios-information-circle:before,
+    .ion-ios-information-circle-outline:before{
+            width: 62px;
+            height: 56px;
+        }
+        .ion-md-settings:before,
+        .ion-ios-settings-outline:before,
+    .ion-ios-settings:before{
+            width: 62px;
+            height: 63px;
+        }
+        .ion-md-contacts:before,
+        .ion-ios-contacts-outline:before,
+    .ion-ios-contacts:before{
+            width: 64px;
+            height: 63px;
+        }
+        .tabs .tabbar{
+            padding-top: 35px;
+            padding-bottom: 35px;
+        }
+
+        .tab-badge {
+            right: 21px!important;
+            top: -15px;
+            right: calc(50% - 50px);
+            padding: 7px 16px;
+            position: absolute;
+            height: auto;
+            font-size: 25px;
+            line-height: normal;
+            background-color: #fb6061;
+            border-radius: 50%;
+        }
+    }
+}

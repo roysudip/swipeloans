@@ -1,0 +1,166 @@
+calculatorModule.controller('borrowController', borrowController);
+borrowController.$inject = ['$timeout', 'calculatorFactory', 'commonFactory'];
+function borrowController($timeout, calculatorFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.errorMessage = {};
+    vm.cms = {};
+    //all cms list
+    vm.getAllCms = function () {
+        // cmsFactory.getAllCms()
+        //     .success(function (data) {
+        //         if (data.cms && data.cms.length > 0) {
+        //             vm.cms = data.cms;
+        //         } else {
+        //             vm.cms = '';
+        //         }
+        //     });
+    };
+    vm.getAllCms();
+    vm.currentCalculatorId = 0;
+    vm.currentCalculatorStat = null;
+    vm.statusMessage = {
+        success: false,
+        error: false,
+        content: "",
+        onModal: false
+    };
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+    vm.activeOptions = [
+        { value: true, label: 'Yes' },
+        { value: false, label: 'No' }
+    ];
+    vm.typeOptions = [
+        { value: 'simple', label: 'Simple Input' },
+        { value: 'comment', label: 'Comments only' },
+        { value: 'option', label: 'Options' },
+        { value: 'number', label: 'Number Range' }
+    ];
+    vm.resetCalculatorData = function () {
+        vm.calculatorData = {
+            title: "",
+            content: "",
+            is_active: "yes",
+            type: "simple",            
+            options: [{"id":'option1'}]
+        };
+    };
+    vm.resetCalculatorData();
+
+    vm.addOption = function(){
+        vm.optionLength = vm.optionLength+1;
+        vm.calculatorData.options.push({"id": 'option'+parseInt(vm.optionLength)});        
+    }
+
+    vm.removeOption = function(index){
+        vm.optionLength = vm.optionLength-1;
+        vm.calculatorData.options.splice(index, 1);        
+    }
+
+    //open add modal
+    vm.addborrowModal = function () {
+        vm.isUpdate = false;
+        vm.resetCalculatorData();
+        $('#saveBorrow').modal('show');
+    };
+
+    //Open View Model
+    vm.showDetailsModal = function (cms_id) {
+        cmsFactory.getCmsDetailsById(cms_id).success(function (data) {
+            if (data.success) {
+                vm.cmsData = {
+                    title: data.cms.title,
+                    content: data.cms.content
+                };
+                vm.currentCmsId = data.cms._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#viewCms').modal('show');
+    };
+
+    //Open Update Model
+    vm.showUpdateModal = function (cms_id) {
+        cmsFactory.getCmsDetailsById(cms_id).success(function (data) {
+            if (data.success) {
+                vm.cmsData = {
+                    title: data.cms.title,
+                    content: data.cms.content,
+                    type: data.cms.type
+                };
+                vm.currentCmsId = data.cms._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#saveCms').modal('show');
+    };
+    // update cms
+    vm.saveCms = function () {
+        vm.clearStatusMessage();
+        if (vm.isUpdate && vm.currentCmsId != 0) {
+            if (vm.cmsData.title == '' || vm.cmsData.title == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.title = 'please enter title.';
+            } else if (vm.cmsData.content == '' || vm.cmsData.content == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.content = 'please enter content.';
+            } else {
+                vm.errorMessage = {};
+                cmsFactory.updateCms(vm.currentCmsId, vm.cmsData).success(function (data) {
+                    if (data.success) {
+                        vm.statusMessage.error = false;
+                        vm.statusMessage.success = true;
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                        vm.getAllCms();
+                        $('#saveCms').modal('hide');
+                    } else {
+                        vm.statusMessage.success = false;
+                        vm.statusMessage.error = true;
+                        vm.statusMessage.onModal = true;
+                    }
+                    vm.statusMessage.content = data.message;
+                });
+            }
+
+        } else {
+            if (vm.cmsData.title == '' || vm.cmsData.title == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.title = 'please enter title.';
+            } else if (vm.cmsData.slug == '' || vm.cmsData.slug == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.slug = 'please enter slug.';
+            } else if (vm.cmsData.content == '' || vm.cmsData.content == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.content = 'please enter content.';
+            } else {
+                vm.errorMessage = {};
+                cmsFactory.saveCms(vm.cmsData).success(function (data) {
+                    if (data.success) {
+                        vm.statusMessage.success = true;
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                        vm.getAllCms();
+                        $('#saveCms').modal('hide');
+                    } else {
+                        vm.statusMessage.error = true;
+                        vm.statusMessage.onModal = true;
+                    }
+                    vm.statusMessage.content = data.message;
+                });
+            }
+        }
+    };
+    vm.setCurrentCmsId = function (cmsid) {
+        vm.currentCmsId = cmsid;
+    };
+}

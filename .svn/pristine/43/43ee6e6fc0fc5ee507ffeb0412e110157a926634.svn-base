@@ -1,0 +1,68 @@
+"use strict";
+var express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var session = require('express-session');
+var adminFaq = express.Router();
+var faqService = require('../service/FaqService');
+//======================
+//  Middleware to check the login
+//=========================
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+//faq listing page
+adminFaq.route('/')
+    .get(checkLogin, function (req, res) {
+        res.render('admin/faqs/index', { admin: req.session.admin, title: "Faqs", "active": "faqs",child_active:'' });
+    });
+//add faq
+adminFaq.post('/', checkLogin, function (req, res) {
+    var faqData = req.body;
+    faqService.createFaqAdmin(faqData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//updtae faq
+adminFaq.put('/:faqId', checkLogin, function (req, res) {
+    var faqData = req.body;
+    var faqId = req.params.faqId;
+    faqService.update(faqId, faqData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//delete faq
+adminFaq.delete('/:faqId', checkLogin, function (req, res) {
+    var faqId = req.params.faqId;
+   // res.json(faqId);
+    faqService.delete(faqId, function (response) {
+        res.json(response);
+    });
+});
+//all faq list
+adminFaq.get('/getAllFaq', function (req, res) {
+    faqService.getAllFaqs(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//faq details by id
+adminFaq.get('/getDetails/:faqId', function (req, res) {
+    faqService.getDetailsById(req.params.faqId, function (response) {
+        res.json(response);
+    });
+});
+//chnage faq status
+adminFaq.put('/changeStatus/:faqId', function (req, res) {
+    var faqId = req.params.faqId;
+    var faqData = req.body;
+    faqService.changeStatus(faqId, faqData.is_active, function (response) {
+        res.json(response);
+    });
+});
+module.exports = adminFaq;

@@ -1,0 +1,175 @@
+loanModule.controller('typeController', typeController);
+typeController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function typeController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.types = {};
+    vm.type_length = '';
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.loanData = {};
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //all lvr list
+    vm.getAlltypes = function () {
+        loanFactory.getAlltypes().success(function (data) {
+            vm.type_length = data.types.length;
+            if (data.types && data.types.length > 0) {
+                vm.types = data.types;
+            } else {
+                vm.types = {};
+            }
+        });
+    };
+    vm.getAlltypes();
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+    vm.clearStatusMessage();
+
+    //Open Modal for loan value ratio
+    vm.loanTypeModal = function () {
+        $('#saveloanType').modal('show');
+    }
+    //open update modal
+    vm.showUpdateModal = function (typer_id) {
+        loanFactory.gettypeDetailsById(typer_id).success(function (data) {
+            if (data.success == true) {
+                vm.loanData = {
+                    type: data.type.type
+                };
+                vm.currentTypeId = data.type._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#saveloanType').modal('show');
+    };
+    //Reset loan value ratio
+    vm.resetData = function () {
+        vm.loanData = {
+            type: "",
+            is_active: "yes"
+        };
+    };
+    //Add/Edit loan value ratio
+    vm.savetype = function () {
+        if (vm.isUpdate && vm.currentTypeId != 0) {
+            if (vm.loanData.type == '' || vm.loanData.type == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.type = 'please enter loan type.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.updateType(vm.currentTypeId, vm.loanData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            vm.resetData();
+                            $('#saveloanType').modal('hide');
+                            vm.getAlltypes();
+                        } else {
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.onModal = true;
+                        }
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        } else {
+            if (vm.loanData.type == '' || vm.loanData.type == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.type = 'please enter loan type.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.savetype(vm.loanData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            vm.resetData();
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            vm.getAlltypes();
+                            $('#saveloanType').modal('hide');
+                        } else {
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.onModal = true;
+                        }
+
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        }
+    }
+
+    //Change Status
+    vm.toggleTypeStat = function (event, index) {
+        vm.currentTypeId = event.currentTarget.attributes['data-typeid'].value;
+        vm.currentTypeStat = event.currentTarget.getAttribute('data-status');
+        vm.doToggleTypeStatus(index);
+    };
+    vm.doToggleTypeStatus = function (index) {
+        if (vm.currentTypeId != 0 && vm.currentTypeId != null) {
+            loanFactory.currentTypeStat(vm.currentTypeId, vm.currentTypeStat).then(function (response) {
+                if (response.data.success) {
+                    vm.statusMessage.error = false;
+                    vm.statusMessage.success = true;
+                    vm.types[index].is_active = ((vm.currentTypeStat == 'yes') ? 'no' : 'yes');
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                } else {
+                    vm.statusMessage.success = false;
+                    vm.statusMessage.error = true;
+                }
+                vm.statusMessage.content = response.data.message;
+            });
+        }
+    };
+    //delete loan type by id
+    vm.deleteType = function () {
+        loanFactory.deleteType(vm.currentTypeId).success(function (data) {
+            if (data.success) {
+                vm.statusMessage.error = false;
+                vm.statusMessage.success = true;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmTypeDelete').modal('hide');
+                vm.getAlltypes();
+
+            } else {
+                vm.statusMessage.success = false;
+                vm.statusMessage.error = true;
+                vm.statusMessage.onModal = false;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmTypeDelete').modal('hide');
+                vm.getAlltypes();
+            }
+            vm.statusMessage.content = data.message;
+        });
+    };
+    //Set loan type id
+    vm.setCurrentTypeId = function (typeid) {
+        vm.currentTypeId = typeid;
+    };
+}
+

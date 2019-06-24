@@ -1,0 +1,194 @@
+
+page-property-report {
+
+  .bgClass{
+      background-color: #017bb8;
+  }
+  .back-button.show-back-button{
+      display: none;
+    }
+  input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #666666;
+  opacity: 1;
+  }
+  input::-moz-placeholder { /* Firefox 19+ */
+    color: #666666;
+  opacity: 1;
+  }
+  input:-ms-input-placeholder { /* IE 10+ */
+    color: #666666;
+  opacity: 1;
+  }
+  input:-moz-placeholder { /* Firefox 18- */
+    color: #666666;
+  opacity: 1;
+  }
+.heading p{
+  color: #fff;
+  font-family: 'Conv_Poppins-Light';
+  font-size: 16px;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.reportDiv,.reportDiv2{
+ /* border: 1px solid #fff;*/
+}
+.reportDiv {
+  margin-top: 30px;
+  border-bottom: 0;
+}
+
+.reportDiv2{
+  padding: 20px;
+}
+.reportDiv2 input{
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  min-height: 35px;
+  border: 1px solid #fff;
+  padding-left: 10px;
+  font-family: 'Conv_Poppins-Light';
+}
+
+.reportDiv2 textarea{
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  min-height: 60px;
+  border: 1px solid #fff;
+  padding-left: 10px;
+  font-family: 'Conv_Poppins-Light';
+  resize: none;
+}
+.reportDiv h4{
+  margin: 0;
+  color: #fff;
+  font-family: 'Conv_Poppins-Regular';
+  font-size: 18px;
+  padding: 15px 0;
+  text-align: center;
+}
+.bottomButtan {
+  // position: fixed;
+  width: 100%;
+  // left: 0;
+  // bottom: 15px;
+  padding: 0 15px;
+  margin-top: 25px;
+}
+
+.bottomButtan button{
+  width: 50%;
+  float: none;
+  display: block;
+  margin: auto;
+  padding: 15px 0;
+  background: #000;
+  color: #ffffff;
+  font-family: 'Conv_Poppins-Medium';
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.bottomButtan button:first-child{
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-right: 1px solid #000;
+}
+.bottomButtan button:last-child{
+  border-top-right-radius:10px;
+  border-bottom-right-radius: 10px;
+
+}
+.newLogo{
+  text-align: right;
+  width: 100%;
+  padding-right: 0px;
+  margin-top: 10px;
+  p{
+      color: #fff;
+      font-family: 'Conv_Poppins-Light';
+      font-size: 13px;
+      margin: 0;
+      margin-bottom: 3px;
+  }
+  span{
+      display: inline-block;
+      width: 100px;
+  }
+}
+
+
+@media(min-width:600px){
+  .reportDiv2{
+      margin-bottom: 150px;
+  }
+   .bottomButtan button{
+      padding: 20px 0;
+      font-size: 20px;
+  }
+}
+
+
+
+
+
+
+@media(min-width:768px){
+   .heading p {
+      font-size: 30px;
+      padding: 0 42px;
+  }
+  .heading{
+      padding-top: 24px;
+      margin-bottom: 120px;
+      margin-top: 30px;
+  }
+  .reportDiv h4{
+      font-size: 30px;
+      padding: 30px 35px;
+  }
+  .reportDiv2 input{
+      font-size: 26px;
+      min-height: 60px;
+      margin-bottom: 15px;
+      padding-left: 28px;
+  }
+
+  .reportDiv2 textarea{
+      font-size: 26px;
+      min-height: 110px;
+      margin-bottom: 15px;
+      padding-left: 28px;
+  }
+  .reportDiv2{
+      padding: 53px 59px 62px;
+      margin-bottom: 90px;
+  }
+
+  .bottomButtan button{
+      padding: 25px 0;
+      font-size: 26px;
+  }
+  .bottomButtan{
+      bottom: 50px;
+  }
+  .newLogo{
+      span{
+          width: 150px;
+      }
+      p{
+          font-size: 18px;
+          margin-bottom: 7px;
+      }
+  }
+}
+
+@media(min-width:320px) and (orientation:landscape){
+  .bottomButtan{
+      position: relative;
+  }
+}
+
+}

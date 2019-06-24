@@ -1,0 +1,163 @@
+page-notifications {
+//   ion-item-sliding.item-wrapper {
+//     background: #efefef;
+//     padding: 0;
+//     margin-bottom: 5px;
+// }
+ion-label.label.label-md {
+  margin: 0;
+}
+
+.unread {
+  background-color:transparent;
+}
+
+.clo_se2{
+  background-image: url(../assets/images/dislike.png);
+  width: 12px;
+  height: 12px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline-block;
+  position: absolute;
+  right: 2px;
+  top: 0px;
+}
+
+//new css
+.notificationDiv{
+  ion-item-sliding.item-wrapper{
+    margin-bottom: 15px;
+  }
+  .item{
+    padding-left: 0;
+    border: 1px solid #e3e4e4;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+  ion-item-sliding.item-wrapper{
+    background-color: transparent;
+  }
+  .item.item-block .item-inner{
+    padding-right: 0;
+  }
+  ion-label{
+    white-space: normal;
+  }
+}
+
+.notificationInner{
+  padding: 5px;
+  position: relative;
+  padding-top: 15px;
+  .titleDiv{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+
+    h6{
+      color: #242424;
+      font-family: 'Conv_Poppins-SemiBold';
+      font-size: 14px;
+      flex: 0 0 58%;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .rightDate{
+
+      flex: 0 0 42%;
+    text-align: right;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    p{
+      margin: 0;
+      color: #a4a4a4;
+      font-family: 'Conv_Poppins-Light';
+      font-size: 10px;
+    }
+    }
+    .iconDiv{
+      width: 10px;
+      height: 10px;
+      background-image: url(../assets/images/date_icon.png);
+      background-size: cover;
+      background-repeat: no-repeat;
+      left: 0;
+      top: 2px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+  }
+  .descriptionDiv{
+    display: flex;
+    p{
+      color: #464646;
+      font-family: 'Conv_Poppins-Regular';
+      font-size: 12px;
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+  }
+}
+.btton-dv{
+  display: flex;
+  justify-content: space-between;
+  span{
+    display: inline-block;
+    color: #022f63;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-family: 'Conv_Poppins-SemiBold';
+  }
+}
+
+@media(min-width:768px){
+  .clo_se2 {
+    width: 14px;
+    height: 14px;
+    right: 6px;
+    top: 3px;
+}
+    .notificationInner{
+      padding: 25px 20px;
+        .titleDiv{
+          h6{
+            font-size: 24px;
+            margin-bottom: 5px;
+          }
+
+          .rightDate {
+            p{
+              font-size: 18px;
+            }
+          }
+          .iconDiv{
+            width: 16px;
+            height: 16px;
+            margin-right: 11px;
+          }
+        }
+        .descriptionDiv{
+          p{
+            font-size: 20px;
+          }
+          span{
+            font-size: 20px;
+          }
+        }
+      }
+
+      .notificationDiv ion-item-sliding.item-wrapper{
+        margin-bottom: 30px;
+      }
+}
+
+
+}

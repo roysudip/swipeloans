@@ -1,0 +1,54 @@
+<!--
+  Generated template for the MenuPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Menu</ion-title>
+    <span  class="clo_se" (click)='navPush()'></span>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content class="bgClass">
+  <!-- <ion-list>
+    <button menuClose ion-item class="menuBtn" *ngFor="let p of pages" (click)="openPage(p)">
+      {{p.title}}
+      <span class="menuIcon" >
+          <div class="{{p.class}}">
+              <img src="assets/images/{{p.img}}" alt="">
+          </div>
+      </span>
+    </button>
+    <button menuClose ion-item class="menuBtn" (click)="logout()">
+        Log Out
+        <span class="menuIcon" >
+            <div class="logout">
+                <img src="assets/images/logout_icon.png" alt="">
+            </div>
+        </span>
+      </button>
+  </ion-list> -->
+
+
+  <ul class="loanOption">
+    <li  *ngFor="let p of pages" (click)="openPage(p)">
+      <p>{{p.title}}</p>
+      <span class="rightArrow"></span>
+    </li>
+    <li (click)="logout()">
+      <p>Log Out</p>
+    </li>
+  </ul>
+
+
+  <div class="needToTalk" *ngIf="adminPh">
+    <p>Need to talk? Call us</p>
+    <p> <ion-icon name="call"></ion-icon><a href="tel:{{adminPh}}">{{adminPh}}</a></p>
+    </div>
+    <div class="topDiv"> <div class="logo"> <span> <img src="assets/images/logo.png" alt=""> </span> </div> </div>
+</ion-content>

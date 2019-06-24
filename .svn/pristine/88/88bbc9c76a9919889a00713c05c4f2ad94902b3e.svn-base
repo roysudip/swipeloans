@@ -1,0 +1,329 @@
+"use strict";
+const express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var session = require('express-session');
+var adminLaon = express.Router();
+var loanService = require('../service/LoanService');
+//======================
+//  Middleware to check the login
+//=========================
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+//loan listing page
+adminLaon.route('/').get(checkLogin, function (req, res) {
+    res.render('admin/loan/index', { success: false, error: false, message: '', admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+});
+//all loan list
+adminLaon.get('/getAllLoans', function (req, res) {
+    loanService.getAllLoans(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//add loan page 
+adminLaon.route('/edit/:loanid').get(checkLogin, function (req, res) {
+    res.render('admin/loan/edit', { loan_id: req.params.loanid, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+});
+//add loan page 
+adminLaon.route('/add').get(checkLogin, function (req, res) {
+    res.render('admin/loan/add', { admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+});
+//add lender page 
+adminLaon.route('/lenderadd').get(checkLogin, function (req, res) {
+    res.render('admin/loan/lenderadd', { admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+});
+// edit lender
+adminLaon.route('/lenderedit/:lenderid').get(checkLogin, function (req, res) {
+    res.render('admin/loan/lenderedit', { lender_id: req.params.lenderid, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+});
+
+//change loan status
+adminLaon.put('/changeStatus/:loanid', function (req, res) {
+    var loanid = req.params.loanid;
+    var loanData = req.body;
+    loanService.changeStatusLoan(loanid, loanData.is_active, function (response) {
+        res.json(response);
+    });
+});
+//list All loan Option
+adminLaon.get('/add/getAllloanOption', function (req, res) {
+    loanService.getAllloanOption(req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+
+//list All lenders
+adminLaon.get('/add/getAlllenders', function (req, res) {
+    loanService.getAlllenders(req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+
+//Lvr listing page
+adminLaon.route('/lvr').get(checkLogin, function (req, res) {
+    res.render('admin/loan/lvr', { admin: req.session.admin, title: "Loan", active: "loan", child_active: "lvr" });
+});
+//all lvr list
+adminLaon.get('/lvr/getAlllvrs', function (req, res) {
+    loanService.getAlllvrs(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//add lvr
+adminLaon.post('/lvr', checkLogin, function (req, res) {
+    var loanData = req.body;
+    loanService.createLvrAdmin(loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//change lvr status
+adminLaon.put('/lvr/changeStatus/:lvrid', function (req, res) {
+    var lvrid = req.params.lvrid;
+    var lvrData = req.body;
+    loanService.changeStatusLvr(lvrid, lvrData.is_active, function (response) {
+        res.json(response);
+    });
+});
+//lvr details by id for admin
+adminLaon.get('/lvr/getDetails/:lvrId', function (req, res) {
+    loanService.getDetailslvrById(req.params.lvrId, function (response) {
+        res.json(response);
+    });
+});
+//updtae lvr by id for admin
+adminLaon.put('/lvr/:lvrId', checkLogin, function (req, res) {
+    var loanData = req.body;
+    var lvrId = req.params.lvrId;
+    loanService.updateLvr(lvrId, loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//delete lvr by id for admin
+adminLaon.delete('/lvr/:lvrId', checkLogin, function (req, res) {
+    var lvrId = req.params.lvrId;
+    loanService.deleteLvr(lvrId, function (response) {
+        res.json(response);
+    });
+});
+//type listing page
+adminLaon.route('/type').get(checkLogin, function (req, res) {
+    res.render('admin/loan/type', { admin: req.session.admin, title: "Loan", active: "loan", child_active: "type" });
+});
+//all type list
+adminLaon.get('/type/getAlltypes', function (req, res) {
+    loanService.getAlltypes(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//add loan type 
+adminLaon.post('/type', checkLogin, function (req, res) {
+    var loanData = req.body;
+    loanService.createLoanTypeAdmin(loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//change type status
+adminLaon.put('/type/changeStatus/:typeid', function (req, res) {
+    var typeid = req.params.typeid;
+    var typeData = req.body;
+    loanService.changeStatusType(typeid, typeData.is_active, function (response) {
+        res.json(response);
+    });
+});
+//type details by id for admin
+adminLaon.get('/type/getDetails/:typeid', function (req, res) {
+    loanService.getDetailsLoanTypeById(req.params.typeid, function (response) {
+        res.json(response);
+    });
+});
+//update type by id for admin
+adminLaon.put('/type/:typeid', checkLogin, function (req, res) {
+    var loanData = req.body;
+    var typeid = req.params.typeid;
+    loanService.updateType(typeid, loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//delete type by id for admin
+adminLaon.delete('/type/:typeid', checkLogin, function (req, res) {
+    var typeid = req.params.typeid;
+    loanService.deleteType(typeid, function (response) {
+        res.json(response);
+    });
+});
+//feature listing page
+adminLaon.route('/feature').get(checkLogin, function (req, res) {
+    res.render('admin/loan/feature', { admin: req.session.admin, title: "Loan", active: "loan", child_active: "feature" });
+
+});
+//all feature list
+adminLaon.get('/feature/getAllfeatures', function (req, res) {
+    loanService.getAllfeatures(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//add loan feature 
+adminLaon.post('/feature', checkLogin, function (req, res) {
+    var loanData = req.body;
+    loanService.createLoanFeatureAdmin(loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//change feature status
+adminLaon.put('/feature/changeStatus/:featureid', function (req, res) {
+    var featureid = req.params.featureid;
+    var featureData = req.body;
+    loanService.changeStatusFeature(featureid, featureData.is_active, function (response) {
+        res.json(response);
+    });
+});
+//feature details by id for admin
+adminLaon.get('/feature/getDetails/:featureid', function (req, res) {
+    loanService.getDetailsLoanFeatureById(req.params.featureid, function (response) {
+        res.json(response);
+    });
+});
+//update feature by id for admin
+adminLaon.put('/feature/:featureid', checkLogin, function (req, res) {
+    var loanData = req.body;
+    var featureid = req.params.featureid;
+    loanService.updateFeature(featureid, loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//delete feature by id for admin
+adminLaon.delete('/feature/:featureid', checkLogin, function (req, res) {
+    var featureid = req.params.featureid;
+    loanService.deleteFeature(featureid, function (response) {
+        res.json(response);
+    });
+});
+//lender listing page
+adminLaon.route('/lender').get(checkLogin, function (req, res) {
+    res.render('admin/loan/lender', { admin: req.session.admin, title: "Loan", active: "loan", child_active: "leander" });
+});
+//all lender list
+adminLaon.get('/lender/getAlllenders', function (req, res) {
+    loanService.getAlllenders(req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+
+adminLaon.post('/search', checkLogin,function(req, res){
+    console.log('loan route out');
+    var searchData = req.body;
+    loanService.searchLoanData(searchData, req.session.admin, function (response) {
+        console.log('loan route in');
+        res.json(response);
+    });
+});
+
+
+adminLaon.post('/lender', checkLogin, function (req, res) {
+    //console.log(req.File); return false;
+    var loanData = req.body;
+    //console.log(req.body); return false;
+    loanService.createLenderAdmin(loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+
+//change lender status
+adminLaon.put('/lender/changeStatus/:lenderid', function (req, res) {
+    var lenderid = req.params.lenderid;
+    var lenderData = req.body;
+    loanService.changeStatusLender(lenderid, lenderData.is_active, function (response) {
+        res.json(response);
+    });
+});
+//lender details by id for admin
+adminLaon.get('/lender/getDetails/:lenderid', function (req, res) {
+    loanService.getDetailsLenderById(req.params.lenderid, function (response) {
+        res.json(response);
+    });
+});
+//update lender by id for admin
+adminLaon.put('/lender/:lenderid', checkLogin, function (req, res) {
+    var loanData = req.body;
+    var lenderid = req.params.lenderid;
+    loanService.updateLender(lenderid, loanData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//delete lender by id for admin
+adminLaon.delete('/lender/:lenderid', checkLogin, function (req, res) {
+    var lenderid = req.params.lenderid;
+    loanService.deletelender(lenderid, function (response) {
+        res.json(response);
+    });
+});
+//loan details by id for admin
+adminLaon.get('/getDetails/:loanId', function (req, res) {
+    loanService.getDetailsloanById(req.params.loanId, function (response) {
+        res.json(response);
+    });
+});
+//delete loan by id for admin
+adminLaon.delete('/:loanid', checkLogin, function (req, res) {
+    var loanid = req.params.loanid;
+    loanService.deleteloan(loanid, function (response) {
+        res.json(response);
+    });
+});
+//add/edit loan
+adminLaon.post('/', checkLogin, function (req, res) {
+    var loanData = req.body;
+    //res.render(loanData);
+    if (loanData.htype == 'edit') {
+        loanService.editLoanByAdmin(loanData, req.files, req.session.admin, function (response) {
+            if (response.success) {
+                res.render('admin/loan/index', { success: true, error: false, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            } else {
+                res.render('admin/loan/index', { success: false, error: true, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            }
+        });
+    }else if(loanData.htype == 'add'){
+        loanService.addLoanByAdmin(req.body, req.files, req.session.admin, function (response) {
+            if (response.success) {
+                res.render('admin/loan/index', { success: true, error: false, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            } else {
+                res.render('admin/loan/index', { success: false, error: true, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            }
+        });
+    }
+
+});
+
+
+adminLaon.post('/lenderadd', checkLogin, function (req, res) {
+    var loanData = req.body;
+    //console.log(loanData); return false;
+    if (loanData.htype == 'edit') {
+        loanService.editLenderByAdmin(loanData, req.files, req.session.admin, function (response) {
+            if (response.success) {
+                res.render('admin/loan/lender', { success: true, error: false, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            } else {
+                res.render('admin/loan/lender', { success: false, error: true, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            }
+        });
+    }else if(loanData.htype == 'add'){
+        loanService.addLenderByAdmin(req.body, req.files, req.session.admin, function (response) {
+            if (response.success) {
+                res.render('admin/loan/lender', { success: true, error: false, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            } else {
+                res.render('admin/loan/lender', { success: false, error: true, message: response.message, admin: req.session.admin, title: "Loan", active: "loan", child_active: "loan" });
+            }
+        });
+    }
+
+});
+
+
+module.exports = adminLaon;

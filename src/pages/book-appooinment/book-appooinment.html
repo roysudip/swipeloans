@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Book Appointment</ion-title>
+    <span navPop class="clo_se"></span>
+  </ion-navbar>
+</ion-header>
+<ion-content class="bgClass" >
+<ion-refresher (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+    <div class="filterHeader">
+        Book a meeting to fit with your schedule
+    </div>
+    <div class="appoinmentWrapper">
+       <!-- <div class="topSection">
+            <div class="product">
+              <span>Product:</span>
+             {{loan_title}}
+            </div>
+            <div class="product">
+                <span>Lender:</span>
+               {{lender_name}}
+               <input type="hidden" [(ngModel)]="BookApt.lenderId" name="lenderId" value="{{lender_id}}">
+              </div>
+        </div>-->
+        <div class="choseSection">
+            <h4>Choose Options Below</h4>
+            <div class="videoSection">
+              <ion-list radio-group [(ngModel)]="BookApt.ConfType">
+              <ion-item>
+                <ion-label>Video Conferencing</ion-label>
+                <ion-radio value="video" ></ion-radio>
+              </ion-item>
+            </ion-list>
+
+            </div>
+            <div class="skypeWrapper">
+              <div>
+                   <ion-list class="VdoConf-Skype-left" radio-group [(ngModel)]="BookApt.VideoType">
+                  <ion-item class="lft_item">
+                    <ion-label>Skype ID</ion-label>
+                    <ion-radio value="skype" [disabled]="BookApt.ConfType!='video'" name="ConfType"></ion-radio>
+                  </ion-item>
+
+
+                <ion-item class="VdoConf-Skype-right">
+                  <ion-input type="text" [(ngModel)]="BookApt.SkypeId" name="SkypeId" [disabled]="BookApt.ConfType!='video' || BookApt.VideoType!='skype'"></ion-input>
+              </ion-item>
+            </ion-list>
+              </div>
+                <div>
+                   <ion-list class="VdoConf-Whatsapp-left" radio-group [(ngModel)]="BookApt.VideoType" >
+                    <ion-item class="lft_item">
+                      <ion-label>Whatsapp ID</ion-label>
+                      <ion-radio value="whatsapp" [disabled]="BookApt.ConfType!='video'"></ion-radio>
+                    </ion-item>
+
+
+                  <ion-item class="VdoConf-Whatsapp-right">
+                    <ion-input type="number" [(ngModel)]="BookApt.WhatsappId" name="WhatsappId" [disabled]="BookApt.ConfType!='video' || BookApt.VideoType!='whatsapp'"></ion-input>
+                </ion-item>
+              </ion-list>
+                </div>
+            </div>
+        </div>
+        <div class="phoneSection">
+            <div class="skypeWrapper">
+                <div>
+                     <ion-list class="VdoConf-Phone-left" radio-group [(ngModel)]="BookApt.ConfType" name="ConfType">
+                    <ion-item>
+                      <ion-label>Phone Discussion</ion-label>
+                      <ion-radio value="phone" ></ion-radio>
+                    </ion-item>
+                  </ion-list>
+
+                  <ion-item class="VdoConf-Phone-right">
+                    <ion-input type="number" [(ngModel)]="BookApt.PhoneNumber" name="PhoneNumber" [disabled]="BookApt.ConfType!='phone'"></ion-input>
+                </ion-item>
+                </div>
+                </div>
+        </div>
+
+        <div class="appointmentDate">
+            <span>Select State:</span>
+            <ion-item>
+              <ion-label style="display:none">State List</ion-label>
+            <ion-select [(ngModel)]="BookApt.UserState" placeholder='State List'>
+
+                <ion-option value="ACT">Australian Capital Territory</ion-option>
+                <ion-option value="NSW">New South Wales</ion-option>
+                <ion-option value="NT">Northern Territory</ion-option>
+                <ion-option value="QLD">Queensland</ion-option>
+                <ion-option value="SA">South Australia</ion-option>
+                <ion-option value="TAS">Tasmania</ion-option>
+                <ion-option value="VIC">Victoria</ion-option>
+                <ion-option value="WA">Western Australia</ion-option>
+            </ion-select>
+          </ion-item>
+
+          </div>
+        <div class="appointmentDate">
+          <span>Appointment Date &amp; Time</span>
+            <ion-item>
+                <ion-label><img src="assets/images/calenderIcon.png" alt=""></ion-label>
+                <ion-datetime displayFormat="MMM DD, YY hh:mm A"  name="ApptDateTime" [(ngModel)]="BookApt.ApptDateTime" min="{{minYear}}" max="{{MaxYear}}" minuteValues="0,30"></ion-datetime>
+              </ion-item>
+        </div>
+        <div class="bottomButtan">
+            <button (click)="SubmitBookAppointment();">confirm</button>
+
+        </div>
+    </div>
+</ion-content>

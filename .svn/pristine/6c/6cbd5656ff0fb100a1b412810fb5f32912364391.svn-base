@@ -1,0 +1,25 @@
+questionModule.factory('questionFactory', questionFactory);
+questionFactory.$inject = ['$http'];
+function questionFactory($http) {
+    return {
+        getAllQuestions: function () {
+            return $http.get('/webcontrol/question/getAllQuestions');
+        },
+        getQuestionDetailsById: function (questionId){
+            return $http.get('/webcontrol/question/getDetails/' + questionId);
+        },
+        saveQuestion: function(questionData){
+            
+            return $http.post('/webcontrol/question', questionData);
+        },
+        updateQuestion: function(questionId, questionData){
+            return $http.put('/webcontrol/question/' + questionId, questionData);
+        },
+        deleteQuestion: function (questionId){                    
+            return $http.delete('/webcontrol/question/'+ questionId);
+        },
+        getQuestions: function(surveyId){            
+            return $http.get('/webcontrol/question/getAllQuestions/?survey='+ surveyId);
+        }
+    };
+}

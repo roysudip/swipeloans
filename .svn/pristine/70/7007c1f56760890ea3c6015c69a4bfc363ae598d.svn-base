@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <% include ../head %>
+
+
+<body class="hold-transition skin-blue sidebar-mini" ng-cloak ng-app="loanModule" ng-controller="featureController as loan">
+    <div class="wrapper">
+        <% include ../header %>
+            <!-- Left side column. contains the logo and sidebar -->
+            <% include ../leftnav %>
+                <!-- Content Wrapper. Contains page content -->
+                <div class="content-wrapper">
+                    <!-- Content Header (Page header) -->
+                    <section class="content-header">
+                        <h1>Manage Loan Feature
+                            <small>Control panel</small>
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li>
+                                <a href="/webcontrol/dashboard">
+                                    <i class="fa fa-dashboard"></i> Home</a>
+                            </li>
+                            <li class="active">Manage Loan Feature</li>
+                        </ol>
+                    </section>
+                    <!-- Main content -->
+                    <section class="content">
+                        <!-- Small boxes (Stat box) -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">All Loan Feature</h3>
+                                        <div style="float: right; padding: 5px;">
+                                            <button ng-click="loan.loanFeatureModal()" class="btn btn-primary pull-right">
+                                                <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add new Loan Feature
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div style="margin-bottom: 5px;" ng-show="!loan.statusMessage.onModal">
+                                        <div class="alert alert-danger" ng-show="loan.statusMessage.error" style="margin: 0 auto;">{{loan.statusMessage.content}}</div>
+                                        <div class="alert alert-success" ng-show="loan.statusMessage.success" style="margin: 0 auto;">{{loan.statusMessage.content}}</div>
+                                    </div>
+                                    {{lvrs}}
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped" style="table-layout: fixed; word-wrap: break-word;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Value</th>
+                                                    <th>Status</th>
+                                                    <th>Created</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="4" style="text-align:center;" ng-if="loan.feature_length==0">No Record Here</td>
+                                                </tr>
+                                                <tr ng-repeat='feature in loan.features'>
+                                                    <td>{{feature.feature}}</td>
+                                                    <td>
+                                                        <span style="cursor: pointer;" data-featureid="{{feature._id}}" data-status="{{feature.is_active}}" ng-click="loan.toggleFeatureStat($event, $index)"
+                                                            class="btn-smbadge badge  {{feature.is_active == 'yes' ? 'bg-green' : 'bg-red'}}">{{feature.is_active == 'yes' ? 'active' : 'inactive'}}</span>
+                                                    </td>
+                                                    <td>{{feature.createdAt| date: 'MM-dd-yyyy hh:mm a'}}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-featureid="{{feature._id}}" ng-click="loan.showUpdateModal(feature._id);"
+                                                            title="Edit Loan Feature">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#confirmFeatureDelete" data-featureid="{{feature._id}}"
+                                                            ng-click="loan.setCurrentFeatureId(feature._id);" title="Delete Loan Feature">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                        </div>
+                        <!-- /.row -->
+                    </section>
+                    <!-- /.content -->
+                    <% include modals %>
+                </div>
+                <!-- /.content-wrapper -->
+                <% include ../footer %>
+    </div>
+    <script src="/javascripts/admin/commonFactory.js" type="text/javascript"></script>
+    <script src="/javascripts/admin/loan/loanModule.js" type="text/javascript"></script>
+    <script src="/javascripts/admin/loan/loanFactory.js" type="text/javascript"></script>
+    <script src="/javascripts/admin/loan/featureController.js" type="text/javascript"></script>
+</body>
+</html>

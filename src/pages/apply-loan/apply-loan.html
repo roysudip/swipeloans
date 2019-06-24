@@ -1,0 +1,197 @@
+<!--
+  Generated template for the BorrowPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Apply Loan</ion-title>
+    <span navPop class="clo_se"></span>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding class="bgClass">
+
+
+<ul *ngFor="let i of nameval" >
+  <li>{{i.name}} {{i.roll}}</li>
+</ul>
+
+
+    <ion-slides #slides *ngIf="borrow.ques_list && borrow.ques_list.length" (ionSlideDidChange)="slideChanged()" (ionSlideReachStart)="StopSwipe()" (ionSlideReachEnd)="StopSwipe()">
+      <ion-slide  *ngFor="let br of borrow.ques_list; let i = index">
+        <div class="swipeSection">
+          <div class="section-1">
+              <span class="emplyee_detail" *ngIf='i>=28 && i<=30'>Guarantor 1</span>
+              <span class="emplyee_detail" *ngIf='i>=31 && i<=33'>Guarantor 2</span>
+              <span class="emplyee_detail" *ngIf='i>=8 && i<=11'>Your employment details</span>
+              <span class="emplyee_detail" *ngIf='i>=12 && i<=15'>Second applicant’s employment details</span>
+
+            <h5>{{i+1}}. {{br.question}}</h5>
+            <div *ngIf="br.type=='option'">
+            <ul class="ulClass">
+              {{borrow.ques_list.options}}
+
+                <ion-list radio-group [(ngModel)]="br.answer"  *ngFor="let opt of br.options; let in = index">
+
+                     {{borrow.ques_list.options}}
+
+                  <ion-item>
+                    <ion-label>{{opt.option | titlecase}}</ion-label>
+                    <ion-radio value="{{opt.option}}"></ion-radio>
+                  </ion-item>
+
+                </ion-list>
+
+             </ul>
+          </div>
+
+          <div *ngIf="br.type=='simple'">
+              <div class="inputDiv">
+                 <div *ngFor="let opt of br.options; let in = index">
+
+                  <!-- here i have just chnage model opt.answer--5b7e909fa9b73b218a8594f5--5b7fb5384eb6d625f4cd81a3-->
+                  <div  *ngIf="opt._id != '5b7fb6204eb6d625f4cd81b2' && opt.option != 'Phone number' && opt.option!='Start Date' && opt._id!='5b7fb6754eb6d625f4cd81b8' && opt._id!='5b7fa4df10c4370e59c4122c' && opt._id!='5b7fae90eb2ff02506be1a41' && opt._id!='5b7fb16d4eb6d625f4cd816b' && opt._id!='5b7fb2544eb6d625f4cd8178'">
+
+                    <div *ngIf='i==2 || i==5 || i==6 || i==16 || i==17 || i==18 || i==19 || i==22 || i==23 || i==24 || i==25'>
+                        <label for="{{opt.option }}">{{opt.option | titlecase}} ($)</label>
+                     <input   type="number"   name="opt._id" class="text-field" id="simple_{{opt._id}}" value="0">
+                      </div>
+                      <div *ngIf='i!=2 && i!=5 && i!=6 && i!=16 && i!=17 && i!=18 && i!=19 && i!=22 && i!=23 && i!=24 && i!=25'>
+                          <label for="{{opt.option}}">{{opt.option | titlecase}}</label>
+                        <input   type="text"   name="opt._id" class="text-field" id="simple_{{opt._id}}">
+                          </div>
+                    </div>
+
+                    <div class='select_dropdown' *ngIf="opt._id ==='5b7fb6204eb6d625f4cd81b2'">
+                        <label>{{opt.option | titlecase }}</label>
+                        <ion-item>
+                          <ion-label class="date_icon"></ion-label>
+                            <ion-datetime [(ngModel)]="YourDob"  displayFormat="MMM DD, YYYY"   name="YourDob" class="text-field"  id="simple_{{opt._id}}"></ion-datetime>
+
+                          </ion-item>
+                    </div>
+
+                    <div class='select_dropdown' *ngIf="opt._id ==='5b7fb6754eb6d625f4cd81b8'">
+                      <label>{{opt.option | titlecase}}</label>
+                      <ion-item>
+                        <ion-label class="date_icon"></ion-label>
+                          <ion-datetime [(ngModel)]="ApplicantDob"  displayFormat="MMM DD, YYYY"   name="ApplicantDob" class="text-field"  id="simple_{{opt._id}}"></ion-datetime>
+
+                        </ion-item>
+                  </div>
+
+
+                  <div class='select_dropdown' *ngIf="opt._id ==='5b7fa4df10c4370e59c4122c'">
+                      <label>{{opt.option | titlecase}}</label>
+                      <ion-item>
+                        <ion-label class="date_icon"></ion-label>
+                          <ion-datetime [(ngModel)]="StartDate1"  displayFormat="MMM DD, YYYY"   name="StartDate1" class="text-field"  id="simple_{{opt._id}}" max={{MaxYear}}></ion-datetime>
+
+                        </ion-item>
+                  </div>
+
+                  <div class='select_dropdown' *ngIf="opt._id ==='5b7fae90eb2ff02506be1a41'">
+                      <label>{{opt.option | titlecase}}</label>
+                      <ion-item>
+                        <ion-label class="date_icon"></ion-label>
+                          <ion-datetime [(ngModel)]="StartDate2"  displayFormat="MMM DD, YYYY"   name="StartDate2" class="text-field"  id="simple_{{opt._id}}" max={{MaxYear}}></ion-datetime>
+
+                        </ion-item>
+                  </div>
+
+                  <div class='select_dropdown' *ngIf="opt._id ==='5b7fb16d4eb6d625f4cd816b'">
+                      <label>{{opt.option | titlecase}}</label>
+                      <ion-item>
+                        <ion-label class="date_icon"></ion-label>
+                          <ion-datetime [(ngModel)]="StartDate3"  displayFormat="MMM DD, YYYY"   name="StartDate3" class="text-field"  id="simple_{{opt._id}}" max={{MaxYear}}></ion-datetime>
+
+                        </ion-item>
+                  </div>
+
+                  <div class='select_dropdown' *ngIf="opt._id ==='5b7fb2544eb6d625f4cd8178'">
+                      <label>{{opt.option | titlecase}}</label>
+                      <ion-item>
+                        <ion-label class="date_icon"></ion-label>
+                          <ion-datetime [(ngModel)]="StartDate4"  displayFormat="MMM DD, YYYY"   name="StartDate4" class="text-field"  id="simple_{{opt._id}}" max={{MaxYear}}></ion-datetime>
+
+                        </ion-item>
+                  </div>
+
+                    <div  *ngIf="opt._id ==='5b7fb6204eb6d625f4cd81b1' || opt._id ==='5b7fb6754eb6d625f4cd81b7'">
+                        <label>{{opt.option}}</label>
+                        <input  type="number"   name="opt._id" class="text-field" id="simple_{{opt._id}}" class="phonCls">
+                    </div>
+
+                 </div>
+              </div>
+          </div>
+
+          <div *ngIf="br.type=='dropdown'">
+            <div class="inputDiv">
+
+                <div *ngFor="let opt of br.options; let in = index" class="drop_down">
+
+                        <label>{{opt.option}}</label>
+                        <select name="opt._id" [(ngModel)]="opt._id" id="dropdown_{{opt._id}}">
+                          <option value="0">0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="more">More</option>
+                        </select>
+                        <!-- <ion-select name="opt._id" [(ngModel)]="opt._id" id="dropdown_{{opt._id}}">
+                          <ion-option value="0">0</ion-option>
+                          <ion-option value="1">1</ion-option>
+                          <ion-option value="2">2</ion-option>
+                          <ion-option value="3">3</ion-option>
+                          <ion-option value="4">4</ion-option>
+                          <ion-option value="more">More</ion-option>
+                        </ion-select> -->
+ 
+                 </div>
+
+
+            </div>
+        </div>
+
+          </div>
+          </div>
+        </ion-slide>
+
+
+    </ion-slides>
+
+
+
+       <div class="buttonWrapper">
+        <div class="questionDiv">
+            <span *ngIf='borrow.ques_list'>Total Question {{borrow.ques_list.length}}</span>
+            <span *ngIf='borrow.ques_list && !RemainingQuestion && show==true'>Remaining {{borrow.ques_list.length-1}}</span>
+            <span *ngIf='RemainingQuestion'>Remaining {{RemainingQuestion}}</span>
+            <span *ngIf='show==false'>Remaining 0</span>
+
+
+ 
+        </div>
+        <div class="bottomButtan">
+          <button class="preBtn" (click)="prev()"><img src="assets/images/back_icon.png" alt="">Back</button>
+          <div *ngIf="show">
+            <button class="nextBtn" (click)="next()">Next <img src="assets/images/next_icon.png" alt=""></button>
+          </div>
+
+          <div *ngIf="!show">
+            <button class="nextBtn" (click)="submitborrow()">Submit <img src="assets/images/next_icon.png" alt=""></button>
+          </div>
+
+
+      </div>
+
+    </div>
+</ion-content>

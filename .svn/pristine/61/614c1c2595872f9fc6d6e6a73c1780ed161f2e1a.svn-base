@@ -1,0 +1,138 @@
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Do you want to delete this FAQ?</h4>
+            </div>
+            <div class="modal-body">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" ng-click="faq.deleteFaq()">Delete FAQ</button>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="saveFaq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form name="faqform" ng-submit="faqform.$valid && faq.saveFaq()">
+                <input type="hidden" ng-model="faq.currentFaqId" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">{{faq.isUpdate ? 'Update FAQ' : 'Add new FAQ'}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div ng-show="faq.statusMessage.onModal">
+                        <div class="alert alert-danger" ng-show="faq.statusMessage.error" style="margin: 0 auto;">{{faq.statusMessage.content}}</div>
+                        <div class="alert alert-success" ng-show="faq.statusMessage.success" style="margin: 0 auto;">{{faq.statusMessage.content}}</div>
+                    </div>
+                    <!-- text input -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Question:</label>
+                            <input type="text" class="form-control" ng-model="faq.faqData.question" placeholder="Enter Question">
+                            <div class="alert alert-danger" ng-if="faq.errorMessage.question" style="margin: 0 auto;">{{faq.errorMessage.question}}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Answer:</label>
+                            <textarea class="form-control" ng-model="faq.faqData.answer" placeholder="Enter Answer" rows="10"></textarea>
+                            <div class="alert alert-danger" ng-if="faq.errorMessage.answer" style="margin: 0 auto;">{{faq.errorMessage.answer}}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Youtube Video:</label>
+                            <input type="text" class="form-control" ng-model="faq.faqData.youtube" placeholder="Enter youtube link">
+                            <div class="alert alert-danger" ng-if="faq.errorMessage.youtube" style="margin: 0 auto;">{{faq.errorMessage.youtube}}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Active</label>&nbsp;
+                            <select ng-model="faq.faqData.is_active" ng-options="o.value as o.label for o in faq.activeOptions" class="form-control"
+                                required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="vewFaq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">FAQ Details</h4>
+            </div>
+            <div class="modal-body">
+                <!-- text input -->
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Question</label>
+                        <span class="user_details">{{faq.faqData.question}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Answer</label>
+                        <span class="user_details">{{faq.faqData.answer}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Youtube Link</label>
+                        <span class="user_details">{{faq.faqData.youtube}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Status</label>
+                        <span class="user_details" style="text-transform: capitalize;">{{faq.faqData.is_active}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label> Created At</label>
+                        <span class="user_details">{{faq.faqData.createdAt| date: 'MM-dd-yyyy hh:mm a'}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal -->

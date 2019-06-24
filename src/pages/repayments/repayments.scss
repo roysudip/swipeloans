@@ -1,0 +1,509 @@
+page-repayments {
+    .bgClass{
+        background-color: #017bb8;
+    }
+    .back-button.show-back-button{
+        display: none;
+      }
+    .section-1{
+        padding: 15px ;
+        // border: 1px solid #f00;
+        background-color: #166085;
+        width: 100%;
+        float: left;
+        margin-bottom: 5px;
+    }
+    .section-1 p{
+        // padding-left: 8px;
+        // padding-right: 8px;
+        margin: 0;
+        font-family: 'Conv_Poppins-Light';
+        color: #171717;
+        font-size: 16px;
+    }
+    .item{
+        padding-right: 18px;
+    }
+    .range.range-has-pin{
+        padding-top: 0;
+        // padding-left: 0;
+        // border: 1px solid #f00;
+    }
+    .item.item-block .item-inner{
+        padding-right: 0;
+    }
+    .labelDiv{
+        width: 100%;
+        float: left;
+    }
+    .labelDiv span{
+        display: inline-block;
+        font-size: 14px;
+        color: #fff;
+        font-family: 'Conv_Poppins-Regular';
+    }
+    .labelDiv span:first-child{
+        float: left;
+        // padding-left: 8px;
+    }
+    .labelDiv span:last-child{
+        float: right;
+        // padding-right: 8px;
+    }
+    .range .range-pin{
+        top: auto;
+        bottom: -30px;
+        padding: 4px 0;
+        color: #fff;
+        background: transparent;
+        font-size: 14px;
+        transform: translate3d(0, 0, 0) scale(1) ;
+    }
+    .section-1 .range .range-pin:before{
+        background: transparent;
+        content: "$";
+        left: -12px;
+        width: 40px;
+        top: 3px;
+        font-size: 15px;
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+        display: block;
+    }
+    .section-1  .range .range-knob-min.range-knob-min .range-pin:before{
+        content: "$";
+        color: #fff;
+    }
+    .section-1.section-2 .range .range-knob-min.range-knob-min .range-pin:before{
+        content: "Yrs";
+        color: #fff;
+    }
+    .section-1.section-3 .range .range-knob-min.range-knob-min .range-pin:before{
+        content: "%";
+        color: #fff;
+    }
+    .section-1.section-2 .range .range-pin:before{
+        content: "Yrs";
+        right: -25px;
+        top: 3px;
+        left: auto;
+    }
+    .section-1.section-3 .range .range-pin:before{
+        content: "%";
+        right: -20px;
+        top: 3px;
+        left: auto;
+    }
+    .range .range-knob-min.range-knob-min .range-pin{
+        color: #fff;
+        background: transparent;
+    }
+    .range .range-knob-min.range-knob-min .range-pin:before{
+        background: transparent;
+    }
+    .list{
+        margin-bottom: 0;
+    }
+    .range .range-bar{
+        height: 4px;
+        background: #d5d6d3;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+    }
+    .range .range-knob{
+        width: 10px;
+        height: 25px;
+        top: 10px;
+        background-color: #393939;
+        border-radius: 0;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .bottomSection{
+        padding:15px;
+        width: 100%;
+        float: left;
+    }
+    .bottomSection span.paymentText{
+        display: inline-block;
+        float: left;
+        width: 40%;
+        font-size: 14px;
+        padding-top: 8px;
+        color: #fff;
+        font-family: 'Conv_Poppins-Light';
+    }
+    .bottomSection input[type="text"],
+    .bottomSection input[type="number"]{
+        float: right;
+        width: 60%;
+        min-height: 34px;
+        border: 1px solid #fff;
+        border-radius: 5px;
+        padding-left: 10px;
+        font-size: 14px;
+    }
+    //radio button
+    input[type=radio   ]:not(old){
+        width     : 2em;
+        width     : 0;
+        margin    : 0;
+        padding   : 0;
+        font-size : 1em;
+        opacity   : 0;
+      }
+      input[type=radio   ]:not(old) + label{
+        display      : inline-block;
+      //   margin-left  : -2em;
+        margin-left  : 0;
+        line-height  : 1.5em;
+        color: #fff;
+        font-family: 'Conv_Poppins-Light';
+        font-size: 12px;
+      //   padding: 15px 0 0 0;
+      }
+      input[type=radio   ]:not(old){
+        width     : 2em;
+        width     : 0;
+        margin    : 0;
+        padding   : 0;
+        font-size : 1em;
+        opacity   : 0;
+      }
+      input[type=radio]:not(old) + label > span{
+        display          : inline-block;
+        width: 14px;
+        height: 14px;
+        margin           : 0.25em 0.5em 0.25em 0.25em;
+        border           : 2px solid #d4d4d4;
+        background       : transparent;
+        vertical-align   : bottom;
+        border-radius    :50%;
+      }
+      input[type=radio]:not(old):checked +  label > span > span{
+        display: block;
+        width: 7px;
+        height: 7px;
+        margin: 0.1em;
+        border-radius: 50%;
+        background: #fff;
+      }
+      .weeklyPayment{
+          width: 100%;
+          float: left;
+          margin-bottom: 15px;
+      }
+      .radioBtn{
+          display: inline-block;
+          padding-top: 8px;
+      }
+      .bottomButtan {
+        margin-bottom: 30px;
+        margin-top: 30px;
+        width: 100%;
+        float: left;
+    }
+    .bottomButtan button{
+        width: 50%;
+        float: none;
+        display: block;
+        margin: auto;
+        padding: 15px 0;
+        background: #000;
+        color: #ffffff;
+        font-family: 'Conv_Poppins-Medium';
+        font-size: 14px;
+        text-transform: uppercase;
+        border-radius: 10px;
+    }
+
+    .list > .item-block:first-child {
+        border-top: 0;
+    }
+
+.inputClass{
+  padding-left: 0;
+  padding-right: 0;
+  .text-input{
+    width: 100%;
+    margin: 0;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    height: 34px;
+    padding-left: 10px;
+    font-family: 'Conv_Poppins-Light';
+  }
+}
+
+
+.item.item-input.item-input-has-focus .item-inner,
+    .item.item-input.item-has-focus .item-inner{
+
+        box-shadow: none ;
+        -webkit-box-shadow:none ;
+        border-bottom: 0;
+    }
+
+
+   .input-has-focus {
+      box-shadow: none;
+  }
+
+  item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner,
+    .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner{
+        border-bottom: 0;
+        box-shadow: none;
+    }
+//18.09.2018
+.customPrice.grid{
+  padding: 0;
+  padding-bottom: 5px;
+}
+.customPrice{
+
+  .label
+  {
+      margin-bottom: 0;
+      margin-top: 0;
+      color: #fff;
+      font-family: 'Conv_Poppins-Light';
+  }
+  .text-input{
+      margin: 0;
+  border: 1px solid #fff;
+  border-radius: 50px;
+  height: 30px;
+  font-size: 14px;
+  padding-left: 20px;
+      width: 160px;
+      color: #fff;
+  }
+  .col{
+      display: flex;
+      display: -webkit-flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+  .toggle{
+         position: relative;
+          width: 36px;
+          height: 14px;
+          -webkit-box-sizing: content-box;
+          box-sizing: content-box;
+          contain: strict;
+          padding:7px 12px;
+  }
+  .toggle .toggle-inner{
+          left: 0;
+          top: -3px;
+          border-radius: 50%;
+          position: absolute;
+          width: 20px;
+          height: 20px;
+      background-color: #9bcb48;
+
+  }
+  .toggle.toggle-checked .toggle-inner{
+      background-color: #fff;        }
+
+  .toggle.toggle-checked .toggle-icon{
+      background-color: #9bcb48;
+  }
+  .toggle-ios .toggle-icon::before{
+      display: none;
+  }
+
+}
+
+
+.toggleInput{
+  display: flex;
+  display: -webkit-flex;
+      align-items: center;
+}
+
+
+
+//18.09.2018 end
+.text-input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #ccc;
+    opacity: 1; /* Firefox */
+  }
+
+  .text-input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #ccc;
+  }
+
+  .text-input::-ms-input-placeholder { /* Microsoft Edge */
+    color: #ccc;
+  }
+
+  /********************************************************/
+
+  .years_cal,.dollar_cal,.interest_cal, .dollar_cal2{
+    position: relative;
+    display: inline-block;
+    }
+    .years_cal:before{
+    content: "Years";
+    position: absolute;
+    width: 50px;
+    color:#fff;
+    left: 41px;
+    top: 7px;
+    }
+    .dollar_cal:before{
+    content: "$";
+    position: absolute;
+    width: 50px;
+    color:#fff;
+    left: 10px;
+    top: 7px;
+    }
+    .interest_cal:before{
+    content: "%";
+    position: absolute;
+    width: 50px;
+    color:#fff;
+    left: 60px;
+    top: 7px;
+    }
+
+    .dollar_cal2{
+      width: 60%;
+
+      input[type="text"],input[type="number"]{
+        padding-left: 20px;
+        width: 100%;
+        color: #000;
+      }
+    }
+
+    .dollar_cal2:before{
+      content: "$";
+      position: absolute;
+      width: 50px;
+      color:#000;
+      left: 10px;
+      top:9px;
+    }
+
+    /*************************************/
+    @media(min-width:600px){
+        .section-1 p{
+            font-size: 18px;
+        }
+        .labelDiv span, .bottomSection span.paymentText{
+            font-size: 16px;
+        }
+         input[type=radio]:not(old) + label{
+            font-size: 16px;
+        }
+         .section-1,.bottomSection{
+            padding: 20px;
+        }
+        .bottomButtan button{
+            padding: 20px 0;
+            font-size: 20px;
+        }
+    }
+    @media(min-width:768px)
+    {
+        .bottomButtan button{
+            padding: 25px 0;
+            font-size: 26px;
+        }
+        .section-1{
+            padding: 54px 34px 50px;
+        }
+         .section-1 p{
+            font-size: 30px;
+        }
+         .labelDiv span,
+         .bottomSection span.paymentText,
+          input[type=radio]:not(old) + label{
+             font-size: 26px;
+         }
+         .range .range-bar{
+             height: 11px;
+             border-radius: 5px;
+         }
+          .range .range-knob{
+             width: 17px;
+             height: 43px;
+           top: 5px;
+             border-radius: 8px;
+         }
+         .range .range-pin{
+                font-size: 26px;
+                padding-top: 10px;
+         }
+         .range{
+             padding-bottom: 30px;
+             padding-right: 35px;
+         }
+         .section-1 .range .range-pin:before {
+            left: -20px;
+            width: 40px;
+            top: 13px;
+            font-size: 22px;
+        }
+        .range.range-has-pin {
+            padding-top: 15px;
+        }
+         .bottomSection input[type="text"],
+         .bottomSection input[type="number"]{
+            min-height: 60px;
+            padding-left:10px;
+            font-size: 24px;
+        }
+        .bottomSection{
+            padding: 46px 34px 50px;
+        }
+         input[type=radio]:not(old) + label > span{
+            width: 29px;
+            height: 29px;
+        }
+         input[type=radio]:not(old):checked + label > span > span{
+            width: 22px;
+            height: 22px;
+        }
+
+         .bottomButtan{
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+         .weeklyPayment{
+            margin-bottom: 21px;
+        }
+
+        .customPrice{
+            .label{
+                font-size: 24px;
+            }
+            .text-input{
+                height: 50px;
+                font-size: 18px;
+                padding-left:25px;
+            }
+        }
+        .years_cal:before{
+          top: 14px;
+          left: 51px;
+          font-size: 18px;
+          }
+          .dollar_cal:before{
+          top: 13px;
+          font-size: 18px;
+          }
+          .interest_cal:before{
+          left: 65px;
+          top: 13px;
+          font-size: 18px;
+          }
+    }
+    }

@@ -1,0 +1,30 @@
+page-my-borrow {
+  .qtn-card-header{
+    padding: 8px;
+    background-color: #f4f4f4;
+    border-radius: 0;
+
+    .row{
+
+
+        .col:last-child{
+            text-align: right;
+            border: 0;
+        }
+    }
+
+    .row:last-child{
+        color: #757575;
+        font-size: 14px;
+    }
+}
+
+@media(min-width:768px){
+  .row{
+    .col{
+      font-size: 24px;
+    }
+
+  }
+}
+}

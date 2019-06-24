@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "/opt/Ionic/ionic-2/Subhomoy/swipeloans/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-te/values-te.xml",
+            "map": [
+                {
+                    "source": "/root/.gradle/caches/transforms-1/files-1.1/facebook-android-sdk-4.14.1.aar/7a4cc0341cffea8caee74692bfe9823f/res/values-te/values-te.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,234,365,485,579,665,750,817,893,970,1063,1145,1227,1315,1424,1487,1565,1731",
+                        "endColumns": "178,130,119,93,85,84,66,75,76,92,81,81,87,108,62,77,165,59",
+                        "endOffsets": "229,360,480,574,660,745,812,888,965,1058,1140,1222,1310,1419,1482,1560,1726,1786"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,284,415,535,629,715,800,867,943,1020,1113,1195,1277,1365,1474,1537,1615,1980",
+                        "endColumns": "178,130,119,93,85,84,66,75,76,92,81,81,87,108,62,77,165,59",
+                        "endOffsets": "279,410,530,624,710,795,862,938,1015,1108,1190,1272,1360,1469,1532,1610,1776,2035"
+                    }
+                },
+                {
+                    "source": "/root/.gradle/caches/transforms-1/files-1.1/play-services-basement-10.2.6.aar/49cf0c5f42d7e2811eb82ab939d9f8ad/res/values-te/values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "285",
+                        "endColumns": "198",
+                        "endOffsets": "483"
+                    },
+                    "to": {
+                        "startLines": "19",
+                        "startColumns": "4",
+                        "startOffsets": "1781",
+                        "endColumns": "198",
+                        "endOffsets": "1975"
+                    }
+                }
+            ]
+        }
+    ]
+}

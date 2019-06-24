@@ -1,0 +1,23 @@
+cmsModule.factory('cmsFactory', cmsFactory);
+cmsFactory.$inject = ['$http'];
+function cmsFactory($http){
+    return {
+        //all cms list
+        getAllCms: function(){
+            return $http.get('/webcontrol/cms/getAllCms');
+        },
+        //cms details by id
+        getCmsDetailsById: function(cmsId){
+            //console.log(cmsId);
+            return $http.get('/webcontrol/cms/getDetails/' + cmsId);
+        },
+        //update cms
+        updateCms: function(cmsId, cmsData){
+            return $http.put('/webcontrol/cms/' + cmsId, cmsData);
+        },
+        // add cms
+        saveCms: function(cmsData){
+            return $http.post('/webcontrol/cms', cmsData);
+        }
+    };
+}

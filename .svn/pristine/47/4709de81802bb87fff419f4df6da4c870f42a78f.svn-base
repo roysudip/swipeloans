@@ -1,0 +1,36 @@
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  //res.render('index', { title: 'Express' });
+  res.redirect('/webcontrol');
+});
+router.get('/test-sms', function(req, res, next) {
+    var accountSid = 'AC1dc805007edc95195f4416c9d0f9d4f0'; // Your Account SID from www.twilio.com/console
+    var authToken = 'c3e52d4a38a823d4dbd4cbdae62e5b69';   // Your Auth Token from www.twilio.com/console
+
+    var twilio = require('twilio');
+    var client = new twilio(accountSid, authToken);
+
+    client.messages.create({ 
+        to: "+919051983166", //9007496945
+        from: "+17204142070", 
+        body: "This is the ship that made the Kessel Run in fourteen parsecs?"
+    }, function(err, message) { 
+        if(err){
+            res.send(err); 
+        }
+        else{
+            res.send(message); 
+        }
+        
+    });
+});
+module.exports = router;
+//FRIENDLY NAME
+//Beauty Explore
+//SID
+//SK4e927e12d5992475ad55af94e5dfcda8
+//SECRET
+//YScDG7XR8EUtkD9V9pxyDo0KLZBRZGK3

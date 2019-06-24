@@ -1,0 +1,160 @@
+page-user-authenticate {
+
+  input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #616060;
+    opacity: 1;
+    }
+    input::-moz-placeholder { /* Firefox 19+ */
+        color: #616060;
+    opacity: 1;
+    }
+    input:-ms-input-placeholder { /* IE 10+ */
+        color: #616060;
+    opacity: 1;
+    }
+    input:-moz-placeholder { /* Firefox 18- */
+        color: #616060;
+    opacity: 1;
+    }
+.heading p{
+    color: #6f6f6f;
+    font-family: 'Avenir-Roman';
+    font-size: 16px;
+    text-align: center;
+    margin: 0;
+}
+
+.reportDiv,.reportDiv2{
+    border: 1px solid #d4d4d4;
+}
+.reportDiv {
+    margin-top: 30px;
+    border-bottom: 0;
+}
+
+.reportDiv2{
+    padding: 20px;
+}
+.reportDiv2 input{
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    min-height: 35px;
+    border: 1px solid #d4d4d4;
+    padding-left: 10px;
+    font-family: 'Avenir-Light';
+}
+
+.reportDiv2 textarea{
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    min-height: 60px;
+    border: 1px solid #d4d4d4;
+    padding-left: 10px;
+    font-family: 'Avenir-Light';
+    resize: none;
+}
+.reportDiv h4{
+    margin: 0;
+    color: #020202;
+    font-family: 'Avenir-Medium';
+    font-size: 18px;
+    padding: 15px 0;
+    text-align: center;
+}
+.bottomButtan {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    bottom: 15px;
+    padding: 0 15px;
+}
+
+.bottomButtan button{
+    width: 50%;
+    float: none;
+    display: block;
+    margin: auto;
+    padding: 15px 0;
+    background: #393939;
+    color: #ffffff;
+    font-family: 'Avenir-Light';
+    font-size: 14px;
+    text-transform: uppercase;
+}
+.bottomButtan button:first-child{
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border-right: 1px solid #575757;
+}
+.bottomButtan button:last-child{
+    border-top-right-radius:50px;
+    border-bottom-right-radius: 50px;
+
+}
+
+
+
+@media(min-width:600px){
+    .reportDiv2{
+        margin-bottom: 150px;
+    }
+     .bottomButtan button{
+        padding: 20px 0;
+        font-size: 20px;
+    }
+}
+
+
+
+
+
+
+@media(min-width:768px){
+     .heading p {
+        font-size: 30px;
+        padding: 0 42px;
+    }
+    .heading{
+        padding-top: 24px;
+        margin-bottom: 120px;
+        margin-top: 30px;
+    }
+    .reportDiv h4{
+        font-size: 30px;
+        padding: 30px 35px;
+    }
+    .reportDiv2 input{
+        font-size: 26px;
+        min-height: 60px;
+        margin-bottom: 15px;
+        padding-left: 28px;
+    }
+
+    .reportDiv2 textarea{
+        font-size: 26px;
+        min-height: 110px;
+        margin-bottom: 15px;
+        padding-left: 28px;
+    }
+    .reportDiv2{
+        padding: 53px 59px 62px;
+        margin-bottom: 185px;
+    }
+
+    .bottomButtan button{
+        padding: 25px 0;
+        font-size: 26px;
+    }
+    .bottomButtan{
+        bottom: 50px;
+    }
+}
+
+@media(min-width:320px) and (orientation:landscape){
+    .bottomButtan{
+        position: relative;
+    }
+}
+}

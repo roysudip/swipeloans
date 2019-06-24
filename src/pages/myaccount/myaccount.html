@@ -1,0 +1,76 @@
+
+<ion-header>
+
+    <ion-navbar>
+        <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>My Details</ion-title>
+        <span navPop class="clo_se"></span>
+        <!-- <div class="notification">
+            <a (click)='GotoNotificationPage()' type='button'>
+            <img src="assets/images/notification.png" alt=""><span *ngIf='unreadMsg!=0' class='count_not'>{{unreadMsg}}</span>
+            </a>
+        </div> -->
+      </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="bgClass">
+        <ion-refresher (ionRefresh)="doRefresh($event)">
+            <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+
+    <div>
+            <div>
+
+                    <div *ngIf="profile.profileimage else NoProfileImage"  class="profilePic mTop" [ngStyle]="{'background-image': 'url(' +profile.profileimage + ')',
+                    'background-position': '50% 50%'}" (click)="uploadProfilePic();" >
+                        <span class="cameraIcon">
+                          <img src="assets/images/cameraIcon.png" alt="">
+                        </span>
+                    </div>
+
+                    <ng-template #NoProfileImage>
+                      <div  class="profilePic mTop" style="background-position:50% 50%; background-image:url('assets/imgs/user.png')"
+                       (click)="uploadProfilePic();" >
+                          <span class="cameraIcon">
+                            <img src="assets/images/cameraIcon.png" alt="">
+                          </span>
+                      </div>
+
+                    </ng-template>
+
+                    <div class="accordianBd mTop">
+
+                        <ion-item>
+                            <ion-input placeholder="First Name" [(ngModel)]="profile.first_name" name="first_name" clearInput></ion-input>
+                          </ion-item>
+                          <ion-item>
+                              <ion-input placeholder="Last Name" [(ngModel)]="profile.last_name" name="last_name" clearInput></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-input placeholder="Email" [(ngModel)]="profile.email" name="email" clearInput></ion-input>
+                              </ion-item>
+                                 <ion-item>
+                                  <ion-input type="number" placeholder="Mobile Number" [(ngModel)]="profile.phone_number" name="phone_number" clearInput></ion-input>
+                                 </ion-item>
+                                <ion-item class="dateofbirth">
+
+                                    <ion-label><img src="assets/images/calenderIcon.png" alt=""></ion-label>
+
+                                    <ion-datetime placeholder="Date of Birth"  [(ngModel)]="profile.dob" name="dob" max={{fullyear}}></ion-datetime>
+                                  </ion-item>
+                                  <ion-item>
+                                      <ion-input placeholder="Address" [(ngModel)]="profile.address" name="address" clearInput></ion-input>
+                                    </ion-item>
+                                    <ion-item>
+                                            <ion-input placeholder="Enter Promo Code" [(ngModel)]="profile.promo_code"  name="promo_code" clearInput></ion-input>
+                                          </ion-item>
+                <button class="loginBtn" (click)=updateprofiledetails();>update</button>
+
+                </div>
+            </div>
+    </div>
+</ion-content>

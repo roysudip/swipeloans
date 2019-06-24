@@ -1,0 +1,247 @@
+page-dashboard {
+// =============================//
+.rangeSlider{
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-between;
+}
+.toggleInput{
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    flex: 0 0 80%;
+    padding-right: 15px;
+    .text-input{
+        border: 1px solid #34a5dc;
+        margin: 0;
+        width: 100%;
+        height: 35px;
+        border-radius: 50px;
+        padding-left: 20px;
+        font-family: 'Conv_Poppins-SemiBold';
+        color: #ffffff;
+        font-size: 12px;
+    }
+    ion-input{
+        flex: 0 0 60%;
+    }
+    ion-label{
+        margin: 0;
+    }
+    ion-label{
+        color: #ffffff;
+        font-family: 'Conv_Poppins-Light';
+        font-size: 14px;
+    }
+}
+.search_Btn{
+    padding: 0;
+    background-color: transparent;
+    font-family: 'Conv_Poppins-Light';
+    color: #ffffff;
+    font-size: 14px;
+    span{
+        display: inline-block;
+    }
+
+}
+.topDiv{
+    background-color: #017cb8;
+    padding: 16px;
+}
+.filterCounter{
+    background-color: #fb6061;
+    width: 20px;
+    height: 13px;
+    display: inline-block;
+    border-radius: 50px;
+    margin-left: 5px;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 2px;
+    font-size: 10px;
+}
+.contentDiv{
+    padding: 16px;
+}
+.thumpImg{
+//    width: 140px;
+    margin: 0 auto;
+    line-height: 0;
+    a{
+        display: inline-block;
+        // img{
+        //     height: 100px;
+        //     width: auto;
+        // }
+    }
+}
+.lftThumpWrapper{
+    border: 1px solid #c4c5c5;
+    position: relative;
+    margin-bottom: 15px;
+    background-color: rgba(1,124,184,0.5);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 160px;
+}
+// .like {
+//     width: 30px;
+//     position: absolute;
+//     top: 5px;
+//     right: 5px;
+//     background-color: transparent;
+// }
+.interestRate{
+    display: inline-block;
+    background-image: url(../assets/images/rateBg.png);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px 10px 5px 50px;
+    background-size: 100%;
+    color: #a2febd;
+    font-family: 'Conv_Poppins-Light';
+    font-size: 12px;
+}
+
+.text-input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #fff;
+    opacity: 0.6;
+}
+.text-input::-moz-placeholder { /* Firefox 19+ */
+    color: #fff;
+    opacity: 0.6;
+}
+.text-input:-ms-input-placeholder { /* IE 10+ */
+    color: #fff;
+    opacity: 0.6;
+}
+.text-input:-moz-placeholder { /* Firefox 18- */
+   color: #fff;
+   opacity: 0.6;
+}
+
+.spinerDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    ion-spinner{
+        margin-top: 20%;
+    }
+}
+
+.addToFav{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  text-align: right;
+  span{
+  display: block;
+  color: #fff;
+  font-size: 10px;
+  font-family: 'Conv_Poppins-Regular';
+  line-height: 10px;
+  }
+ }
+ .like {
+  width: 30px;
+
+  background-color: transparent;
+ }
+
+ /********************************************************/
+
+.dollar_cal{
+  position: relative;
+  }
+
+  .dollar_cal:before{
+  content: "$";
+  position: absolute;
+  width: 50px;
+  color:#fff;
+  left: 10px;
+  top: 10px;
+  font-size: 12px;
+  }
+.btmDiv{
+  padding: 10px;
+  background: #022f63;
+  button{
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 50px;
+    border:1px solid #fff;
+    margin: 5px 4px;
+    background: transparent;
+    color: #fff;
+    font-family: 'Conv_Poppins-Light';
+    font-size: 12px;
+
+  }
+
+  div{
+    text-align: right;
+    padding-top: 5px;
+    span{
+      display: inline-block;
+      color: #fff;
+      font-size: 12px;
+      font-family: 'Conv_Poppins-Light';
+    }
+  }
+}
+
+
+
+@media(min-width:600px){
+
+    .lftThumpWrapper{
+//        min-height: 217px;
+        margin-bottom: 15px;
+        height: 360px;
+    }
+     .like{
+        width: 35px;
+        top: 20px;
+       right: 20px;
+    }
+    .interestRate{
+        font-size: 19px;
+        padding: 10px 26px 10px 100px;
+    }
+
+    .toggleInput {
+        ion-label{
+            font-size: 22px;
+        }
+    }
+    .search_Btn{
+        font-size: 22px;
+    }
+    .filterCounter{
+        width: 35px;
+        height: 22px;
+        font-size: 18px;
+    }
+    .toggleInput{
+        .text-input{
+            height: 58px;
+            font-size: 22px;
+            padding-left: 25px;
+        }
+    }
+    .topDiv{
+        padding: 30px 45px;
+    }
+
+}
+
+
+}

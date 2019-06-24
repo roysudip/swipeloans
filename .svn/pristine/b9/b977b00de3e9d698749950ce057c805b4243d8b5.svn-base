@@ -1,0 +1,17 @@
+reportModule.factory('reportFactory', reportFactory);
+reportFactory.$inject = ['$http'];
+function reportFactory($http) {
+    return {
+        //all property report list
+        getAllReports: function () {
+            return $http.get('/webcontrol/report/getAllReports');
+        },
+
+        // delete property report
+        deleteReport: function (reportId){
+            console.log(reportId);
+            return $http.delete('/webcontrol/report/' + reportId);
+        }
+    };
+}
+

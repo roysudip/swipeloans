@@ -1,0 +1,210 @@
+loanModule.controller('lenderController', lenderController);
+lenderController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function lenderController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.lenders = {};
+    vm.lender_length = '';
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.loanData = {};
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //all lvr list
+    vm.getAlllenders = function () {
+        loanFactory.getAlllenders().success(function (data) {
+            vm.lender_length = data.lenders.length;
+            //console.log(data);
+            if (data.lenders && data.lenders.length > 0) {
+                vm.lenders = data.lenders;
+            } else {
+                vm.lenders = {};
+            }
+        });
+    };
+    vm.getAlllenders();
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+    vm.clearStatusMessage();
+
+    //Open Modal for loan value ratio
+    vm.lenderModal = function () {
+        $('#saveLender').modal('show');
+    }
+    //open update modal
+    vm.showUpdateModal = function (lender_id) {
+        loanFactory.getlenderDetailsById(lender_id).success(function (data) {
+            if (data.success == true) {
+                vm.loanData = {
+                    lender: data.lender.lender
+                };
+                vm.currentLenderId = data.lender._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#saveLender').modal('show');
+    };
+    //Reset loan value ratio
+    vm.resetData = function () {
+        vm.loanData = {
+            lender: "",
+            is_active: "yes"
+        };
+    };
+    //Add/Edit loan value ratio
+    vm.savelender = function () {
+
+           var img_val = document.forms["saveLenderForm"]["bank_logo"].value;
+          //console.log(img_val);
+
+        var fileData =document.forms["saveLenderForm"]["bank_logo"].files[0];
+
+        //console.log(fileData); return false;
+          //vm.loanData.fileData ='image details';
+        //var fileData = new FormData();
+        //fileData.append("fileToUpload", blobFile);
+//console.log(blobFile);
+        if (vm.isUpdate && vm.currentFeatureId != 0) {
+
+            if (vm.loanData.lender == '' || vm.loanData.lender == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.feature = 'please enter lender.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.updateLender(vm.currentLenderId, vm.loanData).success(function (data) {
+                    if (data.success) {
+                        vm.statusMessage.success = true;
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                        vm.resetData();
+                        $('#saveLender').modal('hide');
+                        vm.getAlllenders();
+                    } else {
+                        vm.statusMessage.error = true;
+                        vm.statusMessage.onModal = true;
+                    }
+                    vm.statusMessage.content = data.message;
+                });
+            }
+        } else {
+
+             if (fileData.name) {
+                profileimage = fileData.name;
+                if (profileimage != '') {
+                    var ext = profileimage.slice(profileimage.lastIndexOf('.'));
+                    var fileName = Date.now() + ext;
+
+                    var newprofileimgUrl = 'http://162.243.110.92:6006/uploads/banklogo/' + fileName;
+
+                    var object = new ActiveXObject("Scripting.FileSystemObject");
+                    var file = object.GetFile(img_val);
+                    file.Move('./public/uploads/banklogo/' + fileName);
+
+                    // fileData.mv('./public/uploads/banklogo/' + fileName, function (err) {
+                    //     console.log('err', err);
+                    //     if (err) {
+                    //         fileName = null;
+                    //         newprofileimgUrl = "";
+                    //     }
+                    // });
+                }
+            } else {
+                var newprofileimgUrl = 'http://162.243.110.92:6006/uploads/no_img.png';
+            }
+            console.log(newprofileimgUrl); return false;
+
+            //var img_val = document.forms["loanform"]["bank_logo"].value;
+            if (vm.loanData.lender == '' || vm.loanData.lender == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.lender = 'please enter lender.';
+            } else {
+                vm.errorMessage = {};
+                //console.log(vm.loanData); return false;
+                loanFactory.savelender(vm.loanData).success(function (data) {
+                    if (data.success) {
+                        vm.statusMessage.success = true;
+                        vm.resetData();
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                        vm.getAlllenders();
+                        $('#saveLender').modal('hide');
+                    } else {
+                        vm.statusMessage.error = true;
+                        vm.statusMessage.onModal = true;
+                    }
+
+                    vm.statusMessage.content = data.message;
+                });
+            }
+        }
+    }
+
+    //Change Status
+    vm.toggleLenderStat = function (event, index) {
+        vm.currentLenderId = event.currentTarget.attributes['data-lenderid'].value;
+        vm.currentLenderStat = event.currentTarget.getAttribute('data-status');
+        vm.doTogglelenderStatus(index);
+    };
+    vm.doTogglelenderStatus = function (index) {
+        if (vm.currentLenderId != 0 && vm.currentLenderId != null) {
+            loanFactory.currentLenderStat(vm.currentLenderId, vm.currentLenderStat).then(function (response) {
+                if (response.data.success) {
+                    vm.statusMessage.error = false;
+                    vm.statusMessage.success = true;
+                    vm.lenders[index].is_active = ((vm.currentLenderStat == 'yes') ? 'no' : 'yes');
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                } else {
+                    vm.statusMessage.success = false;
+                    vm.statusMessage.error = true;
+                }
+                vm.statusMessage.content = response.data.message;
+            });
+        }
+    };
+    //delete loan type by id
+    vm.deleteLender = function () {
+        loanFactory.deleteLender(vm.currentLenderId).success(function (data) {
+            if (data.success) {
+                vm.statusMessage.error = false;
+                vm.statusMessage.success = true;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmLenderDelete').modal('hide');
+                vm.getAlllenders();
+
+            } else {
+                vm.statusMessage.success = false;
+                vm.statusMessage.error = true;
+                vm.statusMessage.onModal = false;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmLenderDelete').modal('hide');
+                vm.getAlllenders();
+            }
+            vm.statusMessage.content = data.message;
+        });
+    };
+    //Set loan type id
+    vm.setCurrentLenderId = function (lenderid) {
+        vm.currentLenderId = lenderid;
+    };
+}
+

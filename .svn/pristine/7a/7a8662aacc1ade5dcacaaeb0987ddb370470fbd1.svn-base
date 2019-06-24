@@ -1,0 +1,325 @@
+var express = require('express');
+var Admin = require('../../schema/admins');
+var Loan = require('../../schema/loan');
+var User = require('../../schema/users');
+var async = require("async");
+var config = require('../../config');
+var router = express.Router();
+var adminDet = {
+    id: null,
+    email: null,
+    first_name: null,
+    last_name: null,
+    is_admin: null,
+    authenticated: false
+};
+/***
+ * Run it into rest client after starting the project to create a new admin account
+ */
+router.post('/register-admin', function (req, res) {
+    //console.log(req.body);
+    var admin = new Admin({
+        email: req.body.email,
+        password: req.body.password,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        is_admin: true
+    });
+    admin.save(function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(res);
+            res.json({ success: true, message: "Admin account Created Successfully" });
+        }
+    });
+});
+/***For rendering login page***/
+router.get('/', function (req, res, next) {
+    // read cookies
+    var remember_val = req.cookies;
+    console.log(remember_val);
+    res.render('admin/index', { success: true, title: "Login", message: '', remember_val: remember_val });
+});
+/***** Admin login*/
+router.post('/login', function (req, res) {
+    console.log('post val', req.body);
+    Admin.findOne({ email: req.body.email })
+        .select('email password is_admin first_name last_name')
+        .exec(function (err, admin) {
+            if (err) {
+                throw err;
+            }
+            if (!admin) {
+                res.render('admin/index', { success: false, message: "Admin doesn't exist", remember_val: '', title: "Login" });
+            } else if (admin) {
+                var validPassword = admin.comparePassword(req.body.password);
+                console.log('validPassword', validPassword);
+                if (!validPassword) {
+                    res.render('admin/index', { success: false, message: "Invalid password", remember_val: '', title: "Login" });
+                } else {
+                    var conditions = { _id: admin.id },
+                        fields = { last_login: Date.now(), is_logged_in: true },
+                        options = { upsert: false };
+                    Admin.update(conditions, fields, options, function (err, affected) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            admin.last_login = fields.last_login;
+                        }
+                    });
+                    if (req.body.rememberme == 'on') {
+                        // Set cookie
+                        res.cookie('rememberme', 'on', '');
+                        res.cookie('email', req.body.email, '');
+                        res.cookie('password', req.body.password, '');
+                    }
+                    else {
+                        console.log('here else');
+                        // Set cookie
+                        res.cookie('rememberme', '', '');
+                        res.cookie('email', '', '');
+                        res.cookie('password', '', '');
+                    }
+                    adminDet = {
+                        id: admin._id,
+                        email: admin.email,
+                        first_name: admin.first_name,
+                        last_name: admin.last_name,
+                        is_admin: admin.is_admin,
+                        authenticated: true
+                    };
+                    req.session.admin = adminDet;
+                    res.redirect('/webcontrol/dashboard');
+                }
+            }
+        });
+});
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+router.get('/dashboard', checkLogin, function (req, res) {
+
+    console.log('here');
+    var counter = [];
+    async.waterfall([
+        function (nextcb) {
+            User.count(function (err, user) {
+                if (err) {
+                    nextcb(err);
+                } else {
+                    counter.push({ user: user });
+                    nextcb(null);
+                }
+            });
+        },
+        function (nextcb) {
+            Loan.count( function (err, loan) {
+                if (err) {
+                    nextcb(err);
+                } else {
+                    counter.push({ loan: loan });
+                    nextcb(null);
+                }
+            });
+        }
+    ],
+        function (err, data) {
+            if (err) {
+                callback({ success: false, message: "Some error occurred", err: err });
+            }
+            else {
+                console.log(counter);
+                res.render('admin/dashboard', { success: true, error: false, data_count: counter, admin: req.session.admin, title: "Dashboard",child_active:'', active: "dashboard" });
+            }
+
+        });
+
+});
+router.get('/logout', checkLogin, function (req, res) {
+    req.session.destroy(function (err) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.redirect('/webcontrol');
+        }
+    });
+});
+router.get('/change-password', checkLogin, function (req, res) {
+    res.render('admin/changepassword', { success: false, error: false, admin: req.session.admin, title: "Change password", postval: '', active: "changepassword", message: 'hhgh',child_active:'' });
+});
+router.post('/change-password', checkLogin, function (req, res) {
+    var passwordVaild = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[#!%-*_~^.])");
+    if ((typeof (req.body.oldpassword) == "undefined") || req.body.oldpassword == "") {
+        res.render('admin/changepassword', { success: false, error: true, message: "provide current password", admin: req.session.admin, postval: req.body, title: "Change Password", active: "changepassword",child_active:'' });
+    } else if ((typeof (req.body.newpassword) == "undefined") || req.body.newpassword == "") {
+        res.render('admin/changepassword', { success: false, error: true, message: "provide new password", admin: req.session.admin, postval: req.body, title: "Change Password", active: "changepassword" ,child_active:''});
+    } else if (!passwordVaild.test(req.body.newpassword)) {
+        res.render('admin/changepassword', { success: false, error: true, postval: req.body, message: "Password must contain at least 1 capital letter,\n\n1 small letter, 1 number and 1 special character.\n\nFor special characters you can pick one of these #!%-*_~^.", admin: req.session.admin, title: "Change Password", active: "changepassword",child_active:'' });
+    } else if (req.body.newpassword.length < 6) {
+        res.render('admin/changepassword', { success: false, error: true, postval: req.body, message: "Password must be at least 6 characters", admin: req.session.admin, title: "Change Password", active: "changepassword" ,child_active:''});
+    } else if ((typeof (req.body.confirmpassword) == "undefined") || req.body.confirmpassword == "") {
+        res.render('admin/changepassword', { success: false, error: true, message: "provide confirm password", admin: req.session.admin, postval: req.body, title: "Change Password", active: "changepassword",child_active:'' });
+    } else if (req.body.newpassword != req.body.confirmpassword) {
+        res.render('admin/changepassword', { success: false, error: true, postval: req.body, message: "New password does not matched!", admin: req.session.admin, title: "Change Password", active: "changepassword",child_active:'' });
+    } else {
+        Admin.findOne({ email: req.session.admin.email })
+            .select('password')
+            .exec(function (err, admin) {
+                if (err) {
+                    throw err;
+                }
+                if (!admin) {
+                    res.render('admin/changepassword', { success: false, error: true, message: "Admin doesn't exist", postval: '', admin: req.session.admin, title: "Change Password", active: "changepassword",child_active:'' });
+                } else if (admin) {
+                    var validPassword = admin.comparePassword(req.body.oldpassword);
+                    if (!validPassword) {
+                        res.render('admin/changepassword', { success: false, error: true, message: "Invalid current password", postval: '', admin: req.session.admin, title: "Change Password", active: "changepassword" ,child_active:''});
+                    } else {
+                        admin.password = req.body.newpassword;
+                        admin.save(function (err) {
+                            if (err) {
+                                throw err;
+                            } else {
+                                res.render('admin/changepassword', { success: true, error: false, postval: '', message: "Password has been changed successfully.", admin: req.session.admin, title: "Change Password", active: "changepassword",child_active:'' });
+                            }
+                        });
+                    }
+                }
+            });
+    }
+});
+//forgot password//
+router.get('/forgot-password', function (req, res) {
+    res.render('admin/forgotpassword', { success: false, error: false, message: "", title: "Forgot Password" });
+});
+
+router.post('/forgot-password', function (req, res) {
+    if ((typeof (req.body.email) == "undefined") || req.body.email == "") {
+        res.render('admin/forgotpassword', { success: false, error: true, message: "Please provide email", title: "Forgot Password" });
+    } else {
+        Admin.findOne({ email: req.body.email })
+            .select('password')
+            .exec(function (err, admin) {
+                if (err) {
+                    throw err;
+                }
+                if (!admin) {
+                    res.render('admin/forgotpassword', { success: false, error: true, message: "Admin doesn't exist", title: "Forgot Password" });
+                } else if (admin) {
+                    var randomString = require('randomstring');
+                    var new_password = randomString.generate({ length: 1, charset: 'abcdefghijklmnopqrstuvwxyz' });
+                    new_password = new_password + '' + randomString.generate({ length: 1, charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' });
+                    new_password = new_password + '' + randomString.generate({ length: 1, charset: '0123456789' });
+                    new_password = new_password + '' + randomString.generate({ length: 1, charset: 'abcdefghijklmnopqrstuvwxyz' });
+                    new_password = new_password + '' + randomString.generate({ length: 1, charset: '# ! % - * _ ~ ^ .' });
+                    new_password = new_password + '' + randomString.generate({ length: 1, charset: 'abcdefghijklmnopqrstuvwxyz' });
+                    console.log('new_password', new_password);
+                    admin.password = new_password;
+                    admin.save(function (err) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            //=========================
+                            var d = new Date();
+                            var n = d.getDate();
+                            var m = d.getMonth() + 1;
+                            var y = d.getFullYear();
+                            if (m <= 9) {
+                                var mn = '0' + m;
+                            }
+                            else {
+                                var mn = m;
+                            }
+
+                            if (n >= 10) {
+                                var dn = n;
+                            }
+                            else {
+                                var dn = '0' + n;
+                            }
+
+                            var todaydate = mn + '-' + dn + '-' + y;
+                            var mailContent = '<body>' +
+                                '<p style="margin-bottom:0;"> <span style="display:inline-block">Hello Admin</span><span style="float:right;">' + todaydate + '</span></p>' +
+                                '<p>Admin password has changed.Admin new password is: ' + new_password + ' </p>' +
+                                '</body>';
+                            //console.log(mailContent);
+                            var nodemailer = require('nodemailer');
+                            // create reusable transporter object using the default SMTP transport 
+                            var transporter = nodemailer.createTransport('smtps://' + config.email.user + ':' + config.email.pass + '@' + config.email.host);
+
+                            // setup e-mail data with unicode symbols 
+                            var mailOptions = {
+                                from: '"Swipeloan" <swipeloan.test@gmail.com>', // sender address 
+                                to: req.body.email, // list of receivers 
+                                subject: 'Admin Forgot Password', // Subject line 
+                                //text: 'Hello world ', // plaintext body 
+                                html: mailContent
+                            };
+
+                            // send mail with defined transport object 
+                            transporter.sendMail(mailOptions, function (error, info) {
+                                var message = '';
+                                if (error) {
+                                    console.log(error);
+                                    message = 'error occurred in email sending';
+                                } else {
+                                    console.log('Message sent: ' + info.response);
+                                    message = 'New password has sent to admin email successfully.';
+                                }
+                                res.render('admin/forgotpassword', { success: true, error: false, message: message, title: "Forgot Password" });
+                            });
+
+                        }
+                    });
+                }
+            });
+    }
+
+});
+
+//Admin-profile
+router.get('/admin-profile', checkLogin, function (req, res) {
+    var admin_profile = [];
+    Admin.findOne(function (err, admin_profile) {
+        if (err) {
+            res.render('admin/adminprofile', { success: false, error: true, message: "", admin: req.session.admin, admin_details: admin_profile, title: "Admin profile", active: "adminprofile" ,child_active:''});
+        } else {
+            console.log('admin_profile', admin_profile);
+            res.render('admin/adminprofile', { success: false, error: false, message: "", admin: req.session.admin, admin_details: admin_profile, title: "Admin profile", active: "adminprofile",child_active:'' });
+        }
+    });
+});
+router.post('/admin-profile', checkLogin, function (req, res) {
+    console.log('admin', req.body);
+    var emailPattern = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    if ((typeof (req.body.first_name) == "undefined") || req.body.first_name == "") {
+        res.render('admin/adminprofile', { success: false, error: true, message: "provide first name", admin: req.session.admin, admin_details: req.body, title: "Admin profile", active: "adminprofile",child_active:'' });
+    } else if ((typeof (req.body.last_name) == "undefined") || req.body.last_name == "") {
+        res.render('admin/adminprofile', { success: false, error: true, message: "provide last name", admin: req.session.admin, admin_details: req.body, title: "Admin profile", active: "adminprofile",child_active:'' });
+    } else if ((typeof (req.body.email) == "undefined") || req.body.email == "") {
+        res.render('admin/adminprofile', { success: false, error: true, message: "provide email address", admin: req.session.admin, admin_details: req.body, title: "Admin profile", active: "adminprofile",child_active:'' });
+    } else if (req.body.email != '' && !emailPattern.test(req.body.email)) {
+        res.render('admin/adminprofile', { success: false, error: true, message: "provide valid email address", admin: req.session.admin, admin_details: req.body, title: "Admin profile", active: "adminprofile",child_active:'' });
+    } else {
+        console.log('admin Session',req.session.admin);
+        var conditions = { _id: req.session.admin.id },
+            fields = { first_name: req.body.first_name, last_name: req.body.last_name, email: req.body.email },
+            options = { upsert: false };
+        Admin.update(conditions, fields, options, function (err, affected) {
+            if (err) {
+                res.render('admin/adminprofile', { success: false, error: true, message: "Some error occurred", admin: req.session.admin, admin_details: req.body, title: "Admin profile", active: "adminprofile",child_active:'' });
+            } else {
+                res.render('admin/adminprofile', { success: true, error: false, message: "Admin profile is updated.", admin: req.session.admin, admin_details: req.body, title: "Admin profile", active: "adminprofile",child_active:'' });
+            }
+        });
+    }
+});
+module.exports = router;

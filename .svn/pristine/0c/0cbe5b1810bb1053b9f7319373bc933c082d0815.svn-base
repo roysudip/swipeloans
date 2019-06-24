@@ -1,0 +1,173 @@
+loanModule.controller('featureController', featureController);
+featureController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function featureController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.features = {};
+    vm.feature_length = '';
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.loanData = {};
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //all lvr list
+    vm.getAllfeatures = function () {
+        loanFactory.getAllfeatures().success(function (data) {
+            vm.feature_length = data.features.length;
+            if (data.features && data.features.length > 0) {
+                vm.features = data.features;
+            } else {
+                vm.features = {};
+            }
+        });
+    };
+    vm.getAllfeatures();
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+    vm.clearStatusMessage();
+
+    //Open Modal for loan value ratio
+    vm.loanFeatureModal = function () {
+        $('#saveloanFeature').modal('show');
+    }
+    //open update modal
+    vm.showUpdateModal = function (feature_id) {
+        loanFactory.getfeatureDetailsById(feature_id).success(function (data) {
+            if (data.success == true) {
+                vm.loanData = {
+                    feature: data.feature.feature
+                };
+                vm.currentFeatureId = data.feature._id;
+                vm.isUpdate = true;
+            }
+        });
+        $('#saveloanFeature').modal('show');
+    };
+    //Reset loan value ratio
+    vm.resetData = function () {
+        vm.loanData = {
+            feature: "",
+            is_active: "yes"
+        };
+    };
+    //Add/Edit loan value ratio
+    vm.savefeature = function () {
+        if (vm.isUpdate && vm.currentFeatureId != 0) {
+            if (vm.loanData.feature == '' || vm.loanData.feature == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.feature = 'please enter loan feature.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.updateFeature(vm.currentFeatureId, vm.loanData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.error = false;
+                            vm.statusMessage.success = true;
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            vm.resetData();
+                            $('#saveloanFeature').modal('hide');
+                            vm.getAllfeatures();
+                        } else {
+                            vm.statusMessage.success = false;
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.onModal = true;
+                        }
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        } else {
+            if (vm.loanData.feature == '' || vm.loanData.feature == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.feature = 'please enter loan feature.';
+            } else {
+                vm.errorMessage = {};
+                loanFactory.savefeature(vm.loanData)
+                    .success(function (data) {
+                        if (data.success) {
+                            vm.statusMessage.success = true;
+                            vm.resetData();
+                            $timeout(function () {
+                                vm.clearStatusMessage();
+                            }, 5000);
+                            vm.getAllfeatures();
+                            $('#saveloanFeature').modal('hide');
+                        } else {
+                            vm.statusMessage.error = true;
+                            vm.statusMessage.onModal = true;
+                        }
+
+                        vm.statusMessage.content = data.message;
+                    });
+            }
+        }
+    }
+
+    //Change Status
+    vm.toggleFeatureStat = function (event, index) {
+        vm.currentFeatureId = event.currentTarget.attributes['data-featureid'].value;
+        vm.currentFeatureStat = event.currentTarget.getAttribute('data-status');
+        vm.doToggleFeatureStatus(index);
+    };
+    vm.doToggleFeatureStatus = function (index) {
+        if (vm.currentFeatureId != 0 && vm.currentFeatureId != null) {
+            loanFactory.currentFeatureStat(vm.currentFeatureId, vm.currentFeatureStat).then(function (response) {
+                if (response.data.success) {
+                    vm.statusMessage.error = false;
+                    vm.statusMessage.success = true;
+                    vm.features[index].is_active = ((vm.currentFeatureStat == 'yes') ? 'no' : 'yes');
+                    $timeout(function () {
+                        vm.clearStatusMessage();
+                    }, 5000);
+                } else {
+                    vm.statusMessage.success = false;
+                    vm.statusMessage.error = true;
+                }
+                vm.statusMessage.content = response.data.message;
+            });
+        }
+    };
+    //delete loan type by id
+    vm.deleteFeature = function () {
+        loanFactory.deleteFeature(vm.currentFeatureId).success(function (data) {
+            if (data.success) {
+                vm.statusMessage.error = false;
+                vm.statusMessage.success = true;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmFeatureDelete').modal('hide');
+                vm.getAllfeatures();
+
+            } else {
+                vm.statusMessage.success = false;
+                vm.statusMessage.error = true;
+                vm.statusMessage.onModal = false;
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmFeatureDelete').modal('hide');
+                vm.getAllfeatures();
+            }
+            vm.statusMessage.content = data.message;
+        });
+    };
+    //Set loan type id
+    vm.setCurrentFeatureId = function (featureid) {
+        vm.currentFeatureId = featureid;
+    };
+}
+

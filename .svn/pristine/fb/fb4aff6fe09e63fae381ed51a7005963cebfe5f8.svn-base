@@ -1,0 +1,228 @@
+var express = require("express");
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var apiLaon = express.Router();
+var loanService = require('../service/LoanService');
+
+
+//=================
+//  Middleware to check token
+//=================
+// apiLaon.use(function (req, res, next) {
+//     var token = req.body.token || req.params.token || req.query.token || req.headers['x-access-token'];
+//     if (token) {
+//         jwt.verify(token, config.secret, function (err, decoded) {
+//             if (err) {
+//                 res.status(403).send({ success: false, message: "failed to authenticate" });
+//             } else {
+//                 req.decoded = decoded;
+//                 next();
+//             }
+//         });
+//     }
+//     else {
+//         res.status(403).send({ success: false, message: "token required" });
+//     }
+// });
+//=================
+//  Middleware end
+//=================
+
+/*********************
+ * list Active loan
+ * @method: GET
+ * @requestparams
+ * user_id
+ * @request_url: /api/loan/list
+ *********************/
+
+apiLaon.get('/list', function (req, res) {
+    loanService.listing(function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * Add favorite loan
+ * @method: post
+ * @requestparams user_id, loan_id
+ * user_id
+ * @request_url: /api/loan/add-favorite
+ *********************/
+
+apiLaon.post('/add-favorite', function (req, res) {
+    loanService.addFavorite(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * list favorite loan
+ * @method: post
+ * @requestparams user_id
+ * user_id
+ * @request_url: /api/loan/list-favorite
+ *********************/
+
+apiLaon.post('/list-favorite', function (req, res) {
+    loanService.listFavorite(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * remove favorite loan
+ * @method: post
+ * @requestparams _id
+ * user_id
+ * @request_url: /api/loan/list-favorite
+ *********************/
+
+apiLaon.post('/remove-favorite', function (req, res) {
+    loanService.removeFavorite(req.body._id, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * list loan type
+ * @method: get
+ * @requestparams user_id
+ * user_id
+ * @request_url: /api/loan/loan-type-list
+ *********************/
+
+apiLaon.get('/loan-type-list', function (req, res) {
+    loanService.listLonType(function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * List loan by loan type and max capacity
+ * @method: post
+ * @request user_id,loan_type_id, min_value
+ * user_id
+ * @request_url: /api/loan/list-loan-search
+ *********************/
+
+apiLaon.post('/list-loan-search', function (req, res) {
+    loanService.listloanSearch(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * Loan Details
+ * @method: get
+ * @request loan_id
+ * user_id
+ * @request_url: /api/loan/loan-details
+ *********************/
+
+apiLaon.get('/loan-details', function (req, res) {
+    loanService.loanDetailsById(req.query.loan_id, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * max capacity value for loan
+ * @method: get
+ * @request 
+ * user_id
+ * @request_url: /api/loan/max-capacity-value
+ *********************/
+
+apiLaon.get('/max-capacity-value', function (req, res) {
+    loanService.maxCapacityValue( function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * Checking fav loan
+ * @method: post
+ * @request loan_id, user_id
+ * user_id
+ * @request_url: /api/loan/check-fav-loan
+ *********************/
+
+apiLaon.post('/check-fav-loan', function (req, res) {
+    loanService.checkFavLoan(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+
+/*********************
+ * get all loan value ratio
+ * @method: post
+ * @request
+ * @request_url: /api/loan/get-all-loan-ratio
+ *********************/
+
+apiLaon.post('/get-all-loan-ratio', function (req, res) {
+    loanService.getalllvrlist(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * get all loan value type
+ * @method: post
+ * @request
+ * @request_url: /api/loan/get-all-loan-type
+ *********************/
+
+apiLaon.post('/get-all-loan-type', function (req, res) {
+    loanService.getalllloantype(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * get all loan features
+ * @method: post
+ * @request
+ * @request_url: /api/loan/get-all-loan-features
+ *********************/
+
+apiLaon.post('/get-all-loan-features', function (req, res) {
+    loanService.getalllloanfeatures(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+
+
+/*********************
+ * get all loan lenders
+ * @method: post
+ * @request
+ * @request_url: /api/loan/get-all-loan-lenders
+ *********************/
+
+apiLaon.post('/get-all-loan-lenders', function (req, res) {
+    loanService.getalllloanlenders(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+
+/*********************
+ * get all loan search
+ * @method: post
+ * @request
+ * @request_url: /api/loan/get-all-loan-search
+ *********************/
+
+apiLaon.post('/get-all-loan-search', function (req, res) {
+    console.log("get-all-loan-search");
+    loanService.getalllloansearch(req.body, function (response) {
+        res.send(response);
+    });
+});
+
+
+module.exports = apiLaon;

@@ -1,0 +1,145 @@
+loanModule.factory('loanFactory', loanFactory);
+loanFactory.$inject = ['$http'];
+function loanFactory($http){
+    return {
+        //list all lvr
+        getAlllvrs: function(){
+            return $http.get('/webcontrol/loan/lvr/getAlllvrs');
+        },
+        // add loan value ratio
+        saveLvr: function(lvrData){
+            return $http.post('/webcontrol/loan/lvr/', lvrData);
+        },
+        //change lvr status
+        changeLvrStatus: function(lvrid, lvrStatus){
+            return $http.put('/webcontrol/loan/lvr/changeStatus/' + lvrid, {
+                is_active: ((lvrStatus == 'yes') ? 'no' : 'yes')
+            });
+        },
+        // lvr details by id
+        getlvrDetailsById: function(lvrid){
+            return $http.get('/webcontrol/loan/lvr/getDetails/' + lvrid);
+        },
+        //update lvr by id
+        updateLvr: function(lvrid, lvrData){
+            return $http.put('/webcontrol/loan/lvr/' + lvrid, lvrData);
+        },
+        //delete lvr by id
+        deleteLvr: function (lvrid){
+            return $http.delete('/webcontrol/loan/lvr/' + lvrid);
+        },
+        //list all lvr
+        getAlltypes: function(){
+            return $http.get('/webcontrol/loan/type/getAlltypes');
+        },
+        // add loan type
+        savetype: function(typeData){
+            return $http.post('/webcontrol/loan/type/', typeData);
+        },
+        //change loan type status
+        currentTypeStat: function(typeid, typeStatus){
+            return $http.put('/webcontrol/loan/type/changeStatus/' + typeid, {
+                is_active: ((typeStatus == 'yes') ? 'no' : 'yes')
+            });
+        },
+        // loan type details by id
+        gettypeDetailsById: function(typeid){
+            return $http.get('/webcontrol/loan/type/getDetails/' + typeid);
+        },
+        //update loan type by id
+        updateType: function(typeid, typeData){
+            return $http.put('/webcontrol/loan/type/' + typeid, typeData);
+        },
+        //delete loan type by id
+        deleteType: function (typeid){
+            return $http.delete('/webcontrol/loan/type/' + typeid);
+        },
+        //list all loan feature
+        getAllfeatures: function(){
+            return $http.get('/webcontrol/loan/feature/getAllfeatures');
+        },
+        // add loan feature
+        savefeature: function(featureData){
+            return $http.post('/webcontrol/loan/feature/', featureData);
+        },
+        //change loan feature status
+        currentFeatureStat: function(featureid, featureStatus){
+            return $http.put('/webcontrol/loan/feature/changeStatus/' + featureid, {
+                is_active: ((featureStatus == 'yes') ? 'no' : 'yes')
+            });
+        },
+        // loan feature details by id
+        getfeatureDetailsById: function(featureid){
+            return $http.get('/webcontrol/loan/feature/getDetails/' + featureid);
+        },
+        //update loan feature by id
+        updateFeature: function(featureid, featureData){
+            return $http.put('/webcontrol/loan/feature/' + featureid, featureData);
+        },
+        //delete loan feature by id
+        deleteFeature: function (featureid){
+            return $http.delete('/webcontrol/loan/feature/' + featureid);
+        },
+        //list all loan feature
+        // getAlllenders: function(){
+        //     return $http.get('/webcontrol/loan/lender/getAlllenders');
+        // },
+        // add lender
+        savelender: function(lenderData){
+           //console.log(lenderData); return false;
+            return $http.post('/webcontrol/loan/lender/', lenderData);
+        },
+        //change lender status
+        currentLenderStat: function(lenderid, lenderStatus){
+            return $http.put('/webcontrol/loan/lender/changeStatus/' + lenderid, {
+                is_active: ((lenderStatus == 'yes') ? 'no' : 'yes')
+            });
+        },
+        // lender details by id
+        getlenderDetailsById: function(lenderid){
+            return $http.get('/webcontrol/loan/lender/getDetails/' + lenderid);
+        },
+        //update lender by id
+        updateLender: function(lenderid, lenderData){
+            return $http.put('/webcontrol/loan/lender/' + lenderid, lenderData);
+        },
+        //delete lender by id
+        deleteLender: function (lenderid){
+            return $http.delete('/webcontrol/loan/lender/' + lenderid);
+        },
+        //list all loan option for loan add
+        getAllloanOption: function(){
+            return $http.get('/webcontrol/loan/add/getAllloanOption');
+        },
+        //list all lenders
+        getAlllenders: function(){
+            return $http.get('/webcontrol/loan/lender/getAlllenders');
+        },
+         //list all loan
+         getAllLoans: function(){
+            return $http.get('/webcontrol/loan/getAllLoans');
+        },
+
+        //change lender status
+        changeLoanStatus: function(loanid, loanStatus){
+            return $http.put('/webcontrol/loan/changeStatus/' + loanid, {
+                is_active: ((loanStatus == 'yes') ? 'no' : 'yes')
+            });
+        },
+        //Loan details by id
+        getLaonDetailsById: function(loanId){
+            return $http.get('/webcontrol/loan/getDetails/' + loanId);
+        },
+        //delete loan by id
+        deleteLoan: function (loanid){
+            return $http.delete('/webcontrol/loan/' + loanid);
+        },
+
+        loanssearch: function(searchData){
+            console.log('factory');
+            //console.log(searchData); 
+            return $http.post('/webcontrol/loan/search', searchData);
+        },
+
+    };
+}

@@ -1,0 +1,131 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "path-to-regexp",
+        "scope": null,
+        "escapedName": "path-to-regexp",
+        "name": "path-to-regexp",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\node_project\\swipeloan"
+    ]
+  ],
+  "_from": "path-to-regexp@latest",
+  "_id": "path-to-regexp@2.2.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/path-to-regexp",
+  "_nodeVersion": "9.6.1",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/path-to-regexp_2.2.0_1520402693889_0.9584686736657209"
+  },
+  "_npmUser": {
+    "name": "blakeembrey",
+    "email": "hello@blakeembrey.com"
+  },
+  "_npmVersion": "5.6.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "path-to-regexp",
+    "scope": null,
+    "escapedName": "path-to-regexp",
+    "name": "path-to-regexp",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-2.2.0.tgz",
+  "_shasum": "80f0ff45c1e0e641da74df313644eaf115050972",
+  "_shrinkwrap": null,
+  "_spec": "path-to-regexp",
+  "_where": "D:\\node_project\\swipeloan",
+  "bugs": {
+    "url": "https://github.com/pillarjs/path-to-regexp/issues"
+  },
+  "component": {
+    "scripts": {
+      "path-to-regexp": "index.js"
+    }
+  },
+  "dependencies": {},
+  "description": "Express style path to RegExp utility",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.0.24",
+    "chai": "^4.1.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.5.0",
+    "standard": "^10.0.3",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2"
+  },
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-zJcOPeBsraLjWXwUzFMPzH3QO2CmO1yRggtADPJjOTyCF5csQxfUGJL+CbyyRvIS09wOipi4F/fgRhdmVGSwxQ==",
+    "shasum": "80f0ff45c1e0e641da74df313644eaf115050972",
+    "tarball": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-2.2.0.tgz",
+    "fileCount": 6,
+    "unpackedSize": 26717
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "LICENSE"
+  ],
+  "gitHead": "3cf45556002978802ed365d81f7fe1b6487703ff",
+  "homepage": "https://github.com/pillarjs/path-to-regexp#readme",
+  "keywords": [
+    "express",
+    "regexp",
+    "route",
+    "routing"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "blakeembrey",
+      "email": "hello@blakeembrey.com"
+    },
+    {
+      "name": "defunctzombie",
+      "email": "shtylman@gmail.com"
+    },
+    {
+      "name": "dougwilson",
+      "email": "doug@somethingdoug.com"
+    },
+    {
+      "name": "jonathanong",
+      "email": "jonathanrichardong@gmail.com"
+    },
+    {
+      "name": "jongleberry",
+      "email": "jonathanrichardong@gmail.com"
+    }
+  ],
+  "name": "path-to-regexp",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pillarjs/path-to-regexp.git"
+  },
+  "scripts": {
+    "lint": "standard",
+    "test": "npm run lint && npm run test-cov",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --require ts-node/register -R spec test.ts",
+    "test-spec": "mocha --require ts-node/register -R spec --bail test.ts"
+  },
+  "typings": "index.d.ts",
+  "version": "2.2.0"
+}

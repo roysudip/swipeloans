@@ -1,0 +1,209 @@
+questionModule.controller('questionController', questionController);
+questionController.$inject = ['$timeout', 'questionFactory', 'commonFactory'];
+function questionController($timeout, questionFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.errorMessage = {};
+    vm.cms = {};
+    //all question list
+    vm.getAllQuestion = function () {
+        questionFactory.getAllQuestions()
+            .success(function (data) {
+                ///console.log(data);
+                if (data.questions && data.questions.length > 0) {
+                    vm.questions = data.questions;
+                } else {
+                    vm.questions = '';
+                }
+            });
+    };
+    vm.getAllQuestion();
+    vm.currentCmsId = 0;
+    vm.currentCmsStat = null;
+    vm.statusMessage = {
+        success: false,
+        error: false,
+        content: "",
+        onModal: false
+    };
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+    vm.activeOptions = [
+        { value: true, label: 'Yes' },
+        { value: false, label: 'No' }
+    ];
+    vm.optionLength = 1;
+    vm.optionArr;
+    vm.resetQuestionData = function () {
+        vm.questionData = {
+            question: "",
+            type: "simple",            
+            options: [{"id":'option1'}]
+        };
+    };
+    vm.resetQuestionData();
+
+    vm.typeOptions = [
+        { value: 'simple', label: 'Simple Input' },
+        { value: 'comment', label: 'Comments only' },
+        { value: 'option', label: 'Options' }
+    ];
+
+
+
+    vm.addOption = function(){
+        vm.optionLength = vm.optionLength+1;
+        vm.questionData.options.push({"id": 'option'+parseInt(vm.optionLength)});        
+    }
+
+    vm.removeOption = function(index){
+        vm.optionLength = vm.optionLength-1;
+        vm.questionData.options.splice(index, 1);        
+    }
+
+    vm.setCurrentQuestionId = function (questionid) {
+        vm.currentQuestionId = questionid;        
+    };
+
+    //open add modal
+    vm.addNewQuestionModal = function () {
+        //vm.isUpdate = false;
+        //vm.resetCmsData();
+       console.log('here');
+        $('#saveQuestionModal').modal('show');
+    };
+
+    //Open View Model
+    vm.showDetailsModal = function (qus_id) {
+        questionFactory.getQuestionDetailsById(qus_id).then(function (data) {                      
+            if (data.data.success == true){
+                vm.questionData = {                    
+                    question: data.data.question.question,
+                    type: data.data.question.type,
+                    options: data.data.question.options,                    
+                    createdAt: data.data.question.createdAt
+                };
+                vm.currentQuestionId = data.data.question._id;
+                vm.isUpdate = true;
+                $('#vewQuestion').modal('show');
+            } else {
+                vm.errorMessage = data.data.message;
+            }
+        });
+    };
+
+    //Open Update Model
+    
+    vm.showUpdateModal = function (qus_id) {
+        vm.clearStatusMessage();
+            questionFactory.getQuestionDetailsById(qus_id).then(function (data) {            
+                if (data.data.success == true) {
+                    vm.questionData = {
+                        question: data.data.question.question,
+                        type: data.data.question.type,
+                        options: data.data.question.options,                    
+                        createdAt: data.data.question.createdAt
+                    };
+                    vm.currentQuestionId = data.data.question._id;
+                    vm.isUpdate = true;
+                    $('#saveQuestionModal').modal('show');
+                }
+            });
+    };
+
+
+     // add/update questions
+
+     vm.saveQuestion = function () {        
+        vm.clearStatusMessage();
+        if (vm.isUpdate && vm.currentQuestionId != 0) {
+           // console.log('update');
+            if (vm.questionData.question == '' || vm.questionData.question == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.question = 'Please add question.';
+            } else if (vm.questionData.type == '' || vm.questionData.type == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.type = 'Please select type.';
+            } else {
+                
+                vm.errorMessage = {};
+                vm.clearStatusMessage();
+                questionFactory.updateQuestion(vm.currentQuestionId, vm.questionData)
+                .then(function (data) {
+                    if (data.data.success) {
+                        vm.statusMessage.success = true;
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                        $('#saveQuestionModal').modal('hide');
+                        vm.getAllQuestion();
+                    } else {
+                        vm.statusMessage.error = true;
+                        vm.statusMessage.onModal = true;
+                    }
+                    vm.statusMessage.content = data.data.message;
+                });
+            }
+        } else {
+           // console.log('save mode');
+            if (vm.questionData.question == '' || vm.questionData.question == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.question = 'Please add question.';
+            } else if (vm.questionData.type == '' || vm.questionData.type == undefined) {
+                vm.errorMessage = {};
+                vm.errorMessage.type = 'Please select type.';
+            } else {
+                vm.errorMessage = {};
+                questionFactory.saveQuestion(vm.questionData)
+                .then(function (data) {
+                   // console.log(data);
+                    if (data.data.success) {
+                        vm.statusMessage.success = true;
+                        vm.resetQuestionData();
+                        $timeout(function () {
+                            vm.clearStatusMessage();
+                        }, 5000);
+                        $('#saveQuestionModal').modal('hide');
+                        vm.getAllQuestion();
+                    } else {
+                        vm.statusMessage.error = true;
+                        vm.statusMessage.onModal = true;
+                    }
+
+                    vm.statusMessage.content = data.data.message;
+                });
+            }
+
+        }
+    };
+
+    vm.deleteQuestion = function () {
+        vm.clearStatusMessage();  
+            // console.log(vm.currentQuestionId);        
+        questionFactory.deleteQuestion(vm.currentQuestionId)
+        .then(function (data) {  
+            //                     
+            if (data.data.success==true) {
+                vm.statusMessage.success = true;
+               
+                $timeout(function () {
+                    vm.clearStatusMessage();
+                }, 5000);
+                $('#confirmDelete').modal('hide');
+                vm.getAllQuestion();
+                
+            } else {
+                vm.statusMessage.error = true;
+                vm.statusMessage.onModal = true;
+            }
+            vm.statusMessage.content = data.data.message;
+        });
+    };
+
+}

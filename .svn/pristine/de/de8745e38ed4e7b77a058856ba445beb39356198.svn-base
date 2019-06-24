@@ -1,0 +1,81 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "bin",
+        "scope": null,
+        "escapedName": "bin",
+        "name": "bin",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\node_project\\swipeloan"
+    ]
+  ],
+  "_defaultsLoaded": true,
+  "_engineSupported": true,
+  "_from": "bin@latest",
+  "_id": "bin@0.0.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/bin",
+  "_nodeVersion": "v0.6.17",
+  "_npmUser": {
+    "name": "sunfang1cn",
+    "email": "kate.sf@taobao.com"
+  },
+  "_npmVersion": "1.1.21",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "bin",
+    "scope": null,
+    "escapedName": "bin",
+    "name": "bin",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bin/-/bin-0.0.0.tgz",
+  "_shasum": "826a5d611f7a03bf6713bfe4685a85da44032447",
+  "_shrinkwrap": null,
+  "_spec": "bin",
+  "_where": "D:\\node_project\\swipeloan",
+  "author": {
+    "name": "sunfang",
+    "email": "kate.sf@alibaba-inc.com"
+  },
+  "bugs": {
+    "url": "https://github.com/sunfang1cn/node-bin/issues"
+  },
+  "dependencies": {},
+  "description": "binary buffer helper",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "826a5d611f7a03bf6713bfe4685a85da44032447",
+    "tarball": "https://registry.npmjs.org/bin/-/bin-0.0.0.tgz"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "homepage": "https://github.com/sunfang1cn/node-bin#readme",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "sunfang1cn",
+      "email": "kate.sf@taobao.com"
+    }
+  ],
+  "name": "bin",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "url": "git+https://github.com/sunfang1cn/node-bin.git"
+  },
+  "version": "0.0.0"
+}

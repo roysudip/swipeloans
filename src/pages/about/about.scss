@@ -1,0 +1,24 @@
+page-about {
+    .about p{
+        font-size: 14px;
+        font-family: 'Avenir-Roman';
+        color:#6f6f6f;
+        text-align: justify;
+    }
+    
+    
+    
+    @media(min-width:600px){
+        .about p{
+            font-size: 16px;
+        }
+    }
+    
+    @media(min-width:768px){
+        .about p{
+            font-size: 30px;
+            padding: 30px;
+        }
+    }
+    }
+    

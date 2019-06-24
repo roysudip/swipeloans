@@ -1,0 +1,1 @@
+var questionModule = angular.module('questionModule', ['common']);

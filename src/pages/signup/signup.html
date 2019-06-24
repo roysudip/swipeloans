@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Sign Up</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content  class="bgClass">
+      <div class="topDiv">
+        <div class="logo">
+          <img src="assets/images/logo.png" alt="">
+      </div>
+      </div>
+
+
+
+            <div class="loginDiv">
+                <div class="loginDivinner">
+              <ion-item>
+                  <ion-label>
+                      <img src="assets/images/userIcon.png" alt="">
+                  </ion-label>
+                  <ion-input placeholder="First Name" clearInput type="text" [(ngModel)]="user.first_name" name="first_name"></ion-input>
+              </ion-item>
+              <ion-item>
+                  <ion-label> <img src="assets/images/userIcon.png" alt=""> </ion-label>
+                  <ion-input placeholder="Last Name" clearInput type="text" [(ngModel)]="user.last_name" name="last_name"></ion-input>
+              </ion-item>
+              <ion-item class="email">
+                  <ion-label > <img src="assets/images/email.png" alt=""> </ion-label>
+                <ion-input placeholder="Email" clearInput type="text" [(ngModel)]="user.email" name="email"></ion-input>
+              </ion-item>
+
+              <ion-item class="password">
+                <ion-label > <img src="assets/images/password_icon.png" alt=""> </ion-label>
+              <ion-input placeholder="Password" clearInput type="password" [(ngModel)]="user.password" name="password"></ion-input>
+            </ion-item>
+
+
+                <button class="loginBtn" (click)=logForm();>Sign Up</button>
+              </div>
+            </div>
+</ion-content>

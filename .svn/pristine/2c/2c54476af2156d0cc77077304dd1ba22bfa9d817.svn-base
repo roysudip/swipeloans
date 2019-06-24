@@ -1,0 +1,122 @@
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Are you sure want to delete this question permanently?</h4>
+                </div>
+                <div class="modal-body">
+                    
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" ng-click="question.deleteQuestion()">Delete Question</button>
+                </div>
+                <div class="modal-footer">
+    
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    
+    <div class="modal fade" id="saveQuestionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form name="questionform" ng-submit="questionform.$valid && question.saveQuestion()">
+                    <input type="hidden" ng-model="question.currentQuestionId" />
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">{{question.isUpdate ? 'Update question' : 'Add new question'}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div ng-show="question.statusMessage.onModal">
+                            <div class="alert alert-danger" ng-show="question.statusMessage.error" style="margin: 0 auto;">{{question.statusMessage.content}}</div>
+                            <div class="alert alert-success" ng-show="question.statusMessage.success" style="margin: 0 auto;">{{question.statusMessage.content}}</div>
+                        </div>
+                        
+                        <div class="clearfix"></div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Question</label>
+                                <input type="text" class="form-control" ng-model="question.questionData.question" placeholder="Enter question" rows="10">
+                                <div class="alert alert-danger" ng-if="question.errorMessage.question" style="margin: 0 auto;">{{question.errorMessage.question}}</div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Type</label>&nbsp;
+                                <select ng-model="question.questionData.type" ng-options="o.value as o.label for o in question.typeOptions" class="form-control" required>
+                                </select>
+                            </div>
+                        </div>
+                        
+                            <label>Options</label>&nbsp;
+                            <div class="col-md-12" ng-repeat="(index,option) in question.questionData.options">                                
+                                <input ng-model="option.option" style="margin: 5px;">
+                                <button type="button" ng-click="question.removeOption(index)">Remove</button>
+                            </div>
+                            <div class="col-md-6">
+                                 <button type="button" ng-click="question.addOption()">Add</button>
+                            </div> 
+                        
+                        <div class="clearfix"></div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    
+    <div class="modal fade" id="vewQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Question Details</h4>
+                </div>
+                <div class="modal-body">
+                   
+                    <!-- text input -->
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Question</label>
+                            <span class="user_details">{{question.questionData.question}}</span>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Type</label>
+                            <span class="user_details">{{question.questionData.type}}</span>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Options</label>
+                            <span class="user_details">
+                                <span ng-repeat="(index,option) in question.questionData.options">{{index ==0?option.option:", "+option.option}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+    
+    
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->

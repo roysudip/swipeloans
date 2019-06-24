@@ -1,0 +1,44 @@
+page-calculator {
+    .calculator{
+        padding: 25px 15px;
+        background-color: #f6f6f6;
+        border: 1ps solid #d4d4d4;
+        margin-top: 80px;
+    }
+    .chatBtn{
+        width: 100%;
+        padding: 12px 0;
+        background: #393939;
+        color: #ffffff;
+        font-family: 'Avenir-Light';
+        font-size: 14px;
+        text-transform: uppercase;
+        border-radius: 50px;
+        margin-bottom: 10px;
+    }
+    .calculator .chatBtn:last-child{
+        margin-bottom: 0;
+    }
+@media(min-width:600px){
+    .chatBtn{
+        padding: 20px 0;
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
+    .calculator{
+        padding: 40px 30px;
+        margin-top: 100px;
+    }
+}
+@media(min-width:768px){
+    .chatBtn{
+        padding: 25px 0;
+        font-size: 26px;
+        margin-bottom: 20px;
+    }
+    .calculator{
+        padding: 75px 60px;
+        margin-top: 170px;
+    }
+}
+} 

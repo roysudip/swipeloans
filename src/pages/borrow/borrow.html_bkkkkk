@@ -1,0 +1,118 @@
+<!--
+  Generated template for the BorrowPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Borrow</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <ion-slides #slides>
+      <ion-slide *ngFor="let br of borrow.ques_list; let i = index">
+        <div class="swipeSection">
+          <div class="section-1">
+            <h5>{{i+1}}. {{br.question}}</h5>
+            <div *ngIf="br.type=='option'">
+            <ul class="ulClass">
+              {{borrow.ques_list.options}}
+                <li *ngFor="let opt of br.options; let in = index">
+                  <input id="{{opt._id}}" type="radio" name="radio4" value="{{opt.option}}" checked="checked" [(ngModel)]="br.answer" (click)="getquesval(br._id,opt._id,opt.option);">
+                  <label for="{{opt._id}}"><span><span></span></span>{{opt.option}}</label> 
+                </li>
+            </ul>
+          </div>
+
+          <div *ngIf="br.type=='simple'">
+              <div class="inputDiv">
+                 <div *ngFor="let opt of br.options; let in = index">
+                    <label for="">{{opt.option}}</label>
+                    <input type="text" [(ngModel)]="opt.answer" class="text-field">
+                 </div>
+              </div>
+          </div>
+
+          </div>
+          </div>
+        </ion-slide>
+
+    <!-- <ion-slide>
+    <div class="swipeSection">
+    <h4 class="heading">2. What do You earn?</h4>
+      <div class="borrowDiv">
+        <h3>Borrow 1</h3>
+        <div class="inputDiv">
+            <label for="">Wages / Business Profit</label>
+            <input type="text">
+            <label for="">Rental Income</label>
+            <input type="text">
+            <label for="">Other Income</label>
+            <input type="text">
+        </div>
+      </div>
+      <div class="borrowDiv">
+         
+          <h3>Borrow 2</h3>
+          <div class="inputDiv">
+              <label for="">Wages / Business Profit</label>
+              <input type="text">
+              <label for="">Rental Income</label>
+              <input type="text">
+              <label for="">Other Income</label>
+              <input type="text">
+          </div>
+        </div>
+            </div>
+        </ion-slide>
+        
+         <ion-slide>
+            <div class="swipeSection">
+                   <h4 class="heading">2. What do You earn?</h4>
+                   <div class="borrowDiv">
+                        <h3>Borrow 1</h3>
+                        <div class="inputDiv">
+                    <ion-item>
+                      <ion-label>Toppings</ion-label>
+                      <ion-select [(ngModel)]="toppings" multiple="false">
+                        <ion-option>Bacon</ion-option>
+                        <ion-option>Black Olives</ion-option>
+                        <ion-option>Extra Cheese</ion-option>
+                        <ion-option>Mushrooms</ion-option>
+                        <ion-option>Pepperoni</ion-option>
+                        <ion-option>Sausage</ion-option>
+                      </ion-select>
+                    </ion-item>
+                    </div>
+                   </div>                      
+             </div>
+        </ion-slide>      -->
+    </ion-slides>
+<!--
+        <div class="lftRgtArrow">
+          <button type="submit"  ion-button  color="primary" class="btnPrev" (click)="prev()">Prev</button>
+          <button type="submit"  ion-button color="primary" class="btnNext" (click)="next()">Next</button>
+       </div>
+-->
+      
+       <div class="buttonWrapper">
+        <div class="questionDiv">
+            <span>Total Question 10</span>
+            <span>Remaining 9</span>
+        </div>
+        <div class="bottomButtan">
+          <button (click)="prev()"><img src="assets/images/back_icon.png" alt="">Back</button>
+          <button (click)="next()">{{buttontext}} <img src="assets/images/next_icon.png" alt=""></button>
+      </div>
+      <button class="chatBtn">Chat</button>
+    </div>   
+</ion-content>

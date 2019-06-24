@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "/opt/Ionic/ionic-2/Subhomoy/swipeloans/platforms/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-be/values-be.xml",
+            "map": [
+                {
+                    "source": "/root/.gradle/caches/transforms-1/files-1.1/play-services-basement-10.2.6.aar/49cf0c5f42d7e2811eb82ab939d9f8ad/res/values-be/values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "285",
+                        "endColumns": "204",
+                        "endOffsets": "489"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "105",
+                        "endColumns": "204",
+                        "endOffsets": "305"
+                    }
+                }
+            ]
+        }
+    ]
+}

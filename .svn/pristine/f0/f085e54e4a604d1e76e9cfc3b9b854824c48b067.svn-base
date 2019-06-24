@@ -1,0 +1,14 @@
+userModule.factory('userFactory', userFactory);
+userFactory.$inject = ['$http'];
+function userFactory($http) {
+    return {
+        //all supplier list
+        getAllUsers: function (user_type) {
+            return $http.get('/webcontrol/user/getAllUsers');
+        },
+        // supplier details by id
+        getUserDetailsById: function (userId) {
+            return $http.get('/webcontrol/user/getDetails/' + userId);
+        }
+    };
+}

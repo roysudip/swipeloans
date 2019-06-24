@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<% include ../head %>
+
+
+    <body class="hold-transition skin-blue sidebar-mini" ng-cloak ng-app="loanModule" ng-controller="loanAddController as loan">
+        <div class="wrapper">
+            <% include ../header %>
+                <!-- Left side column. contains the logo and sidebar -->
+                <% include ../leftnav %>
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>Add Loan
+                                <small>Control panel</small>
+                            </h1>
+                            <ol class="breadcrumb">
+                                <li>
+                                    <a href="/webcontrol/dashboard">
+                                        <i class="fa fa-dashboard"></i> Home</a>
+                                </li>
+                                <li>
+                                    <a href="/webcontrol/loan">
+                                        <i class="fa fa-bank"></i> Manage Loan</a>
+                                </li>
+                                <li class="active">Add Loan</li>
+                            </ol>
+                        </section>
+                        <!-- Main content -->
+                        <section class="content">
+                            <!-- Small boxes (Stat box) -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <div style="float: right; padding: 5px;">
+                                                <a href="/webcontrol/loan" class="btn btn-primary pull-right">
+                                                    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;Back
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <!-- /.box-header -->
+                                        <div style="margin-bottom: 5px;" ng-show="!loan.statusMessage.onModal">
+                                            <div class="alert alert-danger" ng-show="loan.statusMessage.error" style="margin: 0 auto;">{{loan.statusMessage.content}}</div>
+                                            <div class="alert alert-success" ng-show="loan.statusMessage.success" style="margin: 0 auto;">{{loan.statusMessage.content}}</div>
+                                        </div>
+                                        <div class="modal-content">
+                                            <!-- ng-submit="loanform.$valid && loan.saveloan()" -->
+                                            <form name="loanform" id="loanform" action='/webcontrol/loan/' enctype="multipart/form-data" method="post">
+                                                <input type="hidden" name="htype" ng-model="loan.htype" value="add"/>
+                                                <input type="hidden" ng-model="loan.currentloanId" />
+
+                                                <div class="modal-body">
+                                                    <div ng-show="loan.statusMessage.onModal">
+                                                        <div class="alert alert-danger" ng-show="loan.statusMessage.error" style="margin: 0 auto;">{{loan.statusMessage.content}}</div>
+                                                        <div class="alert alert-success" ng-show="loan.statusMessage.success" style="margin: 0 auto;">{{loan.statusMessage.content}}</div>
+                                                    </div>
+                                                    <!-- text input -->
+                                                    <!-- <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Bank Name:</label>
+                                                            <input type="text" class="form-control" name="bank_name" ng-model="loan.loanData.bank_name" placeholder="Enter Bank Name">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.bank_name" style="margin: 0 auto;">{{loan.errorMessage.bank_name}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Bank Logo:</label>
+                                                            <input type="file" class="form-control" accept="image/*" name="bank_logo" id="bank_logo" ng-model="loan.loanData.bank_logo">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.bank_logo" style="margin: 0 auto;">{{loan.errorMessage.bank_logo}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div> -->
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Lender:</label>
+                                                            <select name="lender" ng-model="loan.loanData.lender" class="form-control" ng-options="lender.value as lender.label for lender in loan.lenders">
+                                                            </select>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.lender" style="margin: 0 auto;">{{loan.errorMessage.lender}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Loan title:</label>
+                                                            <input type="text" class="form-control" name="loan_title" ng-model="loan.loanData.loan_title" placeholder="Enter loan title">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_title" style="margin: 0 auto;">{{loan.errorMessage.loan_title}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Loan Description:</label>
+                                                            <textarea class="form-control" rows="10" name="loan_description" ng-model="loan.loanData.loan_description" placeholder="Enter loan description"></textarea>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_description" style="margin: 0 auto;">{{loan.errorMessage.loan_description}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Interest Rate ($):</label>
+                                                            <input type="number" class="form-control" name="inerest_rate" ng-model="loan.loanData.inerest_rate" placeholder="Enter inerest rate">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.inerest_rate" style="margin: 0 auto;">{{loan.errorMessage.inerest_rate}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Repayment/Month ($):</label>
+                                                            <input type="number" min="0" class="form-control" name="repayment" ng-model="loan.loanData.repayment" placeholder="Enter repayment per month">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.repayment" style="margin: 0 auto;">{{loan.errorMessage.repayment}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Lender Video Type</label>&nbsp;
+                                                            <select name="lender_video_type" ng-model="loan.loanData.lender_video_type" class="form-control" ng-options="videotypeOption.value as videotypeOption.label for videotypeOption in loan.videotypeOptions">
+                                                            </select>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.lender_video_type" style="margin: 0 auto;">{{loan.errorMessage.lender_video_type}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="loan.loanData.lender_video_type=='video_file'">
+                                                        <div class="col-md-12">
+                                                            <label>Lender Video:</label>
+                                                            <input type="file" class="form-control" accept="video/*" name="lender_video_file" id="lender_video_file" ng-model="loan.loanData.lender_video">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.lender_video_file" style="margin: 0 auto;">{{loan.errorMessage.lender_video_file}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="loan.loanData.lender_video_type=='youtube'">
+                                                        <div class="col-md-12">
+                                                            <label>Lender Youtube link:</label>
+                                                            <input type="text" class="form-control" name="lender_video" id="lender_video" ng-model="loan.loanData.lender_video" placeholder="Enter youtube link">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.lender_video" style="margin: 0 auto;">{{loan.errorMessage.lender_video}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Loan Video Type</label>&nbsp;
+                                                            <select name="loan_video_type" ng-model="loan.loanData.loan_video_type" class="form-control" ng-options="videotypeOption.value as videotypeOption.label for videotypeOption in loan.videotypeOptions">
+                                                            </select>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_video_type" style="margin: 0 auto;">{{loan.errorMessage.loan_video_type}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group" ng-show="loan.loanData.loan_video_type=='video_file'">
+                                                        <div class="col-md-12">
+                                                            <label>Loan Video:</label>
+                                                            <input type="file" class="form-control" accept="video/*" name="loan_video_file" id="loan_video_file" ng-model="loan.loanData.loan_video">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_video_file" style="margin: 0 auto;">{{loan.errorMessage.loan_video_file}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+
+                                                    <div class="form-group" ng-show="loan.loanData.loan_video_type=='youtube'">
+                                                        <div class="col-md-12">
+                                                            <label>Loan Youtube link:</label>
+                                                            <input type="text" class="form-control" name="loan_video" ng-model="loan.loanData.loan_video" placeholder="Enter youtube link">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_video" style="margin: 0 auto;">{{loan.errorMessage.loan_video}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Setup Fees ($):</label>
+                                                            <input type="number" class="form-control" name="setup_fees" ng-model="loan.loanData.setup_fees" placeholder="Enter setup fees">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.setup_fees" style="margin: 0 auto;">{{loan.errorMessage.setup_fees}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Annual Fees ($):</label>
+                                                            <input type="number" class="form-control" name="annual_fees" ng-model="loan.loanData.annual_fees" placeholder="Enter annual fees">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.annual_fees" style="margin: 0 auto;">{{loan.errorMessage.annual_fees}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Monthly Fees ($):</label>
+                                                            <input type="number" class="form-control" name="monthly_fees" ng-model="loan.loanData.monthly_fees" placeholder="Enter monthly fees">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.monthly_fees" style="margin: 0 auto;">{{loan.errorMessage.monthly_fees}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Advertisement Fees ($):</label>
+                                                            <input type="number" class="form-control" name="advertisement_fees" ng-model="loan.loanData.advertisement_fees" placeholder="Enter monthly fees">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.advertisement_fees" style="margin: 0 auto;">{{loan.errorMessage.advertisement_fees}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Lvr:</label>
+                                                            <select name="lvr" ng-model="loan.loanData.lvr" class="form-control" ng-options="lvr.value as lvr.label for lvr in loan.lvrs">
+                                                            </select>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.lvr" style="margin: 0 auto;">{{loan.errorMessage.lvr}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Loan type:</label>
+                                                            <select name="loan_type" ng-model="loan.loanData.loan_type" class="form-control" ng-options="type.value as type.label for type in loan.types">
+                                                                <option ng-repeat="type in loan.types" ng-value="type.value">{{type.label}}</option>
+                                                            </select>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_type" style="margin: 0 auto;">{{loan.errorMessage.loan_type}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Loan feature:</label>
+                                                            <select name="loan_feature" ng-model="loan.loanData.loan_feature" class="form-control" ng-options="feature.value as feature.label for feature in loan.features">
+                                                            </select>
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_feature" style="margin: 0 auto;">{{loan.errorMessage.loan_feature}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Comparison rate ($):</label>
+                                                            <input type="number" class="form-control" name="comparsion_rate" ng-model="loan.loanData.comparsion_rate" placeholder="Enter comparison rate">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.comparsion_rate" style="margin: 0 auto;">{{loan.errorMessage.comparsion_rate}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <label>Maximum loan capacity ($):</label>
+                                                            <input type="number" class="form-control" name="loan_capacity" ng-model="loan.loanData.loan_capacity" placeholder="Enter maximum loan capacity">
+                                                            <div class="alert alert-danger" ng-if="loan.errorMessage.loan_capacity" style="margin: 0 auto;">{{loan.errorMessage.loan_capacity}}</div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary" ng-click="loan.saveloan()">Save</button>
+                                                    </div>
+                                            </form>
+                                            </div>
+                                            <!-- /.modal-content -->
+
+
+                                        </div>
+                                        <!-- /.box -->
+                                    </div>
+                                </div>
+                                <!-- /.row -->
+                        </section>
+                        <!-- /.content -->
+                        <% include modals %>
+                            </div>
+                            <!-- /.content-wrapper -->
+                            <% include ../footer %>
+                    </div>
+                    <script src="/javascripts/admin/commonFactory.js" type="text/javascript"></script>
+                    <script src="/javascripts/admin/loan/loanModule.js" type="text/javascript"></script>
+                    <script src="/javascripts/admin/loan/loanFactory.js" type="text/javascript"></script>
+                    <script src="/javascripts/admin/loan/loanAddController.js" type="text/javascript"></script>
+    </body>
+
+</html>

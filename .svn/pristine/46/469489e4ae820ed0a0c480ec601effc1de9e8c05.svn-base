@@ -1,0 +1,128 @@
+var Cms = require('../../schema/cms');
+var Faq = require('../../schema/faqs');
+var config = require('../../config');
+var secretKey = config.secret;
+var jwt = require('jsonwebtoken');
+var async = require("async");
+var mongoosePaginate = require('mongoose-paginate');
+var CmsService = {
+    /*
+    * add cms
+    */
+    createCmsAdmin: function (cms, adminDet, callback) {
+        var cmsData = new Cms(cms);
+        cmsData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: "Some error occurred.", err: err });
+            } else {
+                callback({ success: true, message: "Cms has been saved." });
+            }
+        });
+    },
+    /*
+    * update cms
+    */
+    update: function (cmsid, cmsdata, adminDet, callback) {
+        Cms.findById(cmsid, function (err, cms) {
+            if (err) {
+                callback({ success: false, message: "Invalid cms id.", err: err });
+            } else {
+                if (cms.title != cmsdata.title) {
+                    cms.title = cmsdata.title;
+                }
+                if (cms.content != cmsdata.content) {
+                    cms.content = cmsdata.content;
+                }
+                cms.save(function (err) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred.", err: err });
+                    } else {
+                        callback({ success: true, message: "CMS has been updated.", cmsid: cmsid });
+                    }
+                });
+            }
+        });
+    },
+    /*
+    * all cms list
+    */
+    getAllCms: function (params, adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {};
+        if (params.page) {
+            page = parseInt(params.page);
+        }
+        if (params.limit) {
+            limit = parseInt(params.limit);
+        }
+        async.waterfall([
+            function (nextcb) {
+                Cms.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, faqs) {
+                        if (err) {
+                            nextcb(err);
+                        } else {
+                            nextcb(null, faqs);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, cms: result });
+                }
+            });
+    },
+    /* 
+    * get cms details of the particular id 
+    */
+    getDetails: function (cmsId, callback) {
+        Cms.findOne({ _id: cmsId })
+            .exec(function (err, cms) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, cms: cms });
+                }
+            });
+    },
+
+    // For Web Service Section
+
+    /*
+    * all active faq list
+    */
+    getAllFaqApi: function (callback) {
+        Faq.find({ is_active: 'yes' })
+            .exec(function (err, faq) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, faq: faq });
+                }
+            });
+    },
+    /* 
+    * get cms details of the particular id 
+    */
+    getDetailsBySlug: function (cmsSlug, callback) {
+        Cms.findOne({ slug: cmsSlug })
+            .exec(function (err, cms) {
+                if (err) {
+                    callback({ success: false, err: err });
+                }
+                else {
+                    callback({ success: true, cms: cms });
+                }
+            });
+    }
+};
+module.exports = CmsService;

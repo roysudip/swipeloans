@@ -1,0 +1,23 @@
+<ion-content padding>
+    <div class="modal_div">
+        <button class="top_close" (click)="dismiss()">Close</button>
+        <!--
+<div class='Modal Wrapper'>
+    <div class="topDiv" *ngIf="CmsContent.title">
+        <h3>{{CmsContent.title}}</h3>
+    </div>
+  <div class="bottomDiv" *ngIf="CmsContent.content">
+      <p>{{CmsContent.content}}</p>
+  </div>
+
+
+</div>
+-->
+        <div class="reportDiv" *ngIf="CmsContent.title">
+            <h4>{{CmsContent.title}}</h4>
+        </div>
+        <div class="reportDiv2" *ngIf="CmsContent.content">
+            <p>{{CmsContent.content}}</p>
+        </div>
+    </div>
+</ion-content>

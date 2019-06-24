@@ -1,0 +1,233 @@
+loanModule.controller('loanEditController', loanEditController);
+loanEditController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function loanEditController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.loanData = {};
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //set active value
+    vm.videotypeOptions = [
+        { value: 'youtube', label: 'Youtube link' },
+        { value: 'video_file', label: 'Video file' }
+    ];
+
+    //Reset loan value ratio
+    vm.resetLvrData = function () {
+        vm.loanData = {
+            ratio: "",
+            lender_video_type: "youtube",
+            loan_video_type: "youtube",
+            lvr: "",
+            loan_type: "",
+            loan_feature: "",
+            lender: ""
+        };
+    };
+    //vm.resetLvrData();
+
+     //View Loan Details
+     vm.loanDetails = function () {
+         var loan_id = document.forms["loanform"]["currentloanId"].value;
+         //console.log(loan_id);
+        loanFactory.getLaonDetailsById(loan_id).success(function (data) {
+            console.log(data);
+            if (data.success) {
+                //vm.loanData = data.loan;
+                vm.loanData.bank_name=data.loan.bank_name;
+                vm.loanData.bank_logo=data.loan.bank_logo;
+                vm.loanData.hidden_bank_logo=data.loan.bank_logo;
+                vm.loanData.loan_title=data.loan.loan_title;
+                vm.loanData.loan_description=data.loan.loan_description;
+                vm.loanData.inerest_rate=parseFloat(data.loan.inerest_rate);
+                vm.loanData.repayment=parseFloat(data.loan.repayment);
+                vm.loanData.lender_video_type=data.loan.lender_video_type;
+                vm.loanData.loan_video_type=data.loan.loan_video_type;
+                vm.loanData.setup_fees=parseFloat(data.loan.setup_fees);
+                vm.loanData.annual_fees=parseFloat(data.loan.annual_fees);
+                vm.loanData.monthly_fees=parseFloat(data.loan.monthly_fees);  //advertisement_fees
+                vm.loanData.advertisement_fees=parseFloat(data.loan.advertisement_fees);
+                vm.loanData.comparsion_rate=parseFloat(data.loan.comparsion_rate);
+                vm.loanData.loan_capacity=parseFloat(data.loan.loan_capacity);
+                vm.loanData.lvr=data.loan.lvr._id;
+                vm.loanData.loan_type=data.loan.loan_type._id;
+                vm.loanData.loan_feature=data.loan.loan_feature._id;
+                vm.loanData.lender=data.loan.lender._id;
+                vm.loanData.currentLaonId = data.loan._id;
+                vm.loanData._id = data.loan._id;
+                if(vm.loanData.lender_video_type=='video_file'){
+                    vm.loanData.lender_video=null;
+                    vm.loanData.hidden_lender_video_file=data.loan.lender_video;
+                }else{
+                    vm.loanData.lender_video=data.loan.lender_video;
+                    vm.loanData.hidden_lender_video_file=null;
+                }
+                if(vm.loanData.loan_video_type=='video_file'){
+                    vm.loanData.loan_video=null;
+                    vm.loanData.hidden_loan_video_file=data.loan.loan_video;
+                }else{
+                    vm.loanData.loan_video=data.loan.loan_video;
+                    vm.loanData.hidden_loan_video_file=null;
+                }
+                vm.isUpdate = true;
+            }
+        });
+    };
+    vm.loanDetails();
+    //loan option list
+    vm.loan_option = function () {
+        loanFactory.getAllloanOption().success(function (data) {
+            vm.lvrs = [];
+            vm.types = [];
+            vm.features = [];
+            vm.lenders = [];
+            if (data.success && data.list.length > 0) {
+                if (data.list[0].lvrs.length > 0) {
+                    for (l = 0; l < data.list[0].lvrs.length; l++) {
+                        vm.lvrs.push({ value: data.list[0].lvrs[l]._id, label: data.list[0].lvrs[l].ratio });
+                    }
+                }
+                if (data.list[1].types.length > 0) {
+                    for (l = 0; l < data.list[1].types.length; l++) {
+                        vm.types.push({ value: data.list[1].types[l]._id, label: data.list[1].types[l].type });
+                    }
+                }
+                if (data.list[2].features.length > 0) {
+                    for (l = 0; l < data.list[2].features.length; l++) {
+                        vm.features.push({ value: data.list[2].features[l]._id, label: data.list[2].features[l].feature });
+                    }
+                }
+                if (data.list[3].lenders.length > 0) {
+                    for (l = 0; l < data.list[3].lenders.length; l++) {
+                        vm.lenders.push({ value: data.list[3].lenders[l]._id, label: data.list[3].lenders[l].lender });
+                    }
+                }
+            }
+        });
+    }
+    vm.loan_option();
+
+    vm.saveloan = function () {
+        //var img_val = document.forms["loanform"]["bank_logo"].value;
+        var lender_video_val = document.forms["loanform"]["lender_video_file"].value;
+        var loan_video_val = document.forms["loanform"]["loan_video_file"].value;
+        var youTubePattern = /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+        //console.log(vm.loanData);
+        // if (vm.loanData.bank_name == '' || vm.loanData.bank_name == undefined) {
+        //     vm.errorMessage = {};
+        //     vm.errorMessage.bank_name = 'Please enter bank name.';
+        // } else 
+        if (vm.loanData.loan_title == '' || vm.loanData.loan_title == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_title = 'Please enter loan title.';
+        } else if (vm.loanData.inerest_rate == '' || vm.loanData.inerest_rate == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.inerest_rate = 'Please enter interest rate.';
+        } else if (vm.loanData.inerest_rate != '' && vm.loanData.inerest_rate < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.inerest_rate = 'Please enter valid interest rate.';
+        } else if (vm.loanData.repayment == '' || vm.loanData.repayment == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.repayment = 'Please enter repayment amount.';
+        } else if (vm.loanData.repayment != '' && vm.loanData.repayment < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.repayment = 'Please enter valid repayment amount.';
+        } else if (vm.loanData.lender_video_type == '' || vm.loanData.lender_video_type == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.lender_video_type = 'Please select lender video type.';
+        } else if (vm.loanData.lender_video_type == 'youtube' && (vm.loanData.lender_video == '' || vm.loanData.lender_video == undefined)) {
+            vm.errorMessage = {};
+            vm.errorMessage.lender_video = 'Please enter youtube link.';
+        } else if (vm.loanData.lender_video_type == 'youtube' && vm.loanData.lender_video != '' && !youTubePattern.test(vm.loanData.lender_video)) {
+            vm.errorMessage = {};
+            vm.errorMessage.lender_video = 'Please enter valid youtube link.';
+        } else if (vm.loanData.lender_video_type == 'video_file' && (vm.loanData.hidden_lender_video_file=='' || vm.loanData.hidden_lender_video_file==undefined || vm.loanData.hidden_lender_video_file==null) && (lender_video_val == null || lender_video_val == undefined || lender_video_val == '')) {
+            vm.errorMessage = {};
+            vm.errorMessage.lender_video_file = 'Please upload video file.';
+        } else if (vm.loanData.loan_video_type == '' || vm.loanData.loan_video_type == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_video_type = 'Please select loan video type.';
+        } else if (vm.loanData.loan_video_type == 'youtube' && (vm.loanData.loan_video == '' || vm.loanData.loan_video == undefined)) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_video = 'Please enter youtube link.';
+        } else if (vm.loanData.loan_video_type == 'youtube' && vm.loanData.loan_video != '' && !youTubePattern.test(vm.loanData.loan_video)) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_video = 'Please enter valid youtube link.';
+        } else if (vm.loanData.loan_video_type == 'video_file' && (vm.loanData.hidden_loan_video_file=='' || vm.loanData.hidden_loan_video_file==undefined || vm.loanData.hidden_loan_video_file == null) && ( loan_video_val == '' || loan_video_val == undefined || loan_video_val == null)) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_video_file = 'Please upload video file.';
+        } else if (vm.loanData.setup_fees == '' || vm.loanData.setup_fees == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.setup_fees = 'Please enter setup fees.';
+        } else if (vm.loanData.setup_fees != '' && vm.loanData.setup_fees < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.setup_fees = 'Please enter valid setup fees.';
+        } else if (vm.loanData.annual_fees == '' || vm.loanData.annual_fees == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.annual_fees = 'Please enter annual fees.';
+        } else if (vm.loanData.annual_fees != '' && vm.loanData.annual_fees < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.annual_fees = 'Please enter valid annual fees.';
+        } else if (vm.loanData.monthly_fees == '' || vm.loanData.monthly_fees == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.monthly_fees = 'Please enter monthly fees.';
+        } else if (vm.loanData.monthly_fees != '' && vm.loanData.monthly_fees < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.monthly_fees = 'Please enter valid monthly fees.';
+        } else if (vm.loanData.advertisement_fees == '' || vm.loanData.advertisement_fees == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.advertisement_fees = 'Please enter advertisement fees.';
+        } else if (vm.loanData.advertisement_fees != '' && vm.loanData.advertisement_fees < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.advertisement_fees = 'Please enter valid advertisement fees.';
+        }else if (vm.loanData.lvr == '' || vm.loanData.lvr == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.lvr = 'Please select lvr.';
+        } else if (vm.loanData.loan_type == '' || vm.loanData.loan_type == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_type = 'Please select loan type.';
+        } else if (vm.loanData.loan_feature == '' || vm.loanData.loan_feature == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_feature = 'Please select loan feature.';
+        } else if (vm.loanData.lender == '' || vm.loanData.lender == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.lender = 'Please select lender.';
+        } else if (vm.loanData.comparsion_rate == '' || vm.loanData.comparsion_rate == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.comparsion_rate = 'Please enter comparsion rate.';
+        } else if (vm.loanData.comparsion_rate != '' && vm.loanData.comparsion_rate < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.comparsion_rate = 'Please enter valid comparsion rate.';
+        } else if (vm.loanData.loan_capacity == '' || vm.loanData.loan_capacity == undefined) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_capacity = 'Please enter maximum loan capacity.';
+        } else if (vm.loanData.loan_capacity != '' && vm.loanData.loan_capacity < 0) {
+            vm.errorMessage = {};
+            vm.errorMessage.loan_capacity = 'Please enter valid maximum loan capacity.';
+        } else {
+            console.log(vm.loanData);
+            document.getElementById("loanform").submit();
+        }
+    }
+
+// lender details
+
+    
+}
+

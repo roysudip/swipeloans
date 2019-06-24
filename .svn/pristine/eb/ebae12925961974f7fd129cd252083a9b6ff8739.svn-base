@@ -1,0 +1,28 @@
+var mongoose = require('mongoose');
+var validate = require('validate');
+var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt-nodejs');
+var userType = ['supplier','consumer'];
+var userschema = new Schema({
+    user_type:{type:String, enum:['fb','tw','custom'],default:'custom'},
+    first_name:{type: String, required: true},
+    last_name:{type: String,default: null},
+    email: {type: String, required: true, index: {unique: true}},
+    dob:{type:String, required:false},
+    email_verified: {type: Boolean, default: false},
+    email_verification_code: {type: String, default: null},
+    phone_number: {type: Number, default: false},
+    address: {type: String, default: null},
+    device_token: {type: String, default: null},
+    promo_code: {type: String, default: null},
+    accessToken:{type: String,default: null},
+    expiresIn:{type: String,default: null},
+    session_key:{type: String,default: null},
+    userID:{type: String,default: null},
+    status:{type: String,default: null},
+    username:{type: String,default: null}
+},{
+    timestamps: true,        // will automatically add createdAt and updatedAt
+    typecast: true
+});
+module.exports = mongoose.model('User', userschema);

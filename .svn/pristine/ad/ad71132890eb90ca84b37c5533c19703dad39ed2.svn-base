@@ -1,0 +1,118 @@
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Are you sure want to delete this cms?</h4>
+            </div>
+            <div class="modal-body">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" ng-click="cms.deleteCms()">Delete Cms</button>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="saveCms" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form name="cmsform" ng-submit="cmsform.$valid && cms.saveCms()">
+                <input type="hidden" ng-model="cms.currentCmsId" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Update cms</h4>
+                </div>
+                <div class="modal-body">
+                    <div ng-show="cms.statusMessage.onModal">
+                        <div class="alert alert-danger" ng-show="cms.statusMessage.error" style="margin: 0 auto;">{{cms.statusMessage.content}}</div>
+                        <div class="alert alert-success" ng-show="cms.statusMessage.success" style="margin: 0 auto;">{{cms.statusMessage.content}}</div>
+                    </div>
+                    <!-- text input -->
+                    <div class="form-group" ng-if="cms.isUpdate==false">
+                        <div class="col-md-12">
+                            <label> Page Title</label>
+                            <input type="text" class="form-control" ng-model="cms.cmsData.title" placeholder="Enter Title">
+                            <div class="alert alert-danger" ng-if="cms.errorMessage.title" style="margin: 0 auto;">{{cms.errorMessage.title}}</div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="cms.isUpdate==true">
+                        <div class="col-md-12">
+                            <label> Page Title</label>
+                            <input type="text" class="form-control" ng-model="cms.cmsData.title" placeholder="Enter Title" readonly>
+                            <div class="alert alert-danger" ng-if="cms.errorMessage.title" style="margin: 0 auto;">{{cms.errorMessage.title}}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group" ng-if="cms.isUpdate==false">
+                        <div class="col-md-12">
+                            <label> Slug</label>
+                            <input type="text" class="form-control" ng-model="cms.cmsData.slug" placeholder="Enter slug">
+                            <div class="alert alert-danger" ng-if="cms.errorMessage.slug" style="margin: 0 auto;">{{cms.errorMessage.slug}}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Content</label>
+                            <textarea class="form-control" rows="10" ng-model="cms.cmsData.content" placeholder="Enter Content"></textarea>
+                            <div class="alert alert-danger" ng-if="cms.errorMessage.content" style="margin: 0 auto;">{{cms.errorMessage.content}}</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- View Modal -->
+<div class="modal fade" id="viewCms" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Cms Details</h4>
+            </div>
+            <div class="modal-body">
+                <!-- text input -->
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Title</label>
+                        <span class="user_details">{{cms.cmsData.title}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Content</label>
+                        <span class="user_details">{{cms.cmsData.content}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal -->

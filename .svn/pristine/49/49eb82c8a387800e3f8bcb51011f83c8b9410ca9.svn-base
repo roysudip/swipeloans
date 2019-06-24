@@ -1,0 +1,51 @@
+"use strict";
+var express = require('express');
+var config = require('../../config');
+var session = require('express-session');
+var cmsService = require('../service/CmsService');
+var adminCms = express.Router();
+//======================
+//  Middleware to check the login
+//=========================
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+//cms listing page
+adminCms.route('/').get(checkLogin, function (req, res) {
+    console.log('res',res);
+    res.render('admin/cms/index', { admin: req.session.admin, title: "CMS", "active": "cms" ,child_active:''});
+});
+// //add cms
+adminCms.post('/', checkLogin, function (req, res) {
+    var cmsData = req.body;
+    cmsService.createCmsAdmin(cmsData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+// //cms update
+adminCms.put('/:cmsId', checkLogin, function (req, res) {
+    var cmsData = req.body;
+    var cmsId = req.params.cmsId;
+    cmsService.update(cmsId, cmsData, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//all cms list
+adminCms.get('/getAllCms', function (req, res) {
+    cmsService.getAllCms(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+// //Cms details by id
+adminCms.get('/getDetails/:cmsId', function (req, res) {
+    cmsService.getDetails(req.params.cmsId, function (response) {
+        res.json(response);
+    });
+});
+module.exports = adminCms;

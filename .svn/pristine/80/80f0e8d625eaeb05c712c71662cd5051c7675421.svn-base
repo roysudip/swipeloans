@@ -1,0 +1,67 @@
+userModule.controller('userController', userController);
+userController.$inject = ['$timeout', 'userFactory', 'commonFactory'];
+function userController($timeout, userFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.users = {};
+    vm.user_length = '';
+    vm.errorMessage = {};
+    vm.countries = [];
+    var emailPattern = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    var name_content = /^[A-Za-z0-9' ]*$/;
+    var content = /^[A-Za-z0-9',&()/ ]*$/;
+    var mob_length = /^.{6,}$/;
+    var obj = {};
+
+    //get all user list
+    vm.getAllUsers = function () {
+        userFactory.getAllUsers()
+            .success(function (data) {
+                vm.user_length = data.users.length;
+                if (data.users && data.users.length > 0) {
+                    vm.users = data.users;
+                } else {
+                    vm.users = {};
+                }
+            });
+    };
+    vm.getAllUsers();
+
+    vm.currentUserId = 0;
+    vm.currentUserStat = null;
+    vm.statusMessage = {
+        success: false,
+        error: false,
+        content: "",
+        onModal: false
+    };
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+
+    //User Details modal open 
+    vm.showUserDetailsModal = function (user_id) {
+        userFactory.getUserDetailsById(user_id).success(function (data) {
+            if (data.success == true) {
+                vm.userData = {
+                    name: data.user.first_name+' '+data.user.last_name,
+                    email: data.user.email,
+                    dob: data.user.dob,
+                    phone_number: data.user.phone_number,
+                    address: data.user.address,
+                    profileimage: data.user.profileimage,
+                    createdAt: data.user.createdAt
+                };
+                vm.currentUserId = data.user._id;
+                vm.isUpdate = true;
+                $('#userDtls').modal('show');
+            }
+        });
+    };
+}
+

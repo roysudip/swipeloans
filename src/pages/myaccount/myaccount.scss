@@ -1,0 +1,288 @@
+page-myaccount {
+    .bgClass{
+        background-color: #017bb8;
+    }
+    .back-button.show-back-button{
+        display: none;
+      }
+
+  span.count_not {
+    top: -4px;
+    position: absolute;
+    left: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    text-align: center;
+    padding-top: 3px;
+  }
+
+    .notification{
+        width: 20px;
+        height: auto;
+        position: absolute;
+        right: 17px;
+        top: 15px;
+    }
+    .notification img{
+        max-width: 100%;
+    }
+
+    .item{
+        padding-left: 0;
+        margin-bottom: 10px;
+
+    }
+    .list > .item-block:first-child{
+        border-top: 0;
+    }
+    .item.item-block .item-inner{
+padding-right: 0;
+    }
+
+    ion-label{
+        border: 1px solid #d4d4d4 !important;
+        font-family: 'Conv_Poppins-Medium';
+        text-align: center;
+        color: #fff;
+    }
+    .list,.label{
+        margin-bottom: 0;
+        margin-right: 0;
+    }
+    .label h3{
+        font-size: 16px;
+        padding: 8px 0;
+        font-family: 'Conv_Poppins-Medium';
+    }
+
+    .accordianBd{
+        // border: 1px solid #d4d4d4;
+        // padding: 15px;
+    }
+
+    .input[clearInput],ion-input,ion-datetime{
+        border: 1px solid #d4d4d4;
+        margin-bottom: 5px;
+        padding-left: 10px;
+        border-radius: 5px;
+        font-family: 'Avenir-Light';
+    }
+    .datetime {
+        padding: 7px 8px 7px 10px;
+        width: 100%;
+    }
+
+    .profilePic{
+        width: 80px;
+        height: 80px;
+        //background-image: url(../assets/images/profilepic.png);
+        background-size: cover;
+        border-radius: 50%;
+        margin: 0 auto;
+        position: relative;
+    }
+    .cameraIcon{
+        position: absolute;
+        width: 30px;
+        height: auto;
+        right: -10px;
+        bottom: 2px;
+    }
+
+    .mTop{
+        margin-top: 20px;
+    }
+
+    .text-input{
+        margin: 6px 8px 6px 0;
+        font-size: 16px;
+        font-family: 'Conv_Poppins-Regular';
+        color: #fff;
+    }
+    .datetime .datetime-placeholder,  .datetime-text 
+    {
+        font-family: 'Conv_Poppins-Regular';
+        color: #fff;
+    }
+
+    .dateofbirth,ion-input{
+        position: relative;
+    }
+    .dateofbirth ion-label{
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        right: 7px;
+        top: -7px;
+        display: inline-block;
+        border: 0 !important;
+    }
+
+    .dateofbirth .label + ion-input .text-input{
+        margin-left: 0;
+    }
+
+
+
+    .ion-md-arrow-dropright:before,
+    .ion-ios-arrow-dropright:before{
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-image: url(../assets/images/accordianArrow.png);
+        right: 9px;
+        top: 29px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+    }
+
+    .ion-ios-arrow-dropdown:before,
+    .ion-md-arrow-dropdown:before {
+        content: " ";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-image: url(../assets/images/arrrow2.png);
+        right: 9px;
+        top: 29px;
+        background-repeat: no-repeat;
+        background-size: 21px;
+
+    }
+
+    .loginBtn{
+        width: 100%;
+        background: #000;
+        border-radius: 10px;
+        padding: 14px 0;
+        color: #8ad7fe;
+        text-transform: uppercase;
+        margin: 0 auto;
+        position: relative;
+        // bottom: -36px;
+        font-family: 'Conv_Poppins-Medium';
+        margin-top: 20px;
+    }
+
+    .item-md.item-input.item-input-has-focus .item-inner,
+    .item-md.item-input.input-has-focus .item-inner,
+    .list-md .item-input.item-input-has-focus:last-child,
+    .list-md .item-input.input-has-focus:last-child{
+        border-bottom: 0 !important;
+        box-shadow: none;
+    }
+
+    .list .item-input:last-child,.list .item-input{
+        border-bottom: 0 ;
+        box-shadow: none
+    }
+    .item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner,
+    .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner{
+        border-bottom: 0;
+        box-shadow: none;
+    }
+
+    .list-md .item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus):last-child,
+    .list-md .item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus):last-child{
+        border-bottom: 0;
+        box-shadow: none;
+    }
+    .text-input::-webkit-input-placeholder { /* Edge */
+            font-family: 'Conv_Poppins-Regular';
+            color: #fff;
+      }
+      
+      .text-input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            font-family: 'Conv_Poppins-Regular';
+            color: #fff;
+      }
+      
+      .text-input::placeholder {
+            font-family: 'Conv_Poppins-Regular';
+            color: #fff;
+      }
+
+
+      .item.item-block .item-inner{
+        border-bottom: 0;
+      }
+      .input .text-input-clear-icon{
+          background-image: none;
+      }
+
+
+@media(min-width:768px){
+ .ion-md-arrow-dropright:before,
+.ion-ios-arrow-dropright:before{
+    width: 28px;
+    height: 15px;
+    background-size: 29px;
+    right: 48px;
+    top: 51px;
+}
+
+ .ion-ios-arrow-dropdown:before,
+ .ion-md-arrow-dropdown:before{
+    width: 28px;
+    height: 15px;
+    background-size: 29px;
+    right: 48px;
+    top: 51px;
+ }
+ .label h3{
+     font-size: 30px;
+     padding: 30px;
+ }
+ .text-input{
+     font-size: 26px;
+     margin: 20px 8px 20px 0;
+ }
+ .datetime {
+    padding: 20px 8px 20px 25px;
+    width: 100%;
+    font-size: 26px;
+}
+  .profilePic{
+     width: 178px;
+     height: 178px;
+ }
+ .cameraIcon{
+     width: 62px;
+ }
+  .loginBtn{
+     font-size: 22px;
+     margin-top: 55px;
+     margin-bottom: 30px;
+     padding: 25px 0;
+     
+ }
+  .input[clearInput],  ion-input{
+    margin-bottom: 6px;
+    padding-left: 25px;
+ }
+  .dateofbirth ion-label{
+    width: 26px;
+    height: 26px;
+    right: 20px;
+    top: 14px;
+ }
+ .accordianBd{
+     padding: 60px;
+ }
+ .accordiAn{
+     padding: 18px;
+ }
+ .mTop {
+    margin-top: 48px;
+}
+.notification{
+    top: 16px;
+}
+}
+}

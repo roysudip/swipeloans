@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "927259178230",
+    "firebase_url": "https://swipeloans-f0c04.firebaseio.com",
+    "project_id": "swipeloans-f0c04",
+    "storage_bucket": "swipeloans-f0c04.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927259178230:android:a7e65b8e43794216",
+        "android_client_info": {
+          "package_name": "com.ionic.swipeloans"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927259178230-ag16afuo9901o27v2ki13v8s9mhm44sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATHLWzjxThvC6OczFES_oLuU_kwknLuWI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

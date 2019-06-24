@@ -1,0 +1,88 @@
+loanModule.controller('lenderEditController', lenderEditController);
+lenderEditController.$inject = ['$timeout', 'loanFactory', 'commonFactory'];
+function lenderEditController($timeout, loanFactory, commonFactory) {
+    var vm = this;
+    vm.isUpdate = false;
+    vm.errorMessage = {};
+    vm.statusMessage = {};
+    vm.lenderData = {};
+
+    vm.clearStatusMessage = function () {
+        vm.statusMessage = {
+            success: false,
+            error: false,
+            content: "",
+            onModal: false
+        };
+    };
+
+    //set active value
+    vm.activeOptions = [
+        { value: 'yes', label: 'Yes' },
+        { value: 'no', label: 'No' }
+    ];
+
+    //set active value
+    vm.videotypeOptions = [
+        { value: 'youtube', label: 'Youtube link' },
+        { value: 'video_file', label: 'Video file' }
+    ];
+
+    //Reset loan value ratio
+    vm.resetLvrData = function () {
+        vm.lenderData = {
+            ratio: "",
+            lender_video_type: "youtube",
+            loan_video_type: "youtube",
+            lvr: "",
+            loan_type: "",
+            loan_feature: "",
+            lender: ""
+        };
+    };
+    //vm.resetLvrData();
+
+     //View Loan Details
+     vm.lenderDetails = function () {
+         //alert('lenders');
+         var lender_id = document.forms["lenderform"]["currentLenderId"].value;
+         //console.log(lender_id);
+        loanFactory.getlenderDetailsById(lender_id).success(function (data) {
+            //console.log(data);
+            if (data.success) {
+                //vm.loanData = data.loan;
+                vm.lenderData.lender=data.lender.lender;
+                vm.lenderData.bank_logo=data.lender.bank_logo;
+                vm.lenderData.hidden_bank_logo=data.lender.bank_logo;
+                vm.lenderData._id = data.lender._id;
+                vm.lenderData.htype = 'edit';
+                vm.isUpdate = true;
+            }
+        });
+    };
+    vm.lenderDetails();
+    
+// save lender
+    vm.savelender = function () {
+       // alert('here');
+        var img_val = document.forms["lenderform"]["bank_logo"].value;
+      //console.log(vm.lenderData);
+        if (vm.lenderData.lender == '' || vm.lenderData.lender == undefined) {
+            //alert('savelender_lender');
+            vm.errorMessage = {};
+            vm.errorMessage.lenderData = 'Please enter bank name.';
+        }  else if (img_val == '' || img_val == undefined || img_val == null) {
+            //alert('savelender_img_val');
+            vm.errorMessage = {};
+            vm.errorMessage.img_val = 'Please select image.';
+        } else {
+            //alert('herere_submit');
+            document.getElementById("lenderform").submit();
+        }
+    }
+
+// lender details
+
+    
+}
+

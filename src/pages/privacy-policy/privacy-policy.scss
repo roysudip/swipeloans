@@ -1,0 +1,28 @@
+page-privacy-policy {
+    .bgClass{
+        background-color: #017bb8;
+    }
+    .back-button.show-back-button{
+        display: none;
+      }
+    h5{
+        color: #fff;
+        font-size: 15px;
+        font-family: 'Conv_Poppins-Regular';
+    }
+    p{
+        color: #fff;
+        font-size: 13px;
+        font-family: 'Conv_Poppins-Light';
+    }
+
+    @media(min-width:768px){
+        h5{
+            font-size: 24px;
+            margin-top: 25px!important;
+        }
+        p{
+            font-size: 18px;
+        }
+    }
+}

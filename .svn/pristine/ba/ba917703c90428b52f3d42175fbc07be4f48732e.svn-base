@@ -1,0 +1,39 @@
+"use strict";
+var express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var session = require('express-session');
+var adminUser = express.Router();
+var userService = require('../service/UserService');
+//======================
+//  Middleware to check the login
+//=========================
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+//listing page
+adminUser.route('/').get(checkLogin, function (req, res) {
+        res.render('admin/users/index', { admin: req.session.admin, title: "Users", "active": "users",child_active:'' });
+    });
+
+//list Users
+adminUser.get('/getAllUsers', function (req, res) {
+    userService.getAllUsers( req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+
+// User details by id
+adminUser.get('/getDetails/:userId', function (req, res) {
+    userService.getDetails(req.params.userId, function (response) {
+        res.json(response);
+    });
+});
+
+module.exports = adminUser;

@@ -1,0 +1,1 @@
+var loanModule = angular.module('loanModule', ['common']);

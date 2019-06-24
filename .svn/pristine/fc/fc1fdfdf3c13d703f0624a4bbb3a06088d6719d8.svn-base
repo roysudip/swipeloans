@@ -1,0 +1,109 @@
+const express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var apiUser = express.Router();
+var UserService = require('../service/UserService');
+var User = require('../../schema/users');
+var fs = require('fs');
+
+
+ 
+// default options
+
+
+/*********************
+ * User Login
+ * @method: POST
+ * @requestparams
+ * user_type (fb,tw,custom)
+ * first_name
+ * last_name
+ * email
+ * @request_url: /api/user/login
+ *********************/
+apiUser.post('/login', function (req, res) {
+    UserService.createUserApi(req.body, function (response) {
+       res.send(response);
+    });
+});
+
+/*********************
+ * User Email Varification Code
+ * @method: POST
+ * @requestparams
+ * email_verification_code
+ * email
+ * @request_url: /api/user/email-varification
+ *********************/
+apiUser.post('/email-varification', function (req, res) {
+    UserService.emailVarification(req.body, function (response) {
+       res.send(response);
+    });
+});
+
+//=================
+//  Middleware to check token
+//=================
+apiUser.use(function (req, res, next) {
+    var token = req.body.token || req.params.token || req.query.token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function (err, decoded) {
+            if (err) {
+                res.status(403).send({success: false, message: "failed to authenticate"});
+            }
+            else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    }
+    else {
+        res.status(403).send({success: false, message: "token required"});
+    }
+});
+//=================
+//  Middleware end
+//=================
+
+/*********************
+ * Get User Profile Details
+ * @method: GET
+ * @requestparams
+ * user_id
+ * @request_url: /api/user/prodile-details
+ *********************/
+apiUser.get('/profile-details', function(req, res){
+    UserService.profileDetails(req.query.user_id, function(response){
+        res.send(response);
+    });
+});
+
+/*********************
+ * Update User Profile Details
+ * @method: POST
+ * @requestparams
+ * user_id
+ * @request_url: /api/user/edit-profile
+ *********************/
+apiUser.post('/edit-profile', function (req, res) {
+    UserService.editProfile(req.body, function (response) {
+       res.send(response);
+    });
+});
+
+/*********************
+ * Update User Profile Details
+ * @method: POST
+ * @requestparams
+ * user_id
+ * @request_url: /api/user/edit-profile-image
+ *********************/
+apiUser.post('/edit-profile-image', function (req, res) {
+    //console.log(req.body);
+    console.log('files',req.files);
+    UserService.editProfileImage(req.decoded.id, req.files, function (response) {
+       res.send(response);
+    });
+});
+
+module.exports = apiUser;

@@ -1,0 +1,17 @@
+$(".dropdown a.dropbtn").click(function(){
+    $(this).siblings("ul.dropdown-content").slideToggle();
+    
+ 
+});
+
+
+
+$( document ).ready(function() {
+    if ($('li.dropdown ').hasClass('active')) { 
+            console.log("Hello");
+            $(this).find("ul").css("display", "block");
+        };
+    
+});
+
+

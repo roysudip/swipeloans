@@ -1,0 +1,66 @@
+<div class="modal fade" id="userDtls" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">User Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Name:</label>
+                        <span class="user_details">{{user.userData.name}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Email Address:</label>
+                        <span class="user_details">{{user.userData.email}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Phone Number:</label>
+                        <span class="user_details">{{user.userData.phone_number==0?'':user.userData.phone_number}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Date of Birth:</label>
+                        <span class="user_details">{{user.userData.dob}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>Address:</label>
+                        <span class="user_details">{{user.userData.address}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label> Created At:</label>
+                        <span class="user_details">{{user.userData.createdAt| date: 'MM-dd-yyyy hh:mm a'}}</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label> Profile Picture:</label>
+                        <span class="user_details"><img src="{{user.userData.profileimage}}" style="width:20%"/></span>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+var PropertReports = require('../../schema/propertyReports');
+var config = require('../../config');
+var secretKey = config.secret;
+var jwt = require('jsonwebtoken');
+var async = require("async");
+var intersection = require('array-intersection');
+var ReportService = {
+    
+ /*
+    *get all users list
+    */
+   getAllReports: function (adminDet, callback) {
+    var page = 1,
+        limit = 20,
+        sort_field = 'createdAt',
+        order = '-1', //descending
+        query = {  };
+    async.waterfall([
+        function (nextcb) {
+            PropertReports.find(query)
+                .populate('user_idfk', ['first_name','last_name'])
+                .sort([[sort_field, order]])
+                .exec(function (err, reports) {
+                    if (err) {
+                        nextcb(err);
+                    }
+                    else {
+                        nextcb(null, reports);
+                    }
+                });
+        }
+    ],
+        function (err, result) {
+            if (err) {
+                callback({ success: false, err: err });
+            } else {
+                callback({ success: true, reports: result });
+            }
+        });
+},
+
+ //delete faq
+ delete: function (reportid, callback) {
+    console.log(reportid);
+    PropertReports.findOne({ _id: reportid }, function (err, report) {
+        if (report) {
+            PropertReports.remove({_id: reportid }, function (err) {
+                if (err) {
+                    console.log('error in');
+                    callback({ success: false, message: err });
+                } else {
+                    console.log('success in');
+                    callback({ success: true, message: "Report has been deleted." });
+                }
+            });
+        } else {
+            console.log('invalid in');
+            callback({ success: false, message: "Invalid report id." });
+        }
+    });
+},
+
+  //Add Favorite loan
+  sendReport: function (data, callback) {
+         console.log(data);
+         var propData = new PropertReports(data);
+         console.log(propData);
+
+        propData.save(function (err) {
+            if (err) {
+                callback({ success: false, message: "Some error occurred.", err: err });
+            } else {
+
+                 var mailContent = '<div style="font-family: \'Tahoma\', Verdana">' +
+                 'Hello Admin,<br />' +
+                 '<p>Property report has been given below: </p>' +
+                 '<p>User name: <b>' + data.user_name + '</p>' +
+                 '<p>User email: <b>' + data.user_email + '</p>' +
+                 '<p>Address: <b>' + data.report_address + '</p>' +
+                 '<p>Phone number: <b>' + data.report_ph + '</p>' +
+                 '</div>';
+            var nodemailer = require('nodemailer');
+            // create reusable transporter object using the default SMTP transport 
+            var transporter = nodemailer.createTransport('smtps://' + config.email.user + ':' + config.email.pass + '@' + config.email.host);
+            // setup e-mail data with unicode symbols 
+            var mailOptions = {
+                from: '"Swipeloans" <admin@swipeloans.com>', // sender address 
+                to: 'mitch@homeloans247.com.au', // list of receivers  //mitch@homeloans247.com.au
+                subject: 'Property Report Email', // Subject line 
+                html: mailContent
+            };
+            // send mail with defined transport object 
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: 'Email sent'});
+                }
+            });
+
+                callback({ success: true, message: "Property request has been successfully sent to admin." });
+            }
+        });
+            
+},
+    
+    
+};
+module.exports = ReportService;

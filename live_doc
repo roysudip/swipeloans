@@ -1,0 +1,12 @@
+
+keytool -exportcert -alias swipeloans -keystore /opt/Ionic/ionic-2/Subhomoy/swipeloans/swipeloans.keystore | openssl sha1 -binary | openssl base64
+
+
+password:brainium123
+
+organization name is Swipeloans
+
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore swipeloans.keystore app-release-unsigned.apk swipeloans
+
+zipalign -v 4 app-release-unsigned.apk swipeloans.apk

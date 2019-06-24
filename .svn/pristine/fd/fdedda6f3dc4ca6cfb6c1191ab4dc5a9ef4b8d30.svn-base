@@ -1,0 +1,105 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "mpath",
+        "scope": null,
+        "escapedName": "mpath",
+        "name": "mpath",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\node_project\\swipeloan"
+    ]
+  ],
+  "_from": "mpath@latest",
+  "_id": "mpath@0.4.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/mpath",
+  "_nodeVersion": "8.9.4",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/mpath_0.4.0_1522167051075_0.49588697756058076"
+  },
+  "_npmUser": {
+    "name": "vkarpov15",
+    "email": "val@karpov.io"
+  },
+  "_npmVersion": "5.6.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "mpath",
+    "scope": null,
+    "escapedName": "mpath",
+    "name": "mpath",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/mpath/-/mpath-0.4.0.tgz",
+  "_shasum": "66c2e92145d8602a63561635ea6799feecc04666",
+  "_shrinkwrap": null,
+  "_spec": "mpath",
+  "_where": "D:\\node_project\\swipeloan",
+  "author": {
+    "name": "Aaron Heckmann",
+    "email": "aaron.heckmann+github@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/aheckmann/mpath/issues"
+  },
+  "dependencies": {},
+  "description": "{G,S}et object values using MongoDB-like path notation",
+  "devDependencies": {
+    "benchmark": "~1.0.0",
+    "mocha": "1.8.1"
+  },
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-ZGxlqduDqleQkH7vff7vh4VZQdm6qWCsIkjmIqciG2mImDzXxiOEyPHUboyXtyqLHSRWEYQ5Y6p6gyuAzr8Pww==",
+    "shasum": "66c2e92145d8602a63561635ea6799feecc04666",
+    "tarball": "https://registry.npmjs.org/mpath/-/mpath-0.4.0.tgz",
+    "fileCount": 13,
+    "unpackedSize": 85604
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "gitHead": "f55a4666d477ac8e2eb4e51ba05bc239287a06d4",
+  "homepage": "https://github.com/aheckmann/mpath#readme",
+  "keywords": [
+    "mongodb",
+    "path",
+    "get",
+    "set"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "aaron",
+      "email": "aaron.heckmann+github@gmail.com"
+    },
+    {
+      "name": "vkarpov15",
+      "email": "val@karpov.io"
+    }
+  ],
+  "name": "mpath",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aheckmann/mpath.git"
+  },
+  "scripts": {
+    "test": "mocha test/*"
+  },
+  "version": "0.4.0"
+}

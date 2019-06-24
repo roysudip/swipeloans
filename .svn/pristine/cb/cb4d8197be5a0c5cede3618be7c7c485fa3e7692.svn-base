@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <% include ../head %>
+<body class="hold-transition skin-blue sidebar-mini" ng-cloak ng-app="reportModule" ng-controller="reportController as report">
+    <div class="wrapper">
+        <% include ../header %>
+            <!-- Left side column. contains the logo and sidebar -->
+            <% include ../leftnav %>
+                <!-- Content Wrapper. Contains page content -->
+                <div class="content-wrapper">
+                    <!-- Content Header (Page header) -->
+                    <section class="content-header">
+                        <h1> Manage Report
+                            <small>Control panel</small>
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li>
+                                <a href="/webcontrol/dashboard">
+                                    <i class="fa fa-dashboard"></i> Home</a>
+                            </li>
+                            <li class="active">Manage Report</li>
+                        </ol>
+                    </section>
+                    <!-- Main content -->
+                    <section class="content">
+                        <!-- Small boxes (Stat box) -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">All Reports</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div style="margin-bottom: 5px;" ng-show="!user.statusMessage.onModal">
+                                        <div class="alert alert-danger" ng-show="user.statusMessage.error" style="margin: 0 auto;">{{user.statusMessage.content}}</div>
+                                        <div class="alert alert-success" ng-show="user.statusMessage.success" style="margin: 0 auto;">{{user.statusMessage.content}}</div>
+                                    </div>
+                                    <div class="box-body">
+                                        <table class="table table-bordered table-striped" style="table-layout: fixed; word-wrap: break-word;">
+                                           
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Address</th>
+                                                    <th>Phone</th>
+                                                    <th>Description</th>
+                                                    <th>Created on</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <!-- <td colspan="4" style="text-align:center;" ng-if="user.user_length==0">No Record Here</td> -->
+                                                </tr>
+                                                <tr ng-repeat="rpt in report.reports">
+                                                    <td>{{rpt.user_idfk.first_name}} {{rpt.user_idfk.last_name}}</td>
+                                                    <td>{{rpt.report_address}}</td>
+                                                    <td>{{rpt.report_ph}}</td>
+                                                    <td>{{rpt.report_description}}</td>
+                                                    <td>{{rpt.createdAt| date: 'MM-dd-yyyy hh:mm a'}}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#confirmDelete" data-intdid="{{rpt._id}}"
+                                                        ng-click="report.setPropertyReportId(rpt._id);" title="Delete Report">
+                                                          <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                        </div>
+                        <!-- /.row -->
+                    </section>
+                    <!-- /.content -->
+                    <% include modals %>
+                </div>
+                <!-- /.content-wrapper -->
+                <% include ../footer %>
+    </div>
+    <script src="/javascripts/admin/commonFactory.js" type="text/javascript"></script>
+    <script src="/javascripts/admin/report/reportModule.js" type="text/javascript"></script>
+    <script src="/javascripts/admin/report/reportFactory.js" type="text/javascript"></script>
+    <script src="/javascripts/admin/report/reportController.js" type="text/javascript"></script>
+</body>
+
+</html>

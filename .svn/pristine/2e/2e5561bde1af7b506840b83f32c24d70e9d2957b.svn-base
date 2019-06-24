@@ -1,0 +1,66 @@
+"use strict";
+var express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var session = require('express-session');
+var adminQuestion = express.Router();
+var questionService = require('../service/QuestionService');
+//======================
+//  Middleware to check the login
+//=========================
+function checkLogin(req, res, next) {
+    var adminDet = req.session.admin;
+    if (adminDet && adminDet.authenticated) {
+        req.session.admin = adminDet;
+        return next();
+    } else {
+        res.redirect('/webcontrol');
+    }
+}
+//question listing page
+adminQuestion.route('/').get(checkLogin, function (req, res) {        
+    res.render('admin/question/index', { admin: req.session.admin, title: "Questions", "active": "questions",child_active:'' });
+});
+//add question
+adminQuestion.post('/', checkLogin, function (req, res) {  
+    questionService.createQuestionAdmin(req.body, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//update survey
+adminQuestion.put('/:questionId', checkLogin, function (req, res) {
+    questionService.update(req.params.questionId, req.body, function (response) {
+        res.json(response);
+    });
+});
+//delete faq
+adminQuestion.delete('/:questionId', checkLogin, function (req, res) {
+    questionService.delete(req.params.questionId, function (response) {
+        res.json(response);
+    });
+});
+//all question list
+adminQuestion.get('/getAllQuestions', checkLogin, function (req, res) {
+    questionService.getAllQuestions(req.query, req.session.admin, function (response) {
+        res.json(response);
+    });
+});
+//client details by id
+adminQuestion.get('/getDetails/:questionId', checkLogin, function (req, res) {    
+    questionService.getDetailsById(req.params.questionId, function (response) {
+        res.json(response);
+    });
+});
+//chnage faq status
+// adminSurvey.put('/changeStatus/:faqId', function (req, res) {
+//     var faqId = req.params.faqId;
+//     var faqData = req.body;
+//     surveyService.changeStatus(faqId, faqData.is_active, function (response) {
+//         res.json(response);
+//     });
+// });
+
+
+
+
+module.exports = adminQuestion;

@@ -1,0 +1,292 @@
+var config = require('../../config');
+var secretKey = config.secret;
+var fs = require('fs');
+var jwt = require('jsonwebtoken');
+var async = require("async");
+var randomString = require('randomstring');
+var NodeGeocoder = require('node-geocoder');
+var User = require('../../schema/users');
+
+var options = {
+    provider: 'google',
+    // Optional depending on the providers 
+    httpAdapter: 'https', // Default 
+    apiKey: 'AIzaSyDrECTH2NaaoiUuSp4e9AD3SevaUN3Vs3k', // for Mapquest, OpenCage, Google Premier 
+    formatter: null         // 'gpx', 'string', ... 
+};
+function isUsernameExist(email) {
+    var query = User.findOne({ email: email });
+    var promise = query.exec();
+    return promise;
+}
+
+function checkcardexists(supplierid, cardnumber) {
+    var query = Card.findOne({ $and: [{ _user_id: supplierid }, { card_number: cardnumber }] });
+    var promise = query.exec();
+    return promise;
+}
+
+function createToken(user) {
+    var tokenData = {
+        id: user._id,
+        email: user.email
+    };
+    var token = jwt.sign(tokenData, secretKey, {
+        expiresIn: 60 * 60 * 24
+    });
+    return token;
+}
+var UserService = {
+    //For admin section
+
+    /*
+    *get all users list
+    */
+    getAllUsers: function (adminDet, callback) {
+        var page = 1,
+            limit = 20,
+            sort_field = 'createdAt',
+            order = '-1', //descending
+            query = {  };
+        async.waterfall([
+            function (nextcb) {
+                User.find(query)
+                    .sort([[sort_field, order]])
+                    .exec(function (err, users) {
+                        if (err) {
+                            nextcb(err);
+                        }
+                        else {
+                            nextcb(null, users);
+                        }
+                    });
+            }
+        ],
+            function (err, result) {
+                if (err) {
+                    callback({ success: false, err: err });
+                } else {
+                    callback({ success: true, users: result });
+                }
+            });
+    },
+
+    /*
+    *get user details by user id
+    */
+    getDetails: function (user_id, callback) {
+        User.findOne({ _id: user_id })
+            .exec(function (err, user) {
+                if (err) {
+                    callback({ success: true, user: '', message: 'Invalid user id.' });
+                }
+                else {
+                    callback({ success: true, user: user, message: 'Get user details' });
+                }
+            });
+    },
+
+    //For API
+    /*
+    * user Register/login
+    */
+    createUserApi: function (user, callback) {
+        isUsernameExist(user.email).then(function (user_data) {
+            //console.log(user_data);
+            if (user_data != null) {
+                user._id = user_data._id;
+                user.email = user_data.email;
+                var token = createToken(user);
+                if (user_data._id == '' && user_data.user_type == 'custom') {
+                    var mailContent = '<div style="font-family: \'Tahoma\', Verdana">' +
+                        'Hello ' + user_data.first_name + ',<br />' +
+                        '<p>This is your email varification code: <b>' + user_data.email_verification_code + '</p>' +
+                        '</div>';
+                    var nodemailer = require('nodemailer');
+                    // create reusable transporter object using the default SMTP transport 
+                    var transporter = nodemailer.createTransport('smtps://' + config.email.user + ':' + config.email.pass + '@' + config.email.host);
+                    // setup e-mail data with unicode symbols 
+                    var mailOptions = {
+                        from: '"Swipeloans" <admin@swipeloans.com>', // sender address 
+                        to: user_data.email, // list of receivers 
+                        subject: 'User Email Verification', // Subject line 
+                        html: mailContent
+                    };
+                    // send mail with defined transport object 
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            callback({ success: false, message: "Some error occurred", err: err });
+                        } else {
+                            callback({ success: true, message: 'Email already registered.', user_details: user_data, user_token: token });
+                        }
+                    });
+                } else {
+                    callback({ success: true, message: "Email already registered.", user_details: user_data, user_token: token });
+                }
+            }
+            else {
+                var promo_code = randomString.generate(6);
+                user.promo_code = 'SL-' + promo_code;
+                if (user.user_type == 'custom') {
+                    var email_verification_code = randomString.generate(6);
+                    user.email_verification_code = email_verification_code;
+                    user.email_verified = false;
+                    user.profileimage = config.__site_url + "images/default.png";
+                } else {
+                    user.email_verification_code = '';
+                    user.email_verified = true;
+                    //user.profileimage = user.profileimage;
+                    user.profileimage = config.__site_url + "images/default.png";
+                }
+
+                console.log(user);
+
+                var userData = new User(user);
+                userData.save(function (err, user_data) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred", err: err });
+                    } else {
+                        user._id = user_data._id;
+                        user.email = user_data.email;
+                        var token = createToken(user);
+                        if (user_data.user_type == 'custom') {
+                            var mailContent = '<div style="font-family: \'Tahoma\', Verdana">' +
+                                'Hello ' + user_data.first_name + ',<br />' +
+                                '<p>This is your email varification code: <b>' + user_data.email_verification_code + '</p>' +
+                                '</div>';
+                            var nodemailer = require('nodemailer');
+                            // create reusable transporter object using the default SMTP transport 
+                            var transporter = nodemailer.createTransport('smtps://' + config.email.user + ':' + config.email.pass + '@' + config.email.host);
+                            // setup e-mail data with unicode symbols 
+                            var mailOptions = {
+                                from: '"Swipeloans" <admin@swipeloans.com>', // sender address 
+                                to: user_data.email, // list of receivers 
+                                subject: 'User Email Verification', // Subject line 
+                                html: mailContent
+                            };
+                            // send mail with defined transport object 
+                            transporter.sendMail(mailOptions, function (error, info) {
+                                if (error) {
+                                    callback({ success: false, message: "Some error occurred", err: err });
+                                } else {
+                                    callback({ success: true, message: 'User has been successfully registered.', user_details: user_data, user_token: token });
+                                }
+                            });
+                        } else {
+                            callback({ success: true, message: 'User has been successfully registered.', user_details: user_data, user_token: token });
+                        }
+
+                    }
+                });
+            }
+        });
+    },
+    /*
+    * user Email Varification
+    */
+    emailVarification: function (data, callback) {
+        User.findOne({ email_verification_code: data.email_verification_code, email: data.email })
+            .select('_id email_verified')
+            .exec(function (err, user) {
+                if (!user) {
+                    callback({ success: true, message: "Please enter valid email varification code.", user: user });
+                } else {
+                    var query = { _id: user._id };
+                    var fields = { email_verified: 'true', email_verification_code: null };
+                    User.update(query, fields, function (err, affected) {
+                        if (err) {
+                            callback({ success: false, message: "Some error occurred", err: err });
+                        } else {
+                            callback({ success: true, message: "Email verified successfully" });
+                        }
+                    });
+                }
+            });
+    },
+    /*
+    * User Profile Details by user id 
+    */
+    profileDetails: function (user_id, callback) {
+        User.findOne({ _id: user_id })
+            .exec(function (err, user) {
+                if (err) {
+                    callback({ success: false, message: "Some error occurred", err: err });
+                } else {
+                    callback({ success: true, message: "User Details", user_details: user });
+                }
+            });
+    },
+    /*
+    * Edir user prodile details by user id
+    */
+    editProfile: function (data, callback) {
+        User.findById(data.user_id, function (err, user) {
+            if (!user) {
+                error = { message: "Invalid user id", err: err };
+                nextcb(error);
+            } else {
+                var userdata = [];
+                userdata.first_name = data.first_name;
+                userdata.last_name = data.last_name;
+                userdata.address = data.address;
+                userdata.dob = data.dob;
+                userdata.phone_number = data.phone_number;
+                var query = { _id: data.user_id },
+                    fields = userdata,
+                    options = { upsert: false };
+                User.update(query, fields, options, function (err, affected) {
+                    if (err) {
+                        callback({ success: false, message: "Some error occurred", err: err });
+                    } else {
+                        User.findOne({ _id: data.user_id })
+                            .exec(function (err, user) {
+                                if (err) {
+                                    callback({ success: false, message: "Some error occurred", err: err });
+                                } else {
+                                    callback({ success: true, message: "Your profile updated successfully", user_details: user });
+                                }
+                            });
+                    }
+                });
+            }
+        });
+    },
+    /*
+    * Updaye user profile Picture
+    */
+    editProfileImage: function (userid, fileData, callback) {
+        User.findById(userid, function (err, user) {
+            if (err) {
+                callback({ success: false, message: "Invalid User id.", err: err });
+            } else {
+                var userimage = user.profileimage;
+                if (fileData != null) {
+
+                    var profileimage;
+                    profileimage = fileData.image;
+                    var ext = profileimage.name.slice(profileimage.name.lastIndexOf('.'));
+                    var fileName = Date.now() + ext;
+                    
+                    var newprofileimgUrl = config.__site_url + 'uploads/user/' + fileName;
+                    profileimage.mv('./public/uploads/user/'+fileName, function(err) {
+                        if (err){
+                            fileName = null;
+                            newprofileimgUrl = "";
+                        }
+                      });
+                      User.update({ _id: userid }, { profileimage: newprofileimgUrl }, { upsert: true }, function (err, affected) {
+                        if (err) {
+                            callback({ success: false, message: err });
+                        } else {
+                            callback({ success: true, message: "Image updated successfully.", image: newprofileimgUrl });
+                        }
+                    });
+                }
+                else {
+                    callback({ success: false, message: "File data is empty." });
+                }
+            }
+        });
+    }
+};
+module.exports = UserService;

@@ -1,0 +1,52 @@
+
+<ion-header>
+    <ion-navbar>
+        <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>My Borrow Questions</ion-title>
+      </ion-navbar>
+</ion-header>
+
+
+<ion-content padding class="cs-MyApplQsn">
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+<div *ngIf='MyAppliedQuestionListing.length>0'>
+  <ion-card *ngFor="let MyQuestion of MyAppliedQuestionListing; let i=index" (click)='ViewMyAppliedQuestion(MyQuestion._id)'>
+
+      <ion-card-header class="qtn-card-header">
+          <ion-grid>
+
+              <ion-row>
+                  <ion-col>
+                    Date
+                  </ion-col>
+                  <ion-col>
+                     {{MyQuestion.createdAt | date: 'dd/MM/yyyy'}}
+                  </ion-col>
+                </ion-row>
+
+            </ion-grid>
+        </ion-card-header>
+
+  </ion-card>
+</div>
+
+<div *ngIf='MyAppliedQuestionListing.length<=0 '>
+    <ion-card>
+        <ion-card-header>
+            <ion-grid>
+                <ion-row>
+                  <ion-col>
+                      No question found.
+                    </ion-col>
+                    </ion-row>
+                    </ion-grid>
+                    </ion-card-header>
+    </ion-card>
+</div>
+
+
+</ion-content>

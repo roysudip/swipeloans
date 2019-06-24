@@ -1,0 +1,40 @@
+const express = require('express');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var apiQuestion = express.Router();
+var questionService = require('../service/QuestionService');
+var fs = require('fs');
+
+
+ 
+/*********************
+ * get all loan question
+ * @method: post
+ * @request
+ * @request_url: /api/question/get-all-questions
+ *********************/
+
+
+apiQuestion.get('/get-all-questions', function (req, res) {
+    console.log("get-all-questions");
+    questionService.getallQuestionFrontent(function (response) {
+        res.send(response);
+    });
+});
+
+/*********************
+ * send questions val
+ * @method: POST
+ * @requestparams
+ * question, user_idfk, options, 
+ * @request_url: /api/question/submission
+ *********************/
+apiQuestion.post('/submission', function(req, res){
+    questionService.setQuestionAnswer(req.body, req.decoded, function(data){
+        res.json(data);
+    });
+});
+
+
+
+module.exports = apiQuestion;

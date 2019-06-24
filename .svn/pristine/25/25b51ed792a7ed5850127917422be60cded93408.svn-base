@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+        <% include head %> 
+    <body class="hold-transition skin-blue sidebar-mini">
+        <div class="wrapper">
+            <% include header %> 
+            <!-- Left side column. contains the logo and sidebar -->
+            <% include leftnav %> 
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1> Admin Profile<small>Control panel</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/webcontrol/dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Admin Profile</li>
+                    </ol>
+                </section>
+                <!-- Main content -->
+                <section class="content" ng-app='loginModule' ng-controller='loginController as profile'>
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- Horizontal Form -->
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Admin Profile Form</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <!-- form start -->
+                                <form class="form-horizontal" action='/webcontrol/admin-profile' method='post'>
+                                    <div class="box-body">
+                                        <div class="alert alert-danger" ng-show="<%= error %>" style="margin: 0 auto;"><%= message %></div>
+                                        <div class="alert alert-success" ng-show="<%= success %>" style="margin: 0 auto;"> <%= message %></div>
+                                        <br>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">First Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control" placeholder="First Name" name="first_name" value="<%= admin_details.first_name %>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Last Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="test" class="form-control" placeholder="last Name" name="last_name"   value="<%= admin_details.last_name %>">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Email Address</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" class="form-control" placeholder="Email Address" name="email"  value="<%= admin_details.email %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+                                    <div class="box-footer">
+                                        <button type="submit"  class="btn btn-primary pull-right">Submit</button>
+                                    </div>
+                                    <!-- /.box-footer -->
+                                </form>
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </section>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+            <% include footer %> 
+        </div>
+        <script src="/javascripts/admin/login/loginModule.js"></script>
+        <script src="/javascripts/admin/login/authService.js"></script>
+        <script src="/javascripts/admin/login/loginController.js"></script>
+    </body>
+</html>

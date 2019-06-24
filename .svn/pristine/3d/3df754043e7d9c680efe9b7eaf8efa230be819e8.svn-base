@@ -1,0 +1,36 @@
+var express = require("express");
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var apiCms = express.Router();
+var CmsService = require('../service/CmsService');
+var FaqService = require('../service/FaqService');
+
+
+
+/*********************
+ * Faq list with details
+ * @method: GET
+ * @request_url: /api/cms/faq
+ *********************/
+
+apiCms.get('/faq', function(req,res){
+    CmsService.getAllFaqApi(function(response){
+        res.send(response);
+    });
+});
+
+/*********************
+ * Get cms details by slug
+ * @method: GET
+ * @params slug
+ * @request_url: /api/cms/content-details
+ *********************/
+
+apiCms.get('/content-details', function(req,res){
+    CmsService.getDetailsBySlug(req.query.slug,function(response){
+        res.send(response);
+    });
+});
+
+
+module.exports = apiCms;

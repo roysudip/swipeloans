@@ -1,0 +1,20 @@
+var mongoose = require('mongoose');
+var validate = require('validate');
+var mongoosePaginate = require('mongoose-paginate');
+var Schema = mongoose.Schema;
+
+var QuestionSchema = new Schema({
+    question: {type: String, required: true},
+    type: {type: String, required: true},    
+    options: [{
+    	option: {type: String, default: null}
+    }],
+    max: {type: Number, default: null},
+    min: {type: Number, default: null},
+    is_active: { type: String, enum: ['yes', 'no'], default: 'yes' }
+},{
+    timestamps: true,        // will automatically add createdAt and updatedAt
+    typecast: true
+});
+QuestionSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('BorrowQuestion', QuestionSchema);

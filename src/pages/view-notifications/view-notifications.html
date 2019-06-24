@@ -1,0 +1,67 @@
+
+<!-- <ion-header>
+
+  <ion-navbar>
+    <ion-title>View Notification</ion-title>
+  </ion-navbar>
+
+</ion-header> -->
+
+
+<ion-content>
+    <div class="modal_div"  >
+      <span class="crossWrapper" (click)="dismiss()">
+          <button class="cross"  >Close</button>
+      </span>
+    <!-- <ion-card>
+      <ion-card-header>
+        {{noti_title}}
+      </ion-card-header>
+        <ion-card-content >
+          <div class='not-cont'>{{noti_description}}</div>
+          <p><i>{{datetime | date:'medium'}}</i></p>
+        </ion-card-content>
+      </ion-card> -->
+
+      <div class="notificationInner" *ngIf="type=='View'">
+          <div class="titleDiv">
+              <div class="rightDate">
+                  <span class="iconDiv"></span>
+                  <p>{{datetime | date:'medium'}}</p>
+               </div>
+            <h6> {{noti_title}}</h6>
+
+          </div>
+          <div class="descriptionDiv">
+
+            <p>{{noti_description}}</p>
+            <div class="repl-wrap" *ngIf="NotiReplyMsg else NoReply" >
+            <span>Replied</span>
+            <p class="replyTxt">{{NotiReplyMsg}}</p>
+            <div class="rightDate">
+                <p>{{NotiDate | date:'medium'}}</p>
+             </div>
+             </div>
+             <ng-template #NoReply>
+              <div class="replybtn" (click)='ReplyNotification(noti_id)'>Reply</div>
+            </ng-template>
+          </div>
+
+        </div>
+        <div class="replyform" *ngIf="type=='Reply'" >
+
+
+                <h4>Reply</h4>
+
+              <ion-item>
+                  <!-- <ion-label stacked>Your Message</ion-label> -->
+                  <ion-textarea class="replyInput" [(ngModel)]="ReplyData.reply_message" placeholder="Your Message"></ion-textarea>
+                </ion-item>
+                <ion-item>
+                    <button class="rpyBtn" (click)='ReplyNotification2()' >Submit</button>
+                </ion-item>
+           </div>
+      </div>
+
+
+</ion-content>

@@ -1,0 +1,37 @@
+<!--
+  Generated template for the HomePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header *ngIf="showNavbar">
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Create Account</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content  class="bgClass">
+<div class="home-wrapper">
+  <div class="topDiv">
+    <div class="logo">
+      <span>
+        <img src="assets/images/logo2.png" alt="">
+      </span>
+    </div>
+  </div>
+    <div class="loginDiv">
+      <div class="loginDivinner">
+            <button class="btn_style fbBtn" (click)="fblogin();">Sign In with Facebook</button>
+            <button class="btn_style emailBtn" (click)=opensignin();>Sign In using your email</button>
+      </div>
+    </div>
+    </div>
+
+
+        <!-- <p class="ternCondition">I agree to <a (click)='OpenPrivacyPolicy()' type='button'>Privacy Policy</a>  and <a  type='button' (click)='OpenTermsCond()'>Terms &amp; Conditions</a></p> -->
+</ion-content>
+

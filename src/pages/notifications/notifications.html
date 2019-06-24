@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Notifications</ion-title>
+    <span class="clo_se" (click)='navPush()'></span>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf='notificationSize!=0' class="notification-wrap notificationDiv">
+    <ion-item-sliding *ngFor='let notification of notifications' #slidingItem>
+      <ion-item *ngIf='notification.notification_id!=null && notification.notification_id!=undefined' class="notification-item"
+        [ngClass]="{'red': notification.checkstatus=='true', 'unread': notification.checkstatus=='false'}">
+        <ion-grid class="notification-grid">
+
+
+
+          <div class="notificationInner">
+            <span class="clo_se2" (click)='DeleteMyNotifications(slidingItem, notification.notification_id._id)'></span>
+            <div class="titleDiv">
+              <h6>{{notification.notification_id.titles}}</h6>
+              <div class="rightDate">
+                <span class="iconDiv"></span>
+                <p class="abc" #test id="test"> {{notification.notification_id.createdAt | date:'medium' }}
+                </p>
+              </div>
+            </div>
+            <div class="descriptionDiv">
+
+              <p class="description_Div">{{notification.notification_id.description}} </p>
+            </div>
+            <div class="btton-dv">
+
+              <span (click)='ReplyNotification(notification.notification_id._id)' *ngIf="notification.replystatus=='false'"  class="Replybtn">Reply</span>
+                       <span class="Replybtn" *ngIf="notification.replystatus=='true'" >Replied</span>
+              <span (click)='ViewMyNotification(notification.notification_id._id, notification.notification_id.titles, notification.notification_id.description, notification.notification_id.createdAt)'
+                class="Morebtn">More</span>
+            </div>
+          </div>
+        </ion-grid>
+      </ion-item>
+      <!-- <ion-item-options>
+        <button danger (click)='DeleteMyNotifications(slidingItem, notification.notification_id._id)'><ion-icon trash></ion-icon> Delete</button>
+      </ion-item-options> -->
+    </ion-item-sliding>
+  </ion-list>
+  <ion-list *ngIf='notificationSize==0'>
+    <ion-item>
+      No notifications found.
+    </ion-item>
+  </ion-list>
+</ion-content>
+

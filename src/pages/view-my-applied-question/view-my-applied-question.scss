@@ -1,0 +1,77 @@
+page-view-my-applied-question {
+
+    .list + ion-list ion-list-header{
+        margin-top: 0;
+    }
+    .card-header{
+        background-color: #f4f4f4
+    }
+    .card{
+        margin-bottom: 20px;
+        border-radius: 0;
+    }
+
+    .label{
+        margin: 0;
+    }
+       .list-header{
+        margin-bottom: 0;
+        // padding-left: 25px;
+        ;
+    }
+
+    .SubQtnTitle {
+        padding-bottom: 15px;
+      
+        .item{
+            min-height: 0;
+            padding-left: 25px;
+            .label{
+                margin-top: 10px;
+            }
+          
+        }
+
+        .list-header{
+            .label{
+                // color: #f00;
+                font-display: 17px;
+                color: #222;
+            }
+        }
+        .Ques-ans{
+            .label{
+                // color: #ff0;
+                font-size: 14px;
+                color: #757575;
+            }
+        }
+        
+
+    }
+
+
+
+    @media(min-width:768px){
+        .card-header {
+            background-color: #f4f4f4;
+            font-size: 30px;
+        }
+
+        .label{
+            font-size: 22px;
+            margin-top: 20px;
+    margin-bottom: 20px
+        }
+        .SubQtnTitle .Ques-ans .label{
+            font-size: 18px;
+        }
+  
+    .SubQtnTitle .item .label{
+        margin-top: 20px;
+    }
+    .card-header{
+        padding: 20px 16px;
+    }
+    }
+}
